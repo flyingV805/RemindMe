@@ -1,25 +1,40 @@
 package kz.flyingv.remindme.room.converter
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
 import kz.flyingv.remindme.model.RemindAction
+import org.json.JSONObject
 import java.lang.Exception
 
 class RemindActionConverter {
 
     @TypeConverter
     fun from(action: RemindAction?): String? {
-        return Gson().toJson(action)
+        return when(action){
+            is RemindAction.OpenApp -> {JSONObject().put("type", typeOpenApp).put("appName", action.appName).put("package", action.appPackage).toString()}
+            is RemindAction.OpenUrl -> {JSONObject().put("type", typeOpenUrl).put("url", action.url).toString()}
+            null -> null
+        }
     }
 
     @TypeConverter
     fun to(data: String): RemindAction? {
         return try {
-            Gson().fromJson(data, RemindAction::class.java)
+            val jsonObject = JSONObject(data ?: "")
+            when(jsonObject.optInt("type", -1)){
+                typeOpenApp -> RemindAction.OpenApp(jsonObject.getString("appName"), jsonObject.getString("package"))
+                typeOpenUrl -> RemindAction.OpenUrl(jsonObject.getString("url"))
+                else -> null
+            }
         }catch (e: Exception){
             e.printStackTrace()
             null
         }
+    }
+
+    companion object {
+
+        const val typeOpenApp = 0
+        const val typeOpenUrl = 1
     }
 
 }

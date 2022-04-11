@@ -68,7 +68,6 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     //utils
-    implementation 'com.google.code.gson:gson:2.8.6'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.1.1'
