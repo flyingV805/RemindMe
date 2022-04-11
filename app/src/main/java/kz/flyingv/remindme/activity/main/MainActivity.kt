@@ -7,7 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.Composable
@@ -17,7 +19,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kz.flyingv.remindme.model.Reminder
-import kz.flyingv.remindme.notifications.Notificator
 
 class MainActivity : ComponentActivity() {
 
@@ -34,6 +35,10 @@ class MainActivity : ComponentActivity() {
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = { TopAppBar(title = {Text("TopAppBar")}, backgroundColor = materialBlue700)  },
+            drawerContent = { Text(text = "drawerContent") },
+            content = {
+                ReminderList(reminders = state)
+            },
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = { FloatingActionButton(onClick = {
                 viewModel.createReminder()
@@ -41,11 +46,14 @@ class MainActivity : ComponentActivity() {
             }){
                 Text("X")
             } },
-            drawerContent = { Text(text = "drawerContent") },
-            content = {
-                ReminderList(reminders = state)
-            },
-            bottomBar = { BottomAppBar(backgroundColor = materialBlue700) { Text("BottomAppBar") } }
+            isFloatingActionButtonDocked = true,
+            bottomBar = {
+                BottomAppBar(
+                    backgroundColor = materialBlue700,
+                    cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
+                    //content =
+                ) { Text("BottomAppBar") }
+            }
         )
     }
 
