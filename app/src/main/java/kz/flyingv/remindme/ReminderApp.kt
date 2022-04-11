@@ -2,9 +2,8 @@ package kz.flyingv.remindme
 
 import android.app.Application
 import androidx.room.Room
-import kz.flyingv.remindme.notifications.Notificator
-import kz.flyingv.remindme.repository.RemindRepository
-import kz.flyingv.remindme.repository.RemindRepositoryImpl
+import kz.flyingv.remindme.repository.ReminderRepository
+import kz.flyingv.remindme.repository.ReminderRepositoryImpl
 import kz.flyingv.remindme.room.Database
 import kz.flyingv.remindme.scheduler.RemindScheduler
 import org.koin.android.ext.koin.androidContext
@@ -18,7 +17,7 @@ class ReminderApp: Application() {
         single { Room.databaseBuilder(androidContext(), Database::class.java, "Reminder.db").build() }
         single { RemindScheduler(androidContext())}
 
-        single<RemindRepository> { RemindRepositoryImpl() }
+        single<ReminderRepository> { ReminderRepositoryImpl() }
     }
 
     override fun onCreate() {
