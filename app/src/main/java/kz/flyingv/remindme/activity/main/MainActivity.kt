@@ -29,8 +29,22 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun MainScreen(viewModel: MainViewModel = viewModel()){
-        val materialBlue700= Color(0xFF1976D2)
+        val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+        ModalDrawer(
+            drawerState = drawerState,
+            drawerContent  = {
+                //. sheetContent
+            }
+        ) {
+            CreateScaffold(viewModel)
+        }
+    }
+
+    @Composable
+    private fun CreateScaffold(viewModel: MainViewModel){
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
+        val materialBlue700= Color(0xFF1976D2)
         val state = viewModel.currentReminders.collectAsState().value
         Scaffold(
             scaffoldState = scaffoldState,
@@ -41,6 +55,7 @@ class MainActivity : ComponentActivity() {
             },
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = { FloatingActionButton(onClick = {
+
                 viewModel.createReminder()
                 Toast.makeText(this, "reminder set", Toast.LENGTH_LONG).show()
             }){
