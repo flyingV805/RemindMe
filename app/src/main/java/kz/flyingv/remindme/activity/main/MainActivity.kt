@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.activity
+package kz.flyingv.remindme.activity.main
 
 import android.os.Bundle
 import android.widget.Toast
@@ -7,14 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.tooling.preview.Preview
 import kz.flyingv.remindme.notifications.Notificator
-import kz.flyingv.remindme.scheduler.RemindScheduler
-import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
-
-    private val remindScheduler: RemindScheduler by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +19,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun MainScreen(){
+    private fun MainScreen(viewModel: MainViewModel = viewModel()){
         val materialBlue700= Color(0xFF1976D2)
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Open))
         Scaffold(
@@ -30,7 +27,7 @@ class MainActivity : ComponentActivity() {
             topBar = { TopAppBar(title = {Text("TopAppBar")}, backgroundColor = materialBlue700)  },
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = { FloatingActionButton(onClick = {
-                remindScheduler.startIfNotSet(10)
+                //remindScheduler.startIfNotSet(10)
                 Notificator(applicationContext).makeTestNotification()
                 Toast.makeText(this, "reminder set", Toast.LENGTH_LONG).show()
             }){
