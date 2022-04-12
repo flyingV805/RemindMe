@@ -71,12 +71,9 @@ class MainActivity : ComponentActivity() {
         val state = viewModel.currentReminders.collectAsState().value
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { CreateTopBar()/*TopAppBar(title = {Text("TopAppBar")}, backgroundColor = materialBlue700)  */},
-            //drawerContent = { Text(text = "drawerContent") },
+            topBar = { CreateTopBar()},
             drawerGesturesEnabled = false,
-            content = {
-                ReminderList(reminders = state)
-            },
+            content = { ReminderList(reminders = state) },
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
                 FloatingActionButton(
@@ -227,7 +224,9 @@ class MainActivity : ComponentActivity() {
     @Preview
     @Composable
     fun ComposablePreview() {
-        MainScreen()
+        MaterialTheme {
+            MainScreen()
+        }
     }
 
 }
