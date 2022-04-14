@@ -1,12 +1,13 @@
 package kz.flyingv.remindme.activity.main
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,13 +22,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.Layout
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kz.flyingv.remindme.activity.main.action.MainAction
 import kz.flyingv.remindme.model.Reminder
 import kz.flyingv.remindme.ui.selector.SegmentText
 import kz.flyingv.remindme.ui.selector.SegmentedControl
@@ -38,6 +40,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent{
             MaterialTheme {
                 MainScreen()
@@ -68,12 +71,13 @@ class MainActivity : ComponentActivity() {
         val materialBlue700 = Color(0xFF1976D2)
         val scope = rememberCoroutineScope()
 
-        val state = viewModel.currentReminders.collectAsState().value
+        val mainState = viewModel.mainStateFlow.collectAsState().value
+
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { CreateTopBar()},
+            topBar = { CreateTopBar(mainState.isSearching, mainState.searchText) },
             drawerGesturesEnabled = false,
-            content = { ReminderList(reminders = state) },
+            content = { ReminderList(reminders = mainState.reminders) },
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
                 FloatingActionButton(
@@ -108,27 +112,58 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun CreateTopBar(){
+    private fun CreateTopBar(isSearching: Boolean, searchValue: String){
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Transparent)
+            modifier = Modifier.fillMaxWidth().background(Color.Transparent)
                 .padding(top = 8.dp, start = 8.dp, end = 8.dp)
         ){
-            Row(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
                     .shadow(4.dp, RoundedCornerShape(8.dp))
                     .background(Color.White, RoundedCornerShape(8.dp))
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
             ){
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("Remind ME", style = typography.h6)
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = {}) {
-                    Icon(Icons.Filled.Search, "search")
+                AnimatedVisibility(visible = !isSearching, enter = fadeIn(), exit = fadeOut()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Remind ME", style = typography.h6)
+                        Spacer(Modifier.weight(1f))
+                        IconButton(onClick = {
+                            viewModel.makeAction(MainAction.StartSearch)
+                        }) {
+                            Icon(Icons.Filled.Search, "search")
+                        }
+                    }
+                }
+                AnimatedVisibility(visible = isSearching, enter = fadeIn(), exit = fadeOut()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Spacer(modifier = Modifier.width(8.dp))
+                        TextField(
+                            modifier = Modifier.weight(1f),
+                            value = searchValue,
+                            placeholder = {Text("Searching for...")},
+                            onValueChange = { newValue -> viewModel.makeAction(MainAction.UpdateSearch(newValue)) },
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = Color.Transparent,
+                                focusedIndicatorColor =  Color.Transparent, //hide the indicator
+                                unfocusedIndicatorColor = Color.Transparent
+                            )
+                        )
+                        Box(modifier = Modifier.padding(8.dp)){
+                            IconButton(onClick = {
+                                viewModel.makeAction(MainAction.EndSearch)
+                            }) {
+                                Icon(Icons.Filled.Close, "search")
+                            }
+                        }
+                    }
                 }
             }
         }

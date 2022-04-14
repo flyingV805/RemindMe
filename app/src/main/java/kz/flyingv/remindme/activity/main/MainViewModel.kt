@@ -3,10 +3,10 @@ package kz.flyingv.remindme.activity.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kz.flyingv.remindme.activity.main.action.MainAction
+import kz.flyingv.remindme.activity.main.state.MainState
 import kz.flyingv.remindme.model.RemindAction
 import kz.flyingv.remindme.model.RemindPriority
 import kz.flyingv.remindme.model.RemindType
@@ -20,11 +20,35 @@ class MainViewModel: ViewModel(), KoinComponent {
     private val reminderRepository: ReminderRepository by inject()
 
     private val _currentReminders = reminderRepository.getAllReminders()
-    val currentReminders: StateFlow<List<Reminder>> = _currentReminders.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    private val _isSearching: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _searchText: MutableStateFlow<String> = MutableStateFlow("")
+    //val currentReminders: StateFlow<List<Reminder>> = _currentReminders.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    val mainStateFlow: StateFlow<MainState> = combine(_currentReminders, _isSearching, _searchText){
+            list, isSearch, searchText -> MainState(list, isSearch, searchText)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, initialState())
 
     init {
         viewModelScope.launch(Dispatchers.IO){
             reminderRepository.initReminderIfNeeded()
+        }
+
+
+
+    }
+
+    fun makeAction(uiAction: MainAction){
+        when(uiAction){
+            MainAction.StartSearch -> {
+                _isSearching.value = true
+            }
+            MainAction.EndSearch -> {
+                _isSearching.value = false
+                _searchText.value = ""
+            }
+            is MainAction.UpdateSearch -> {
+                updateSearch(uiAction.text)
+            }
         }
     }
 
@@ -44,6 +68,14 @@ class MainViewModel: ViewModel(), KoinComponent {
                 )
             )
         }
+    }
+
+    private fun initialState(): MainState {
+        return MainState(emptyList(), false, "")
+    }
+
+    private fun updateSearch(searchText: String){
+        _searchText.value = searchText
     }
 
 }
