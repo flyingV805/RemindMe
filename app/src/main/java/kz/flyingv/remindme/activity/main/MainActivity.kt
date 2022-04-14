@@ -22,9 +22,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Job
@@ -66,10 +66,8 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun CreateScaffold(showNewReminderDialog: () -> Job){
-
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
         val materialBlue700 = Color(0xFF1976D2)
-        val scope = rememberCoroutineScope()
 
         val mainState = viewModel.mainStateFlow.collectAsState().value
 
@@ -113,14 +111,13 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun CreateTopBar(isSearching: Boolean, searchValue: String){
+        val focusRequester = remember { FocusRequester() }
         Box(
             modifier = Modifier.fillMaxWidth().background(Color.Transparent)
                 .padding(top = 8.dp, start = 8.dp, end = 8.dp)
         ){
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
+                modifier = Modifier.fillMaxWidth().height(56.dp)
                     .shadow(4.dp, RoundedCornerShape(8.dp))
                     .background(Color.White, RoundedCornerShape(8.dp))
             ){
@@ -133,6 +130,7 @@ class MainActivity : ComponentActivity() {
                         Text("Remind ME", style = typography.h6)
                         Spacer(Modifier.weight(1f))
                         IconButton(onClick = {
+                            //focusRequester.requestFocus()
                             viewModel.makeAction(MainAction.StartSearch)
                         }) {
                             Icon(Icons.Filled.Search, "search")
@@ -144,11 +142,12 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                         verticalAlignment = Alignment.CenterVertically
                     ){
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         TextField(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f).focusRequester(focusRequester),
                             value = searchValue,
                             placeholder = {Text("Searching for...")},
+                            singleLine = true,
                             onValueChange = { newValue -> viewModel.makeAction(MainAction.UpdateSearch(newValue)) },
                             colors = TextFieldDefaults.textFieldColors(
                                 backgroundColor = Color.Transparent,
@@ -245,8 +244,8 @@ class MainActivity : ComponentActivity() {
         ) {
             Row(modifier = Modifier.padding(8.dp)) {
                 Column {
-                    Text(text = "VIEW Name", style = typography.h6)
-                    Text(text = "VIEW Name", style = typography.h6)
+                    Text(text = "fdgdfg", style = typography.h6)
+                    Text(text = reminder.name, style = typography.h6)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = "VIEW DETAIL", style = typography.caption)
                     Spacer(modifier = Modifier.height(4.dp))
