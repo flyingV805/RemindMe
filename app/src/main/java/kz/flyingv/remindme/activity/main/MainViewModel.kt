@@ -22,6 +22,12 @@ class MainViewModel: ViewModel(), KoinComponent {
     private val _currentReminders = reminderRepository.getAllReminders()
     val currentReminders: StateFlow<List<Reminder>> = _currentReminders.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
+    init {
+        viewModelScope.launch(Dispatchers.IO){
+            reminderRepository.initReminderIfNeeded()
+        }
+    }
+
     fun createReminder(){
         viewModelScope.launch(Dispatchers.IO){
             reminderRepository.addNewRemind(

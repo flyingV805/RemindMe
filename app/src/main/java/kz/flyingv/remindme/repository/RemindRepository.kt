@@ -9,6 +9,7 @@ import org.koin.core.component.inject
 
 interface ReminderRepository {
 
+    fun initReminderIfNeeded()
     fun addNewRemind(reminder: Reminder)
     fun getAllReminders(): Flow<List<Reminder>>
 
@@ -18,6 +19,10 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
 
     private val database: Database by inject()
     private val scheduler: RemindScheduler by inject()
+
+    override fun initReminderIfNeeded() {
+        scheduler.startIfNotSet()
+    }
 
     override fun addNewRemind(reminder: Reminder) {
 

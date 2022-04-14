@@ -4,10 +4,34 @@ import android.content.Context
 import androidx.work.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import androidx.work.WorkInfo
+import java.util.concurrent.ExecutionException
+
 
 class RemindScheduler(private val context: Context) {
 
-    fun startIfNotSet(hourOfDay: Int){
+    fun startIfNotSet(){
+        val statuses = WorkManager.getInstance(context).getWorkInfosByTag("RemindSchedulerWork")
+        var running = false
+        try {
+            val workInfoList: List<WorkInfo> = statuses.get()
+            for (workInfo in workInfoList) {
+                val state = workInfo.state
+                running = state == WorkInfo.State.RUNNING || state == WorkInfo.State.ENQUEUED
+            }
+        } catch (e: ExecutionException) {
+            e.printStackTrace()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+
+        if(!running){
+            start(10)
+        }
+
+    }
+
+    fun start(hourOfDay: Int){
         WorkManager.getInstance(context).cancelAllWorkByTag(reminderTag)
         val currentDate = Calendar.getInstance()
         val dueDate = Calendar.getInstance()
@@ -29,7 +53,7 @@ class RemindScheduler(private val context: Context) {
 
     fun reschedule(newHourOfDay: Int){
         WorkManager.getInstance(context).cancelAllWorkByTag(reminderTag)
-        startIfNotSet(newHourOfDay)
+        start(newHourOfDay)
     }
 
     companion object {
