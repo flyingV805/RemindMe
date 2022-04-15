@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.MaterialTheme.typography
@@ -137,6 +138,9 @@ class MainActivity : ComponentActivity() {
         val remindTypes = remember { listOf("Daily", "Weekly", "Monthly", "Yearly") }
         var selectedThreeSegment by remember { mutableStateOf(remindTypes.first()) }
 
+        var isDropdownOpen by remember { mutableStateOf(false) }
+        var selectIcon by remember { mutableStateOf(Icons.Filled.ThumbUp) }
+
         Column(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalAlignment = CenterHorizontally
@@ -152,6 +156,36 @@ class MainActivity : ComponentActivity() {
                 SegmentText(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            /*Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
+                TextField(
+                    modifier = Modifier.weight(1f),
+                    value = "",
+                    singleLine = true,
+                    onValueChange = {},
+                    placeholder = { Text("Reminder Name") },
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(modifier = Modifier.shadow(4.dp, RoundedCornerShape(8.dp))
+                    .background(Color.White, RoundedCornerShape(8.dp))
+                ){
+                    IconButton(onClick = {isDropdownOpen = true}) {
+                        Icon(selectIcon, "")
+                    }
+                    DropdownMenu(
+                        expanded = isDropdownOpen,
+                        onDismissRequest = { isDropdownOpen = false }
+                    ){
+                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.ThumbUp}){ Icon(Icons.Filled.ThumbUp, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.AccountBox}){ Icon(Icons.Filled.AccountBox, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Search}){ Icon(Icons.Filled.Search, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Call}){ Icon(Icons.Filled.Call, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Check}){ Icon(Icons.Filled.Check, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.ThumbUp}){ Icon(Icons.Filled.ThumbUp, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+                    }
+                }
+            }*/
+
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = "",
