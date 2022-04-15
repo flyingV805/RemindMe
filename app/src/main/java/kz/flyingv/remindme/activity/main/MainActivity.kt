@@ -9,6 +9,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.shapes
@@ -17,7 +19,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -133,27 +137,13 @@ class MainActivity : ComponentActivity() {
         val remindTypes = remember { listOf("Daily", "Weekly", "Monthly", "Yearly") }
         var selectedThreeSegment by remember { mutableStateOf(remindTypes.first()) }
 
+        var isDropdownOpen by remember { mutableStateOf(false) }
+
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalAlignment = CenterHorizontally
         ) {
             Text(text ="NEW REMINDER", style = typography.h6)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ){
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = "",
-                    singleLine = true,
-                    onValueChange = {},
-                    placeholder = { Text("Reminder Name") },
-                )
-            }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             SegmentedControl(
@@ -163,6 +153,18 @@ class MainActivity : ComponentActivity() {
             ) {
                 SegmentText(it)
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = "",
+                singleLine = true,
+                onValueChange = {},
+                placeholder = { Text("Reminder Name") },
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            IconSelector()
+            Spacer(modifier = Modifier.height(16.dp))
+
 
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -228,6 +230,25 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Composable
+    fun IconSelector(){
+        var selectIcon by remember { mutableStateOf(Icons.Filled.ThumbUp) }
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ){
+            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.ThumbUp){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.ThumbUp}){ Icon(Icons.Filled.ThumbUp, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Spacer(modifier = Modifier.width(8.dp))
+            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.ArrowBack){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.ArrowBack}){ Icon(Icons.Filled.ArrowBack, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Spacer(modifier = Modifier.width(8.dp))
+            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.AddCircle){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.AddCircle}){ Icon(Icons.Filled.AddCircle, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Spacer(modifier = Modifier.width(8.dp))
+            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.Build){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.Build}){ Icon(Icons.Filled.Build, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Spacer(modifier = Modifier.width(8.dp))
+            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.Call){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.Call}){ Icon(Icons.Filled.Call, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+        }
+    }
+
     @Preview
     @Composable
     fun ComposablePreview() {
@@ -236,4 +257,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+/*
+    Box(modifier = Modifier.shadow(4.dp, RoundedCornerShape(8.dp))
+    .background(Color.White, RoundedCornerShape(8.dp))
+    ){
+        IconButton(onClick = {isDropdownOpen = true}) {
+            Icon(selectIcon, "")
+        }
+        DropdownMenu(
+            expanded = isDropdownOpen,
+            onDismissRequest = { isDropdownOpen = false }
+        ){
+            Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.ThumbUp}){ Icon(Icons.Filled.ThumbUp, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.AccountBox}){ Icon(Icons.Filled.AccountBox, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Search}){ Icon(Icons.Filled.Search, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Call}){ Icon(Icons.Filled.Call, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Check}){ Icon(Icons.Filled.Check, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.ThumbUp}){ Icon(Icons.Filled.ThumbUp, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+        }
+    }
+    */
 }
