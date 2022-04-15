@@ -137,8 +137,6 @@ class MainActivity : ComponentActivity() {
         val remindTypes = remember { listOf("Daily", "Weekly", "Monthly", "Yearly") }
         var selectedThreeSegment by remember { mutableStateOf(remindTypes.first()) }
 
-        var isDropdownOpen by remember { mutableStateOf(false) }
-
         Column(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalAlignment = CenterHorizontally
