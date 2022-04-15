@@ -2,17 +2,14 @@ package kz.flyingv.remindme.activity.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.MaterialTheme.typography
@@ -21,18 +18,15 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.activity.main.action.MainAction
 import kz.flyingv.remindme.model.Reminder
 import kz.flyingv.remindme.ui.selector.SegmentText
 import kz.flyingv.remindme.ui.selector.SegmentedControl
+import kz.flyingv.remindme.ui.topbar.CustomTopBar
 
 class MainActivity : ComponentActivity() {
 
@@ -51,21 +45,29 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun MainScreen(){
-        val modalBottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+        val modalBottomState = rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            confirmStateChange = {it != ModalBottomSheetValue.HalfExpanded}
+        )
         val scope = rememberCoroutineScope()
         ModalBottomSheetLayout(
             sheetState = modalBottomState,
             sheetShape = shapes.large.copy(topStart = CornerSize(16.dp), topEnd = CornerSize(16.dp)),
             sheetContent = { NewReminderDialog(modalBottomState) }
         ) {
+            BackHandler(enabled = modalBottomState.isVisible) {
+                scope.launch {modalBottomState.hide()}
+            }
             CreateScaffold{
-                scope.launch { modalBottomState.show() }
+               scope.launch {
+                   modalBottomState.animateTo(ModalBottomSheetValue.Expanded)
+               }
             }
         }
     }
 
     @Composable
-    private fun CreateScaffold(showNewReminderDialog: () -> Job){
+    private fun CreateScaffold(showNewReminderDialog: () -> Unit){
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
         val materialBlue700 = Color(0xFF1976D2)
 
@@ -73,13 +75,26 @@ class MainActivity : ComponentActivity() {
 
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { CreateTopBar(mainState.isSearching, mainState.searchText) },
+            topBar = {
+                CustomTopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent),
+                    onSearchStarted = {viewModel.makeAction(MainAction.StartSearch)},
+                    onSearchUpdate = {text -> viewModel.makeAction(MainAction.UpdateSearch(text))},
+                    onSearchClose = {viewModel.makeAction(MainAction.EndSearch)},
+                    isSearching = mainState.isSearching,
+                    searchValue = mainState.searchText
+                )
+            },
             drawerGesturesEnabled = false,
             content = { ReminderList(reminders = mainState.reminders) },
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = {showNewReminderDialog()}
+                    onClick = {
+                        showNewReminderDialog()
+                    }
                 ){
                     Icon(Icons.Filled.Add, "")
                 }
@@ -109,74 +124,14 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    @Composable
-    private fun CreateTopBar(isSearching: Boolean, searchValue: String){
-        val focusRequester = remember { FocusRequester() }
-        Box(
-            modifier = Modifier.fillMaxWidth().background(Color.Transparent)
-                .padding(top = 8.dp, start = 8.dp, end = 8.dp)
-        ){
-            Box(
-                modifier = Modifier.fillMaxWidth().height(56.dp)
-                    .shadow(4.dp, RoundedCornerShape(8.dp))
-                    .background(Color.White, RoundedCornerShape(8.dp))
-            ){
-                AnimatedVisibility(visible = !isSearching, enter = fadeIn(), exit = fadeOut()) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Remind ME", style = typography.h6)
-                        Spacer(Modifier.weight(1f))
-                        IconButton(onClick = {
-                            //focusRequester.requestFocus()
-                            viewModel.makeAction(MainAction.StartSearch)
-                        }) {
-                            Icon(Icons.Filled.Search, "search")
-                        }
-                    }
-                }
-                AnimatedVisibility(visible = isSearching, enter = fadeIn(), exit = fadeOut()) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Spacer(modifier = Modifier.width(4.dp))
-                        TextField(
-                            modifier = Modifier.weight(1f).focusRequester(focusRequester),
-                            value = searchValue,
-                            placeholder = {Text("Searching for...")},
-                            singleLine = true,
-                            onValueChange = { newValue -> viewModel.makeAction(MainAction.UpdateSearch(newValue)) },
-                            colors = TextFieldDefaults.textFieldColors(
-                                backgroundColor = Color.Transparent,
-                                focusedIndicatorColor =  Color.Transparent, //hide the indicator
-                                unfocusedIndicatorColor = Color.Transparent
-                            )
-                        )
-                        Box(modifier = Modifier.padding(8.dp)){
-                            IconButton(onClick = {
-                                viewModel.makeAction(MainAction.EndSearch)
-                            }) {
-                                Icon(Icons.Filled.Close, "search")
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun NewReminderDialog(dialogState: ModalBottomSheetState){
 
         val scope = rememberCoroutineScope()
 
-        val threeSegments = remember { listOf("Daily", "Weekly", "Monthly", "Yearly") }
-        var selectedThreeSegment by remember { mutableStateOf(threeSegments.first()) }
+        val remindTypes = remember { listOf("Daily", "Weekly", "Monthly", "Yearly") }
+        var selectedThreeSegment by remember { mutableStateOf(remindTypes.first()) }
 
         Column(
             modifier = Modifier
@@ -186,13 +141,30 @@ class MainActivity : ComponentActivity() {
         ) {
             Text(text ="NEW REMINDER", style = typography.h6)
             Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ){
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = "",
+                    singleLine = true,
+                    onValueChange = {},
+                    placeholder = { Text("Reminder Name") },
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             SegmentedControl(
-                threeSegments,
+                remindTypes,
                 selectedThreeSegment,
                 onSegmentSelected = { selectedThreeSegment = it }
             ) {
                 SegmentText(it)
             }
+
+
             Spacer(modifier = Modifier.height(16.dp))
             Text(text ="VIEW DETAIL", style = typography.h6)
             Spacer(modifier = Modifier.height(16.dp))
@@ -212,6 +184,7 @@ class MainActivity : ComponentActivity() {
                     viewModel.createReminder()
                 }
             )
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 

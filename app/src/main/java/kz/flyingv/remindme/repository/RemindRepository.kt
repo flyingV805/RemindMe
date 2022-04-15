@@ -1,5 +1,9 @@
 package kz.flyingv.remindme.repository
 
+import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import androidx.core.content.PackageManagerCompat
 import kotlinx.coroutines.flow.Flow
 import kz.flyingv.remindme.model.Reminder
 import kz.flyingv.remindme.room.Database
@@ -12,11 +16,13 @@ interface ReminderRepository {
     fun initReminderIfNeeded()
     fun addNewRemind(reminder: Reminder)
     fun getAllReminders(): Flow<List<Reminder>>
+    fun getInstalledAppsForAction(): List<Any?>
 
 }
 
 class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
 
+    private val context: Context by inject()
     private val database: Database by inject()
     private val scheduler: RemindScheduler by inject()
 
@@ -32,4 +38,9 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
     override fun getAllReminders(): Flow<List<Reminder>> {
         return database.reminderDao().getAll()
     }
+
+    override fun getInstalledAppsForAction(): List<Any?> {
+        return context.packageManager.getInstalledApplications(0)
+    }
+
 }
