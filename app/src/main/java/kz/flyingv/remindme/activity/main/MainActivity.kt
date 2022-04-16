@@ -27,9 +27,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import kz.flyingv.remindme.R
 import kz.flyingv.remindme.activity.main.action.MainAction
 import kz.flyingv.remindme.activity.main.state.MainState
 import kz.flyingv.remindme.model.Reminder
+import kz.flyingv.remindme.ui.iconselector.IconSelector
 import kz.flyingv.remindme.ui.isInPreview
 import kz.flyingv.remindme.ui.previewState
 import kz.flyingv.remindme.ui.selector.SegmentText
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
                 MainScreen()
             }
         }
+
     }
 
     @OptIn(ExperimentalMaterialApi::class)
@@ -84,7 +87,6 @@ class MainActivity : ComponentActivity() {
         }else{
             previewState()
         }
-
 
         Scaffold(
             scaffoldState = scaffoldState,
@@ -135,7 +137,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         )
+
     }
+
+    private val iconList = listOf(R.drawable.ic_avatar_cake, R.drawable.ic_avatar_medeicine, R.drawable.ic_avatar_officials, R.drawable.ic_avatar_payday, R.drawable.ic_avatar_workout)
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
@@ -145,9 +150,7 @@ class MainActivity : ComponentActivity() {
 
         val remindTypes = remember { listOf("Daily", "Weekly", "Monthly", "Yearly") }
         var selectedThreeSegment by remember { mutableStateOf(remindTypes.first()) }
-
-        var isDropdownOpen by remember { mutableStateOf(false) }
-        var selectIcon by remember { mutableStateOf(Icons.Filled.ThumbUp) }
+        var selectIcon by remember { mutableStateOf(0) }
 
         Column(
             modifier = Modifier
@@ -158,15 +161,6 @@ class MainActivity : ComponentActivity() {
             Text(text ="NEW REMINDER", style = typography.h6)
             Spacer(modifier = Modifier.height(16.dp))
 
-            SegmentedControl(
-                remindTypes,
-                selectedThreeSegment,
-                onSegmentSelected = { selectedThreeSegment = it }
-            ) {
-                SegmentText(it)
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = "",
@@ -175,8 +169,21 @@ class MainActivity : ComponentActivity() {
                 placeholder = { Text("Reminder Name") },
             )
             Spacer(modifier = Modifier.height(16.dp))
-            IconSelector()
+            IconSelector(
+                modifier = Modifier.fillMaxWidth(),
+                icons = iconList,
+                onSelectionChanged = {selectIconIndex -> selectIcon = selectIconIndex}
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
+
+            SegmentedControl(
+                remindTypes,
+                selectedThreeSegment,
+                onSegmentSelected = { selectedThreeSegment = it }
+            ) {
+                SegmentText(it)
+            }
 
 
 
@@ -259,7 +266,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
+/*
     @Composable
     fun IconSelector(){
         var selectIcon by remember { mutableStateOf(Icons.Filled.ThumbUp) }
@@ -343,7 +350,7 @@ class MainActivity : ComponentActivity() {
                     .height(24.dp)) }
         }
     }
-
+*/
     @Preview
     @Composable
     fun ComposablePreview() {
