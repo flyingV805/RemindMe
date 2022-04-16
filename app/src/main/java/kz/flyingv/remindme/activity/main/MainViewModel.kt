@@ -56,14 +56,10 @@ class MainViewModel: ViewModel(), KoinComponent {
             reminderRepository.addNewRemind(
                 Reminder(
                     name = "",
-                    description = "",
                     icon = 12,
-                    avatarUri = "",
-                    priority = RemindPriority.High,
                     type = RemindType.Weekly(1),
                     action = RemindAction.OpenApp("", ""),
-                    lastShow = 0,
-                    time = 1
+                    lastShow = 0
                 )
             )
         }

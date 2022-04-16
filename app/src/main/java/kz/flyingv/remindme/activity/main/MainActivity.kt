@@ -28,7 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.activity.main.action.MainAction
+import kz.flyingv.remindme.activity.main.state.MainState
 import kz.flyingv.remindme.model.Reminder
+import kz.flyingv.remindme.ui.isInPreview
+import kz.flyingv.remindme.ui.previewState
 import kz.flyingv.remindme.ui.selector.SegmentText
 import kz.flyingv.remindme.ui.selector.SegmentedControl
 import kz.flyingv.remindme.ui.topbar.CustomTopBar
@@ -76,7 +79,12 @@ class MainActivity : ComponentActivity() {
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
         val materialBlue700 = Color(0xFF1976D2)
 
-        val mainState = viewModel.mainStateFlow.collectAsState().value
+        val mainState = if(!isInPreview()){
+            viewModel.mainStateFlow.collectAsState().value
+        }else{
+            previewState()
+        }
+
 
         Scaffold(
             scaffoldState = scaffoldState,
@@ -142,7 +150,9 @@ class MainActivity : ComponentActivity() {
         var selectIcon by remember { mutableStateOf(Icons.Filled.ThumbUp) }
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalAlignment = CenterHorizontally
         ) {
             Text(text ="NEW REMINDER", style = typography.h6)
@@ -156,35 +166,6 @@ class MainActivity : ComponentActivity() {
                 SegmentText(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
-
-            /*Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
-                TextField(
-                    modifier = Modifier.weight(1f),
-                    value = "",
-                    singleLine = true,
-                    onValueChange = {},
-                    placeholder = { Text("Reminder Name") },
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(modifier = Modifier.shadow(4.dp, RoundedCornerShape(8.dp))
-                    .background(Color.White, RoundedCornerShape(8.dp))
-                ){
-                    IconButton(onClick = {isDropdownOpen = true}) {
-                        Icon(selectIcon, "")
-                    }
-                    DropdownMenu(
-                        expanded = isDropdownOpen,
-                        onDismissRequest = { isDropdownOpen = false }
-                    ){
-                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.ThumbUp}){ Icon(Icons.Filled.ThumbUp, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
-                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.AccountBox}){ Icon(Icons.Filled.AccountBox, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
-                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Search}){ Icon(Icons.Filled.Search, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
-                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Call}){ Icon(Icons.Filled.Call, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
-                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.Check}){ Icon(Icons.Filled.Check, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
-                        Box(modifier = Modifier.clickable{isDropdownOpen = false; selectIcon = Icons.Filled.ThumbUp}){ Icon(Icons.Filled.ThumbUp, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
-                    }
-                }
-            }*/
 
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -249,14 +230,31 @@ class MainActivity : ComponentActivity() {
                 .clickable { },
             elevation = 8.dp
         ) {
-            Row(modifier = Modifier.padding(8.dp)) {
-                Column {
-                    Text(text = "fdgdfg", style = typography.h6)
-                    Text(text = reminder.name, style = typography.h6)
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(56.dp)
+                        .height(56.dp)
+                        .background(Color.Blue, CircleShape),
+                    contentAlignment = Alignment.Center
+                ){
+                    Icon(Icons.Filled.ThumbUp, "",
+                        Modifier
+                            .padding(12.dp)
+                            .width(24.dp)
+                            .height(24.dp))
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(text = "Grandmas birthday", style = typography.h6)
+                    Text(text = "Every month, 6-th", style = typography.h6)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "VIEW DETAIL", style = typography.caption)
+                    Text(text = "Last remind: 2 days ago", style = typography.caption)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "VIEW DETAIL", style = typography.caption)
+                    Text(text = "Action: Open app - Kaspi.kz", style = typography.caption)
                 }
             }
         }
@@ -269,15 +267,80 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ){
-            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.ThumbUp){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.ThumbUp}){ Icon(Icons.Filled.ThumbUp, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier
+                .shadow(4.dp, CircleShape)
+                .background(
+                    if (selectIcon == Icons.Filled.ThumbUp) {
+                        Color.Cyan
+                    } else {
+                        Color.White
+                    }, CircleShape
+                )
+                .clickable { selectIcon = Icons.Filled.ThumbUp }){ Icon(Icons.Filled.ThumbUp, "",
+                Modifier
+                    .padding(12.dp)
+                    .width(24.dp)
+                    .height(24.dp)) }
             Spacer(modifier = Modifier.width(8.dp))
-            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.ArrowBack){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.ArrowBack}){ Icon(Icons.Filled.ArrowBack, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier
+                .shadow(4.dp, CircleShape)
+                .background(
+                    if (selectIcon == Icons.Filled.ArrowBack) {
+                        Color.Cyan
+                    } else {
+                        Color.White
+                    }, CircleShape
+                )
+                .clickable { selectIcon = Icons.Filled.ArrowBack }){ Icon(Icons.Filled.ArrowBack, "",
+                Modifier
+                    .padding(12.dp)
+                    .width(24.dp)
+                    .height(24.dp)) }
             Spacer(modifier = Modifier.width(8.dp))
-            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.AddCircle){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.AddCircle}){ Icon(Icons.Filled.AddCircle, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier
+                .shadow(4.dp, CircleShape)
+                .background(
+                    if (selectIcon == Icons.Filled.AddCircle) {
+                        Color.Cyan
+                    } else {
+                        Color.White
+                    }, CircleShape
+                )
+                .clickable { selectIcon = Icons.Filled.AddCircle }){ Icon(Icons.Filled.AddCircle, "",
+                Modifier
+                    .padding(12.dp)
+                    .width(24.dp)
+                    .height(24.dp)) }
             Spacer(modifier = Modifier.width(8.dp))
-            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.Build){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.Build}){ Icon(Icons.Filled.Build, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier
+                .shadow(4.dp, CircleShape)
+                .background(
+                    if (selectIcon == Icons.Filled.Build) {
+                        Color.Cyan
+                    } else {
+                        Color.White
+                    }, CircleShape
+                )
+                .clickable { selectIcon = Icons.Filled.Build }){ Icon(Icons.Filled.Build, "",
+                Modifier
+                    .padding(12.dp)
+                    .width(24.dp)
+                    .height(24.dp)) }
             Spacer(modifier = Modifier.width(8.dp))
-            Box(modifier = Modifier.shadow(4.dp, CircleShape).background(if(selectIcon == Icons.Filled.Call){Color.Cyan}else{Color.White}, CircleShape).clickable{selectIcon = Icons.Filled.Call}){ Icon(Icons.Filled.Call, "", Modifier.padding(12.dp).width(24.dp).height(24.dp)) }
+            Box(modifier = Modifier
+                .shadow(4.dp, CircleShape)
+                .background(
+                    if (selectIcon == Icons.Filled.Call) {
+                        Color.Cyan
+                    } else {
+                        Color.White
+                    }, CircleShape
+                )
+                .clickable { selectIcon = Icons.Filled.Call }){ Icon(Icons.Filled.Call, "",
+                Modifier
+                    .padding(12.dp)
+                    .width(24.dp)
+                    .height(24.dp)) }
         }
     }
 
