@@ -24,7 +24,7 @@ fun DayOfWeekSelector(
     val state by remember { mutableStateOf(DayOfWeekState()) }
 
     Row (
-        modifier = modifier,
+        modifier = modifier.padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ){
         days.forEachIndexed { index, nameOfDay ->

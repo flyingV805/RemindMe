@@ -32,7 +32,7 @@ fun DayOfYearSelector(
 ) {
 
     Row(
-        modifier = modifier
+        modifier = modifier.padding(16.dp)
     ){
         Box(modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(8.dp))

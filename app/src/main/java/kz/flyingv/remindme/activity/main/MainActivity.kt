@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.activity.main.action.MainAction
 import kz.flyingv.remindme.activity.main.state.MainState
+import kz.flyingv.remindme.activity.main.state.RemindTypeEnum
 import kz.flyingv.remindme.model.Reminder
 import kz.flyingv.remindme.ui.iconselector.DayOfMonthSelector
 import kz.flyingv.remindme.ui.iconselector.DayOfWeekSelector
@@ -155,8 +156,8 @@ class MainActivity : ComponentActivity() {
 
         val scope = rememberCoroutineScope()
 
-        val remindTypes = remember { listOf("Daily", "Weekly", "Monthly", "Yearly") }
-        var selectedRemindType by remember { mutableStateOf(remindTypes.first()) }
+        val remindTypes = remember { listOf(RemindTypeEnum.Daily, RemindTypeEnum.Weekly, RemindTypeEnum.Monthly, RemindTypeEnum.Yearly) }
+        var selectedRemindType by remember { mutableStateOf(RemindTypeEnum.Daily) }
         var selectIcon by remember { mutableStateOf(0) }
 
         Column(
@@ -188,7 +189,14 @@ class MainActivity : ComponentActivity() {
                 selectedRemindType,
                 onSegmentSelected = { selectedRemindType = it }
             ) {
-                SegmentText(it)
+                SegmentText(
+                    when(it){
+                        RemindTypeEnum.Daily -> "Daily"
+                        RemindTypeEnum.Weekly -> "Weekly"
+                        RemindTypeEnum.Monthly -> "Monthly"
+                        RemindTypeEnum.Yearly -> "Yearly"
+                    }
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -198,13 +206,13 @@ class MainActivity : ComponentActivity() {
             ) {
                 androidx.compose.animation.AnimatedVisibility(
                     enter = fadeIn(), exit = fadeOut(),
-                    visible = selectedRemindType == "Daily"
+                    visible = selectedRemindType == RemindTypeEnum.Daily
                 ) {
-                    
+                    Text("Remind every day")
                 }
                 androidx.compose.animation.AnimatedVisibility(
                     enter = fadeIn(), exit = fadeOut(),
-                    visible = selectedRemindType == "Weekly"
+                    visible = selectedRemindType == RemindTypeEnum.Weekly
                 ) {
                     DayOfWeekSelector(
                         modifier = Modifier.fillMaxWidth(),
@@ -213,7 +221,7 @@ class MainActivity : ComponentActivity() {
                 }
                 androidx.compose.animation.AnimatedVisibility(
                     enter = fadeIn(), exit = fadeOut(),
-                    visible = selectedRemindType == "Monthly"
+                    visible = selectedRemindType == RemindTypeEnum.Monthly
                 ) {
                     DayOfMonthSelector(
                         modifier = Modifier.fillMaxWidth(),
@@ -222,7 +230,7 @@ class MainActivity : ComponentActivity() {
                 }
                 androidx.compose.animation.AnimatedVisibility(
                     enter = fadeIn(), exit = fadeOut(),
-                    visible = selectedRemindType == "Yearly"
+                    visible = selectedRemindType == RemindTypeEnum.Yearly
                 ) {
                     DayOfYearSelector(
                         modifier = Modifier.fillMaxWidth(),

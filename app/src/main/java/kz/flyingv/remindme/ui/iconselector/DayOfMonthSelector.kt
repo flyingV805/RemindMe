@@ -27,7 +27,7 @@ fun DayOfMonthSelector(
     val state by remember { mutableStateOf(DayOfMonthState()) }
 
     LazyRow (
-        modifier = modifier,
+        modifier = modifier.padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ){
         items(
