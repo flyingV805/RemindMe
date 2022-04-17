@@ -5,6 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -31,6 +35,9 @@ import kz.flyingv.remindme.R
 import kz.flyingv.remindme.activity.main.action.MainAction
 import kz.flyingv.remindme.activity.main.state.MainState
 import kz.flyingv.remindme.model.Reminder
+import kz.flyingv.remindme.ui.iconselector.DayOfMonthSelector
+import kz.flyingv.remindme.ui.iconselector.DayOfWeekSelector
+import kz.flyingv.remindme.ui.iconselector.DayOfYearSelector
 import kz.flyingv.remindme.ui.iconselector.IconSelector
 import kz.flyingv.remindme.ui.isInPreview
 import kz.flyingv.remindme.ui.previewState
@@ -149,7 +156,7 @@ class MainActivity : ComponentActivity() {
         val scope = rememberCoroutineScope()
 
         val remindTypes = remember { listOf("Daily", "Weekly", "Monthly", "Yearly") }
-        var selectedThreeSegment by remember { mutableStateOf(remindTypes.first()) }
+        var selectedRemindType by remember { mutableStateOf(remindTypes.first()) }
         var selectIcon by remember { mutableStateOf(0) }
 
         Column(
@@ -160,7 +167,12 @@ class MainActivity : ComponentActivity() {
         ) {
             Text(text ="NEW REMINDER", style = typography.h6)
             Spacer(modifier = Modifier.height(16.dp))
-
+            IconSelector(
+                modifier = Modifier.fillMaxWidth(),
+                icons = iconList,
+                onSelectionChanged = {selectIconIndex -> selectIcon = selectIconIndex}
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = "",
@@ -168,26 +180,57 @@ class MainActivity : ComponentActivity() {
                 onValueChange = {},
                 placeholder = { Text("Reminder Name") },
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            IconSelector(
-                modifier = Modifier.fillMaxWidth(),
-                icons = iconList,
-                onSelectionChanged = {selectIconIndex -> selectIcon = selectIconIndex}
-            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             SegmentedControl(
                 remindTypes,
-                selectedThreeSegment,
-                onSegmentSelected = { selectedThreeSegment = it }
+                selectedRemindType,
+                onSegmentSelected = { selectedRemindType = it }
             ) {
                 SegmentText(it)
             }
-
-
-
             Spacer(modifier = Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier.fillMaxWidth().height(64.dp),
+                contentAlignment = Center
+            ) {
+                androidx.compose.animation.AnimatedVisibility(
+                    enter = fadeIn(), exit = fadeOut(),
+                    visible = selectedRemindType == "Daily"
+                ) {
+                    
+                }
+                androidx.compose.animation.AnimatedVisibility(
+                    enter = fadeIn(), exit = fadeOut(),
+                    visible = selectedRemindType == "Weekly"
+                ) {
+                    DayOfWeekSelector(
+                        modifier = Modifier.fillMaxWidth(),
+                        onSelectionChanged = {}
+                    )
+                }
+                androidx.compose.animation.AnimatedVisibility(
+                    enter = fadeIn(), exit = fadeOut(),
+                    visible = selectedRemindType == "Monthly"
+                ) {
+                    DayOfMonthSelector(
+                        modifier = Modifier.fillMaxWidth(),
+                        onSelectionChanged = {}
+                    )
+                }
+                androidx.compose.animation.AnimatedVisibility(
+                    enter = fadeIn(), exit = fadeOut(),
+                    visible = selectedRemindType == "Yearly"
+                ) {
+                    DayOfYearSelector(
+                        modifier = Modifier.fillMaxWidth(),
+                        onSelectionChanged = {day, month ->  }
+                    )
+                }
+            }
+
             Text(text ="VIEW DETAIL", style = typography.h6)
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "VIEW DETAIL", style = typography.caption)
