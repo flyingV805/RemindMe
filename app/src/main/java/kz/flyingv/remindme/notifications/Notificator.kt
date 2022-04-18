@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import kz.flyingv.remindme.R
+import kz.flyingv.remindme.model.Reminder
 
 class Notificator(private val context: Context) {
 
@@ -35,12 +36,31 @@ class Notificator(private val context: Context) {
 
     }
 
+    fun showNotification(reminder: Reminder){
+        initNotificationChannel()
+        val builder = NotificationCompat.Builder(context, notificationChannelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            //.setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher_round))
+            .setContentTitle(reminder.name)
+            .setContentText("Remind me test")
+            .setColor(ContextCompat.getColor(context, R.color.purple_700))
+            .setStyle(NotificationCompat.BigTextStyle().bigText("Remind me test"))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            //.setContentIntent(contentIntent)
+            .setAutoCancel(true)
+            .setChannelId(notificationChannelId)
+            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+            //.addAction(R.drawable.ic_launcher_foreground, "", snoozePendingIntent);
+
+        NotificationManagerCompat.from(context).notify(521, builder.build())
+    }
+
     private fun initNotificationChannel(){
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (isNotificationChannelExists(notificationManager)){return;}
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             val channel = NotificationChannel(notificationChannelId, context.getString(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT)
-            channel.description = "Notification channel for Reminder"
+            channel.description = "Reminder notifications"
             channel.lightColor = Color.GREEN
             channel.enableLights(true)
             channel.enableVibration(true)
