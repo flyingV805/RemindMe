@@ -5,16 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,14 +24,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.activity.main.action.MainAction
-import kz.flyingv.remindme.activity.main.state.MainState
 import kz.flyingv.remindme.activity.main.state.RemindTypeEnum
 import kz.flyingv.remindme.model.Reminder
 import kz.flyingv.remindme.ui.iconselector.DayOfMonthSelector
@@ -47,6 +47,7 @@ import kz.flyingv.remindme.ui.previewState
 import kz.flyingv.remindme.ui.selector.SegmentText
 import kz.flyingv.remindme.ui.selector.SegmentedControl
 import kz.flyingv.remindme.ui.topbar.CustomTopBar
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
 
@@ -92,12 +93,25 @@ class MainActivity : ComponentActivity() {
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
         val materialBlue700 = Color(0xFF1976D2)
 
-        val lazyListState = rememberLazyListState()
-
         val mainState = if(!isInPreview()){
             viewModel.mainStateFlow.collectAsState().value
         }else{
             previewState()
+        }
+
+        val toolbarHeightPx = with(LocalDensity.current) { 72.dp.roundToPx().toFloat() }
+        val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
+
+
+        val nestedScrollConnection = remember {
+            object : NestedScrollConnection {
+                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    val delta = available.y
+                    val newOffset = toolbarOffsetHeightPx.value + delta
+                    toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
+                    return Offset.Zero
+                }
+            }
         }
 
         Scaffold(
@@ -109,7 +123,8 @@ class MainActivity : ComponentActivity() {
                         .background(
                             color = MaterialTheme.colors.primaryVariant,
                             shape = RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp)
-                        ),
+                        )
+                        .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.value.roundToInt()) },
                     onSearchStarted = {viewModel.makeAction(MainAction.StartSearch)},
                     onSearchUpdate = {text -> viewModel.makeAction(MainAction.UpdateSearch(text))},
                     onSearchClose = {viewModel.makeAction(MainAction.EndSearch)},
@@ -121,7 +136,7 @@ class MainActivity : ComponentActivity() {
             content = {
                 ReminderList(
                     reminders = mainState.reminders,
-                    scrollState = lazyListState
+                    nestedScroll = nestedScrollConnection
                 )
             },
             floatingActionButtonPosition = FabPosition.End,
@@ -276,14 +291,14 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ReminderList(reminders: List<Reminder>, scrollState: LazyListState){
+    private fun ReminderList(reminders: List<Reminder>, nestedScroll: NestedScrollConnection){
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(start = 8.dp, end = 8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp),
-            state = scrollState
+                .padding(start = 8.dp, end = 8.dp)
+                .nestedScroll(nestedScroll),
+            contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             items(
                 count = reminders.size,
