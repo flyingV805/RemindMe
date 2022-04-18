@@ -5,15 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.MaterialTheme.typography
@@ -21,8 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -36,22 +31,18 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.activity.main.action.MainAction
-import kz.flyingv.remindme.activity.main.state.RemindTypeEnum
+import kz.flyingv.remindme.activity.main.fragment.NewReminderDialog
+import kz.flyingv.remindme.activity.main.fragment.NewReminderViewModel
 import kz.flyingv.remindme.model.Reminder
-import kz.flyingv.remindme.ui.iconselector.DayOfMonthSelector
-import kz.flyingv.remindme.ui.iconselector.DayOfWeekSelector
-import kz.flyingv.remindme.ui.iconselector.DayOfYearSelector
-import kz.flyingv.remindme.ui.iconselector.IconSelector
 import kz.flyingv.remindme.ui.isInPreview
 import kz.flyingv.remindme.ui.previewState
-import kz.flyingv.remindme.ui.selector.SegmentText
-import kz.flyingv.remindme.ui.selector.SegmentedControl
 import kz.flyingv.remindme.ui.topbar.CustomTopBar
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
+    private val newReminderViewModel: NewReminderViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,15 +58,16 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun MainScreen(){
+        val scope = rememberCoroutineScope()
+
         val modalBottomState = rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
             confirmStateChange = {it != ModalBottomSheetValue.HalfExpanded}
         )
-        val scope = rememberCoroutineScope()
         ModalBottomSheetLayout(
             sheetState = modalBottomState,
             sheetShape = shapes.large.copy(topStart = CornerSize(16.dp), topEnd = CornerSize(16.dp)),
-            sheetContent = { NewReminderDialog(modalBottomState) }
+            sheetContent = { NewReminderDialog(modalBottomState, newReminderViewModel) }
         ) {
             BackHandler(enabled = modalBottomState.isVisible) {
                 scope.launch {modalBottomState.hide()}
@@ -97,7 +89,7 @@ class MainActivity : ComponentActivity() {
         val materialBlue700 = Color(0xFF1976D2)
 
         val mainState = if(!isInPreview()){
-            viewModel.mainStateFlow.collectAsState().value
+            mainViewModel.mainStateFlow.collectAsState().value
         }else{
             previewState()
         }
@@ -135,9 +127,9 @@ class MainActivity : ComponentActivity() {
                             .fillMaxWidth()
                             .height(topBarHeight)
                             .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.value.roundToInt()) },
-                        onSearchStarted = {viewModel.makeAction(MainAction.StartSearch)},
-                        onSearchUpdate = {text -> viewModel.makeAction(MainAction.UpdateSearch(text))},
-                        onSearchClose = {viewModel.makeAction(MainAction.EndSearch)},
+                        onSearchStarted = {mainViewModel.makeAction(MainAction.StartSearch)},
+                        onSearchUpdate = {text -> mainViewModel.makeAction(MainAction.UpdateSearch(text))},
+                        onSearchClose = {mainViewModel.makeAction(MainAction.EndSearch)},
                         isSearching = mainState.isSearching,
                         searchValue = mainState.searchText
                     )
@@ -181,7 +173,7 @@ class MainActivity : ComponentActivity() {
 
     private val iconList = listOf(R.drawable.ic_avatar_cake, R.drawable.ic_avatar_medeicine, R.drawable.ic_avatar_officials, R.drawable.ic_avatar_payday, R.drawable.ic_avatar_workout)
 
-    @OptIn(ExperimentalMaterialApi::class)
+    /*@OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun NewReminderDialog(dialogState: ModalBottomSheetState){
 
@@ -292,7 +284,7 @@ class MainActivity : ComponentActivity() {
             )
             Spacer(modifier = Modifier.height(32.dp))
         }
-    }
+    }*/
 
     @Composable
     private fun ReminderList(modifier: Modifier, reminders: List<Reminder>){
