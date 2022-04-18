@@ -88,6 +88,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
+    private val topBarHeight = 72.dp
+
     @Composable
     private fun CreateScaffold(showNewReminderDialog: () -> Unit){
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
@@ -99,9 +102,8 @@ class MainActivity : ComponentActivity() {
             previewState()
         }
 
-        val toolbarHeightPx = with(LocalDensity.current) { 72.dp.roundToPx().toFloat() }
+        val toolbarHeightPx = with(LocalDensity.current) { topBarHeight.roundToPx().toFloat() }
         val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
-
 
         val nestedScrollConnection = remember {
             object : NestedScrollConnection {
@@ -117,27 +119,29 @@ class MainActivity : ComponentActivity() {
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
-                CustomTopBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.colors.primaryVariant,
-                            shape = RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp)
-                        )
-                        .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.value.roundToInt()) },
-                    onSearchStarted = {viewModel.makeAction(MainAction.StartSearch)},
-                    onSearchUpdate = {text -> viewModel.makeAction(MainAction.UpdateSearch(text))},
-                    onSearchClose = {viewModel.makeAction(MainAction.EndSearch)},
-                    isSearching = mainState.isSearching,
-                    searchValue = mainState.searchText
-                )
             },
             drawerGesturesEnabled = false,
             content = {
-                ReminderList(
-                    reminders = mainState.reminders,
-                    nestedScroll = nestedScrollConnection
-                )
+                Box(modifier = Modifier.nestedScroll(nestedScrollConnection)) {
+                    ReminderList(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(start = 8.dp, end = 8.dp),
+                        reminders = mainState.reminders,
+                    )
+                    CustomTopBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(topBarHeight)
+                            .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.value.roundToInt()) },
+                        onSearchStarted = {viewModel.makeAction(MainAction.StartSearch)},
+                        onSearchUpdate = {text -> viewModel.makeAction(MainAction.UpdateSearch(text))},
+                        onSearchClose = {viewModel.makeAction(MainAction.EndSearch)},
+                        isSearching = mainState.isSearching,
+                        searchValue = mainState.searchText
+                    )
+                }
             },
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
@@ -291,14 +295,10 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ReminderList(reminders: List<Reminder>, nestedScroll: NestedScrollConnection){
+    private fun ReminderList(modifier: Modifier, reminders: List<Reminder>){
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(start = 8.dp, end = 8.dp)
-                .nestedScroll(nestedScroll),
-            contentPadding = PaddingValues(vertical = 8.dp)
+            modifier = modifier,
+            contentPadding = PaddingValues(top = topBarHeight, start = 0.dp, end = 0.dp, bottom = 8.dp)
         ) {
             items(
                 count = reminders.size,

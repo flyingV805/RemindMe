@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
     val focusRequester = remember { FocusRequester() }
     Box(
         modifier = modifier
+            .background(color = MaterialTheme.colors.primaryVariant, shape = RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp))
             .padding(top = 8.dp, start = 8.dp, bottom = 8.dp, end = 8.dp)
     ){
         Box(
