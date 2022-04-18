@@ -32,7 +32,8 @@ import androidx.compose.ui.unit.dp
     //val state = remember { CustomTopBarState() }
     val focusRequester = remember { FocusRequester() }
     Box(
-        modifier = modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
+        modifier = modifier
+            .padding(top = 8.dp, start = 8.dp, bottom = 8.dp, end = 8.dp)
     ){
         Box(
             modifier = Modifier

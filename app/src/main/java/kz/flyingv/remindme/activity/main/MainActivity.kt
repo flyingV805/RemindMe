@@ -12,7 +12,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -90,6 +92,8 @@ class MainActivity : ComponentActivity() {
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
         val materialBlue700 = Color(0xFF1976D2)
 
+        val lazyListState = rememberLazyListState()
+
         val mainState = if(!isInPreview()){
             viewModel.mainStateFlow.collectAsState().value
         }else{
@@ -102,7 +106,10 @@ class MainActivity : ComponentActivity() {
                 CustomTopBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Transparent),
+                        .background(
+                            color = MaterialTheme.colors.primaryVariant,
+                            shape = RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp)
+                        ),
                     onSearchStarted = {viewModel.makeAction(MainAction.StartSearch)},
                     onSearchUpdate = {text -> viewModel.makeAction(MainAction.UpdateSearch(text))},
                     onSearchClose = {viewModel.makeAction(MainAction.EndSearch)},
@@ -111,7 +118,12 @@ class MainActivity : ComponentActivity() {
                 )
             },
             drawerGesturesEnabled = false,
-            content = { ReminderList(reminders = mainState.reminders) },
+            content = {
+                ReminderList(
+                    reminders = mainState.reminders,
+                    scrollState = lazyListState
+                )
+            },
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
                 FloatingActionButton(
@@ -201,7 +213,9 @@ class MainActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Box(
-                modifier = Modifier.fillMaxWidth().height(64.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
                 contentAlignment = Center
             ) {
                 androidx.compose.animation.AnimatedVisibility(
@@ -262,13 +276,14 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ReminderList(reminders: List<Reminder>){
+    private fun ReminderList(reminders: List<Reminder>, scrollState: LazyListState){
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(start = 8.dp, end = 8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
+            contentPadding = PaddingValues(vertical = 8.dp),
+            state = scrollState
         ) {
             items(
                 count = reminders.size,
@@ -276,6 +291,9 @@ class MainActivity : ComponentActivity() {
                     ReminderListItem(reminder = reminders[it])
                 }
             )
+            item{
+                Spacer(modifier = Modifier.height(64.dp))
+            }
         }
     }
 
