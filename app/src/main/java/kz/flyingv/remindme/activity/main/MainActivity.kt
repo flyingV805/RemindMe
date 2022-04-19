@@ -29,12 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import kz.flyingv.remindme.activity.main.action.MainAction
 import kz.flyingv.remindme.activity.main.fragment.NewReminderDialog
 import kz.flyingv.remindme.activity.main.fragment.NewReminderViewModel
 import kz.flyingv.remindme.model.Reminder
 import kz.flyingv.remindme.ui.isInPreview
 import kz.flyingv.remindme.ui.previewState
+import kz.flyingv.remindme.ui.topBarHeight
 import kz.flyingv.remindme.ui.topbar.CustomTopBar
 import kotlin.math.roundToInt
 
@@ -78,9 +78,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
-    private val topBarHeight = 72.dp
 
     @Composable
     private fun CreateScaffold(showNewReminderDialog: () -> Unit){

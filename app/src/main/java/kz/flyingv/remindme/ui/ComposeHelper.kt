@@ -2,7 +2,7 @@ package kz.flyingv.remindme.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalInspectionMode
-import kz.flyingv.remindme.activity.main.state.MainState
+import kz.flyingv.remindme.activity.main.MainState
 import kz.flyingv.remindme.model.RemindType
 import kz.flyingv.remindme.model.Reminder
 

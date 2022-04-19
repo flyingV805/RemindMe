@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
-import kz.flyingv.remindme.activity.main.state.RemindTypeEnum
+import kz.flyingv.remindme.model.RemindTypeEnum
 import kz.flyingv.remindme.ui.iconselector.DayOfMonthSelector
 import kz.flyingv.remindme.ui.iconselector.DayOfWeekSelector
 import kz.flyingv.remindme.ui.iconselector.DayOfYearSelector
@@ -128,7 +128,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             onClick = {
                 scope.launch { dialogState.hide() }
-                viewModel.createReminder()
+                //viewModel.createReminder()
             }
         )
         Spacer(modifier = Modifier.height(32.dp))

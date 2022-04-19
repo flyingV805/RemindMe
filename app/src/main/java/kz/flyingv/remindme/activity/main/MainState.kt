@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.activity.main.state
+package kz.flyingv.remindme.activity.main
 
 import kz.flyingv.remindme.model.Reminder
 
