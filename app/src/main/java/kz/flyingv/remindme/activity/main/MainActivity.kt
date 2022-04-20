@@ -28,12 +28,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.activity.main.fragment.NewReminderDialog
 import kz.flyingv.remindme.activity.main.fragment.NewReminderViewModel
 import kz.flyingv.remindme.model.Reminder
 import kz.flyingv.remindme.ui.isInPreview
-import kz.flyingv.remindme.ui.previewState
+import kz.flyingv.remindme.ui.previewMainState
 import kz.flyingv.remindme.ui.topBarHeight
 import kz.flyingv.remindme.ui.topbar.CustomTopBar
 import kotlin.math.roundToInt
@@ -63,6 +66,7 @@ class MainActivity : ComponentActivity() {
             initialValue = ModalBottomSheetValue.Hidden,
             confirmStateChange = {it != ModalBottomSheetValue.HalfExpanded}
         )
+
         ModalBottomSheetLayout(
             sheetState = modalBottomState,
             sheetShape = shapes.large.copy(topStart = CornerSize(16.dp), topEnd = CornerSize(16.dp)),
@@ -87,7 +91,7 @@ class MainActivity : ComponentActivity() {
         val mainState = if(!isInPreview()){
             mainViewModel.mainStateFlow.collectAsState().value
         }else{
-            previewState()
+            previewMainState()
         }
 
         val toolbarHeightPx = with(LocalDensity.current) { topBarHeight.roundToPx().toFloat() }
@@ -106,8 +110,6 @@ class MainActivity : ComponentActivity() {
 
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = {
-            },
             drawerGesturesEnabled = false,
             content = {
                 Box(modifier = Modifier.nestedScroll(nestedScrollConnection)) {
@@ -122,7 +124,12 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(topBarHeight)
-                            .offset { IntOffset(x = 0, y = toolbarOffsetHeightPx.value.roundToInt()) },
+                            .offset {
+                                IntOffset(
+                                    x = 0,
+                                    y = toolbarOffsetHeightPx.value.roundToInt()
+                                )
+                            },
                         onSearchStarted = {mainViewModel.makeAction(MainAction.StartSearch)},
                         onSearchUpdate = {text -> mainViewModel.makeAction(MainAction.UpdateSearch(text))},
                         onSearchClose = {mainViewModel.makeAction(MainAction.EndSearch)},
@@ -174,6 +181,25 @@ class MainActivity : ComponentActivity() {
             modifier = modifier,
             contentPadding = PaddingValues(top = topBarHeight, start = 0.dp, end = 0.dp, bottom = 8.dp)
         ) {
+            //show something, if user don't have any reminders
+            if(reminders.isEmpty()){
+                item{
+                    val composition by rememberLottieComposition(LottieCompositionSpec.Asset("lottie-no-data.json"))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        Spacer(modifier = Modifier.height(36.dp))
+                        Text(
+                            text = "Oops, you don't have any reminders yet...",
+                            style = typography.h6
+                        )
+                        LottieAnimation(
+                            composition
+                        )
+                    }
+                }
+            }
+
             items(
                 count = reminders.size,
                 itemContent = {

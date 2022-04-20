@@ -17,8 +17,9 @@ class MainViewModel: ViewModel(), KoinComponent {
     private val _isSearching: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _searchText: MutableStateFlow<String> = MutableStateFlow("")
 
-    val mainStateFlow: StateFlow<MainState> = combine(_currentReminders, _isSearching, _searchText){
-            list, isSearch, searchText -> MainState(list, isSearch, searchText)
+    val mainStateFlow: StateFlow<MainState> =
+        combine(_currentReminders, _isSearching, _searchText){list, isSearch, searchText ->
+            MainState(list, isSearch, searchText)
     }.stateIn(viewModelScope, SharingStarted.Lazily, initialState())
 
     init {

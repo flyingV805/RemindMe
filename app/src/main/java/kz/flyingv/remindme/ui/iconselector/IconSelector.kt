@@ -22,9 +22,9 @@ import kz.flyingv.remindme.model.RemindIcon
 @Composable
 fun IconSelector(
     modifier: Modifier = Modifier,
+    currentSelect: RemindIcon,
     onSelectionChanged: (icon: RemindIcon) -> Unit
 ){
-    val state by remember { mutableStateOf(IconSelectorState()) }
 
     Row (
         modifier = modifier,
@@ -34,9 +34,8 @@ fun IconSelector(
             Spacer(modifier = Modifier.width(4.dp))
             SelectableIcon(
                 icon = getIcon(icon),
-                isSelected = state.selectIcon == icon,
+                isSelected = currentSelect == icon,
                 onSelect = {
-                    state.selectIcon = icon
                     onSelectionChanged(icon)
                 }
             )
@@ -81,10 +80,6 @@ fun SelectableIcon(
     }
 }
 
-private class IconSelectorState {
-    var selectIcon by mutableStateOf(RemindIcon.Cake)
-}
-
 @Preview
 @Composable fun IconSelectorDemo() {
     MaterialTheme {
@@ -94,6 +89,7 @@ private class IconSelectorState {
 
                 IconSelector(
                     modifier = Modifier.fillMaxWidth(),
+                    currentSelect = RemindIcon.Medicine,
                     onSelectionChanged = {}
                 )
             }

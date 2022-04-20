@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Reminder(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val icon: Int?,
+    val icon: RemindIcon,
     val type: RemindType,
     val action: RemindAction?,
     val lastShow: Long

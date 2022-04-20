@@ -18,21 +18,30 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
     private val reminderRepository: ReminderRepository by inject()
 
     private val _reminderNameText: MutableStateFlow<String> = MutableStateFlow("")
-    /*
-    val newReminderStateFlow: StateFlow<MainState> = combine(_currentReminders, _isSearching, _searchText){
-            list, isSearch, searchText -> MainState(list, isSearch, searchText)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, initialState())
-*/
-    fun makeAction(uiAction: NewReminderAction){
+    private val _reminderIcon: MutableStateFlow<RemindIcon> = MutableStateFlow(RemindIcon.Cake)
 
+    val newReminderStateFlow: StateFlow<NewReminderState> =
+        combine(_reminderNameText, _reminderIcon){name, icon ->
+            NewReminderState(name = name, icon = icon)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, initialState())
+
+    fun makeAction(uiAction: NewReminderAction){
+        when(uiAction){
+            is NewReminderAction.UpdateName -> {
+                _reminderNameText.value = uiAction.name
+            }
+            is NewReminderAction.UpdateIcon -> {
+                _reminderIcon.value = uiAction.icon
+            }
+        }
     }
 
     private fun createReminder(){
         viewModelScope.launch(Dispatchers.IO){
             reminderRepository.addNewRemind(
                 Reminder(
-                    name = "",
-                    icon = 12,
+                    name = _reminderNameText.value,
+                    icon = _reminderIcon.value,
                     type = RemindType.Weekly(1),
                     action = RemindAction.OpenApp("", ""),
                     lastShow = 0
