@@ -17,12 +17,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kz.flyingv.remindme.R
+import kz.flyingv.remindme.model.RemindIcon
 
 @Composable
 fun IconSelector(
     modifier: Modifier = Modifier,
-    icons: List<Int>,
-    onSelectionChanged: (index: Int) -> Unit
+    onSelectionChanged: (icon: RemindIcon) -> Unit
 ){
     val state by remember { mutableStateOf(IconSelectorState()) }
 
@@ -30,20 +30,31 @@ fun IconSelector(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center
     ){
-        icons.forEachIndexed { index, icon ->
+        RemindIcon.values().forEach { icon ->
             Spacer(modifier = Modifier.width(4.dp))
             SelectableIcon(
-                icon = painterResource(id = icon),
-                isSelected = state.selectIconIndex == index,
+                icon = getIcon(icon),
+                isSelected = state.selectIcon == icon,
                 onSelect = {
-                    state.selectIconIndex = index
-                    onSelectionChanged(index)
+                    state.selectIcon = icon
+                    onSelectionChanged(icon)
                 }
             )
             Spacer(modifier = Modifier.width(4.dp))
         }
     }
 
+}
+
+@Composable
+fun getIcon(icon: RemindIcon): Painter{
+    return when(icon){
+        RemindIcon.Cake -> painterResource(id = R.drawable.ic_avatar_cake)
+        RemindIcon.Medicine -> painterResource(id = R.drawable.ic_avatar_medeicine)
+        RemindIcon.Officials -> painterResource(id = R.drawable.ic_avatar_officials)
+        RemindIcon.Payday -> painterResource(id = R.drawable.ic_avatar_payday)
+        RemindIcon.Workout -> painterResource(id = R.drawable.ic_avatar_workout)
+    }
 }
 
 @Composable
@@ -71,7 +82,7 @@ fun SelectableIcon(
 }
 
 private class IconSelectorState {
-    var selectIconIndex by mutableStateOf(0)
+    var selectIcon by mutableStateOf(RemindIcon.Cake)
 }
 
 @Preview
@@ -83,7 +94,6 @@ private class IconSelectorState {
 
                 IconSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    icons = listOf(R.drawable.ic_avatar_cake, R.drawable.ic_avatar_medeicine, R.drawable.ic_avatar_officials, R.drawable.ic_avatar_payday, R.drawable.ic_avatar_workout),
                     onSelectionChanged = {}
                 )
             }

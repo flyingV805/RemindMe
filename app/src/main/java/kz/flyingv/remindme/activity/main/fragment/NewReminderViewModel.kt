@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.model.RemindAction
+import kz.flyingv.remindme.model.RemindIcon
 import kz.flyingv.remindme.model.RemindType
 import kz.flyingv.remindme.model.Reminder
 import kz.flyingv.remindme.repository.ReminderRepository
@@ -15,7 +16,6 @@ import org.koin.core.component.inject
 class NewReminderViewModel: ViewModel(), KoinComponent {
 
     private val reminderRepository: ReminderRepository by inject()
-
 
     private val _reminderNameText: MutableStateFlow<String> = MutableStateFlow("")
     /*
@@ -42,7 +42,7 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
     }
 
     private fun initialState(): NewReminderState {
-        return NewReminderState()
+        return NewReminderState(name = "", icon = RemindIcon.Cake)
     }
 
 }

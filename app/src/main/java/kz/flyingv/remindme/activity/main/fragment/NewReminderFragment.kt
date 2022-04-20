@@ -20,8 +20,6 @@ import kz.flyingv.remindme.ui.iconselector.IconSelector
 import kz.flyingv.remindme.ui.selector.SegmentText
 import kz.flyingv.remindme.ui.selector.SegmentedControl
 
-private val iconList = listOf(R.drawable.ic_avatar_cake, R.drawable.ic_avatar_medeicine, R.drawable.ic_avatar_officials, R.drawable.ic_avatar_payday, R.drawable.ic_avatar_workout)
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminderViewModel){
@@ -42,8 +40,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         Spacer(modifier = Modifier.height(16.dp))
         IconSelector(
             modifier = Modifier.fillMaxWidth(),
-            icons = iconList,
-            onSelectionChanged = {selectIconIndex -> selectIcon = selectIconIndex}
+            onSelectionChanged = {selectIcon -> }
         )
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
