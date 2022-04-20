@@ -33,6 +33,9 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
             is NewReminderAction.UpdateIcon -> {
                 _reminderIcon.value = uiAction.icon
             }
+            NewReminderAction.CreateReminder -> {
+                createReminder()
+            }
         }
     }
 

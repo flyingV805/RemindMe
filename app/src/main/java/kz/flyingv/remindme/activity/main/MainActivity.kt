@@ -112,11 +112,12 @@ class MainActivity : ComponentActivity() {
             scaffoldState = scaffoldState,
             drawerGesturesEnabled = false,
             content = {
-                Box(modifier = Modifier.nestedScroll(nestedScrollConnection)) {
+                Box(/*modifier = Modifier.nestedScroll(nestedScrollConnection)*/) {
                     ReminderList(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight()
+                            .nestedScroll(nestedScrollConnection)
                             .padding(start = 8.dp, end = 8.dp),
                         reminders = mainState.reminders,
                     )
@@ -186,6 +187,7 @@ class MainActivity : ComponentActivity() {
                 item{
                     val composition by rememberLottieComposition(LottieCompositionSpec.Asset("lottie-no-data.json"))
                     Column(
+                        modifier = Modifier.wrapContentHeight().padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         Spacer(modifier = Modifier.height(36.dp))
@@ -195,6 +197,10 @@ class MainActivity : ComponentActivity() {
                         )
                         LottieAnimation(
                             composition
+                        )
+                        Text(
+                            text = "Create one",
+                            style = typography.h6
                         )
                     }
                 }

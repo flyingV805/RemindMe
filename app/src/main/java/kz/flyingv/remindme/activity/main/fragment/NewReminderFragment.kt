@@ -139,7 +139,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             onClick = {
                 scope.launch { dialogState.hide() }
-                //viewModel.createReminder()
+                viewModel.makeAction(NewReminderAction.CreateReminder)
             }
         )
         Spacer(modifier = Modifier.height(32.dp))
