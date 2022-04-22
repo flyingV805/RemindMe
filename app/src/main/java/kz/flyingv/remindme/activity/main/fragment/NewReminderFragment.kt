@@ -10,7 +10,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.animation.AnimatedVisibility
 import kotlinx.coroutines.launch
+import kz.flyingv.remindme.model.RemindAction
+import kz.flyingv.remindme.model.RemindActionEnum
 import kz.flyingv.remindme.model.RemindTypeEnum
 import kz.flyingv.remindme.ui.iconselector.DayOfMonthSelector
 import kz.flyingv.remindme.ui.iconselector.DayOfWeekSelector
@@ -35,7 +38,9 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
 
     val remindTypes = remember { listOf(RemindTypeEnum.Daily, RemindTypeEnum.Weekly, RemindTypeEnum.Monthly, RemindTypeEnum.Yearly) }
     var selectedRemindType by remember { mutableStateOf(RemindTypeEnum.Daily) }
-    var selectIcon by remember { mutableStateOf(0) }
+
+    val remindActions = remember { listOf(RemindActionEnum.Nothing, RemindActionEnum.OpenApp, RemindActionEnum.OpenUrl) }
+    var selectedRemindActions by remember { mutableStateOf(RemindActionEnum.Nothing) }
 
     Column(
         modifier = Modifier
@@ -82,7 +87,6 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -123,16 +127,22 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 )
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        SegmentedControl(
+            remindActions,
+            selectedRemindActions,
+            onSegmentSelected = { selectedRemindActions = it }
+        ) {
+            SegmentText(
+                when(it){
+                    RemindActionEnum.Nothing -> "Nothing"
+                    RemindActionEnum.OpenApp -> "Open App"
+                    RemindActionEnum.OpenUrl -> "Open Link"
+                }
+            )
+        }
 
-        Text(text ="VIEW DETAIL", style = MaterialTheme.typography.h6)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "VIEW DETAIL", style = MaterialTheme.typography.caption)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text ="VIEW DETAIL", style = MaterialTheme.typography.h6)
-        Text(text = "VIEW DETAIL", style = MaterialTheme.typography.caption)
-        Text(text ="VIEW DETAIL", style = MaterialTheme.typography.h6)
-        Text(text = "VIEW DETAIL", style = MaterialTheme.typography.caption)
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(72.dp))
         ExtendedFloatingActionButton(
             icon = { Icon(Icons.Filled.Create,"") },
             text = { Text("CREATE REMINDER") },
