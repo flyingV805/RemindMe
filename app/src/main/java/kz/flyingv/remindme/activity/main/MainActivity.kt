@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
             scaffoldState = scaffoldState,
             drawerGesturesEnabled = false,
             content = {
-                Box(/*modifier = Modifier.nestedScroll(nestedScrollConnection)*/) {
+                Box {
                     ReminderList(
                         modifier = Modifier
                             .fillMaxWidth()
