@@ -1,6 +1,7 @@
 package kz.flyingv.remindme.activity.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
@@ -39,6 +41,7 @@ import kz.flyingv.remindme.ui.isInPreview
 import kz.flyingv.remindme.ui.previewMainState
 import kz.flyingv.remindme.ui.topBarHeight
 import kz.flyingv.remindme.ui.topbar.CustomTopBar
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -97,12 +100,21 @@ class MainActivity : ComponentActivity() {
         val toolbarHeightPx = with(LocalDensity.current) { topBarHeight.roundToPx().toFloat() }
         val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
 
+        val remindersListScrollState = remember{ LazyListState() }
         val nestedScrollConnection = remember {
             object : NestedScrollConnection {
                 override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    Log.d("ScrollOffset", remindersListScrollState.firstVisibleItemScrollOffset.toString())
+                    Log.d("available.y", available.y.toString())
+
+                    val contentScrollOffset = remindersListScrollState.firstVisibleItemScrollOffset
                     val delta = available.y
                     val newOffset = toolbarOffsetHeightPx.value + delta
-                    toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
+
+                    if(newOffset.absoluteValue <= contentScrollOffset){
+                        toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
+                    }
+
                     return Offset.Zero
                 }
             }
@@ -119,6 +131,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxHeight()
                             .nestedScroll(nestedScrollConnection)
                             .padding(start = 8.dp, end = 8.dp),
+                        listState = remindersListScrollState,
                         reminders = mainState.reminders,
                     )
                     CustomTopBar(
@@ -177,9 +190,11 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    private fun ReminderList(modifier: Modifier, reminders: List<Reminder>){
+    private fun ReminderList(modifier: Modifier, listState: LazyListState, reminders: List<Reminder>){
+        val state = remember{ LazyListState() }
         LazyColumn(
             modifier = modifier,
+            state = listState,
             contentPadding = PaddingValues(top = topBarHeight, start = 0.dp, end = 0.dp, bottom = 8.dp)
         ) {
             //show something, if user don't have any reminders
@@ -212,8 +227,11 @@ class MainActivity : ComponentActivity() {
                     ReminderListItem(reminder = reminders[it])
                 }
             )
+
             item{
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(64.dp).clickable {
+                    Log.d("SCROLL STATE", "state ${state.firstVisibleItemScrollOffset}")
+                })
             }
         }
     }
