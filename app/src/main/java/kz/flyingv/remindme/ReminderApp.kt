@@ -2,10 +2,10 @@ package kz.flyingv.remindme
 
 import android.app.Application
 import androidx.room.Room
-import kz.flyingv.remindme.repository.ReminderRepository
-import kz.flyingv.remindme.repository.ReminderRepositoryImpl
-import kz.flyingv.remindme.room.Database
-import kz.flyingv.remindme.scheduler.RemindScheduler
+import kz.flyingv.remindme.data.repository.ReminderRepository
+import kz.flyingv.remindme.data.repository.ReminderRepositoryImpl
+import kz.flyingv.remindme.data.datastore.Database
+import kz.flyingv.remindme.utils.scheduler.RemindScheduler
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
