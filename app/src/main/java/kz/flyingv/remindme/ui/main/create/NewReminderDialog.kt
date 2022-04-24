@@ -14,10 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
-import kz.flyingv.remindme.ui.uicomponents.iconselector.DayOfMonthSelector
-import kz.flyingv.remindme.ui.uicomponents.iconselector.DayOfWeekSelector
-import kz.flyingv.remindme.ui.uicomponents.iconselector.DayOfYearSelector
-import kz.flyingv.remindme.ui.uicomponents.iconselector.IconSelector
+import kz.flyingv.remindme.ui.uicomponents.iconselector.*
 import kz.flyingv.remindme.ui.uicomponents.isInPreview
 import kz.flyingv.remindme.ui.uicomponents.previewNewReminderState
 import kz.flyingv.remindme.ui.uicomponents.selector.SegmentText
@@ -39,7 +36,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
     var selectedRemindType by remember { mutableStateOf(RemindTypeEnum.Daily) }
 
     val remindActions = remember { listOf(RemindActionEnum.Nothing, RemindActionEnum.OpenApp, RemindActionEnum.OpenUrl) }
-    var selectedRemindActions by remember { mutableStateOf(RemindActionEnum.Nothing) }
+    //var selectedRemindActions =
 
     Column(
         modifier = Modifier
@@ -129,8 +126,8 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         Spacer(modifier = Modifier.height(16.dp))
         SegmentedControl(
             remindActions,
-            selectedRemindActions,
-            onSegmentSelected = { selectedRemindActions = it }
+            newReminderState.action,
+            onSegmentSelected = { viewModel.makeAction(NewReminderAction.UpdateAction(it)) }
         ) {
             SegmentText(
                 when(it){
@@ -139,6 +136,46 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                     RemindActionEnum.OpenUrl -> "Open Link"
                 }
             )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
+            contentAlignment = Alignment.Center){
+
+            androidx.compose.animation.AnimatedVisibility(
+                enter = fadeIn(), exit = fadeOut(),
+                visible = newReminderState.action == RemindActionEnum.Nothing
+            ) {
+
+            }
+
+            androidx.compose.animation.AnimatedVisibility(
+                enter = fadeIn(), exit = fadeOut(),
+                visible = newReminderState.action == RemindActionEnum.OpenApp
+            ) {
+                AppSelector(
+                    apps = newReminderState.actionApps,
+                    onSelectionChanged = {}
+                )
+            }
+
+            androidx.compose.animation.AnimatedVisibility(
+                enter = fadeIn(), exit = fadeOut(),
+                visible = newReminderState.action == RemindActionEnum.OpenUrl
+            ) {
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = "",
+                    singleLine = true,
+                    onValueChange = {
+
+                    },
+                    placeholder = { Text("Enter URL") },
+                )
+            }
+
         }
 
         Spacer(modifier = Modifier.height(72.dp))

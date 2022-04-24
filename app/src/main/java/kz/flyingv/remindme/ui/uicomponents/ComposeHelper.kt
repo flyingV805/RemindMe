@@ -7,6 +7,7 @@ import kz.flyingv.remindme.ui.main.MainState
 import kz.flyingv.remindme.ui.main.create.NewReminderState
 import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.data.model.Reminder
+import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 
 @Composable
 fun isInPreview(): Boolean {
@@ -31,6 +32,8 @@ fun previewMainState(): MainState {
 fun previewNewReminderState(): NewReminderState {
     return NewReminderState(
         name = "",
-        icon = RemindIcon.Cake
+        icon = RemindIcon.Cake,
+        action = RemindActionEnum.Nothing,
+        actionApps = emptyList()
     )
 }

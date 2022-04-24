@@ -5,6 +5,8 @@ import androidx.room.Room
 import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.data.repository.ReminderRepositoryImpl
 import kz.flyingv.remindme.data.datastore.Database
+import kz.flyingv.remindme.data.repository.SystemRepository
+import kz.flyingv.remindme.data.repository.SystemRepositoryImpl
 import kz.flyingv.remindme.utils.scheduler.RemindScheduler
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -18,6 +20,7 @@ class ReminderApp: Application() {
         single { RemindScheduler(androidContext())}
 
         single<ReminderRepository> { ReminderRepositoryImpl() }
+        single<SystemRepository> { SystemRepositoryImpl() }
     }
 
     override fun onCreate() {
