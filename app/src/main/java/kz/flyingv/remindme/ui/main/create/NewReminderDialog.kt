@@ -36,7 +36,6 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
     var selectedRemindType by remember { mutableStateOf(RemindTypeEnum.Daily) }
 
     val remindActions = remember { listOf(RemindActionEnum.Nothing, RemindActionEnum.OpenApp, RemindActionEnum.OpenUrl) }
-    //var selectedRemindActions =
 
     Column(
         modifier = Modifier

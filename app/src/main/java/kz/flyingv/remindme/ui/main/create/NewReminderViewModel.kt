@@ -9,6 +9,7 @@ import kz.flyingv.remindme.data.model.*
 import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.data.repository.SystemRepository
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
+import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -19,6 +20,7 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
 
     private val _reminderNameText: MutableStateFlow<String> = MutableStateFlow("")
     private val _reminderIcon: MutableStateFlow<RemindIcon> = MutableStateFlow(RemindIcon.Cake)
+    private val _reminderType: MutableStateFlow<RemindType> = MutableStateFlow(RemindType.Daily)
     private val _reminderAction: MutableStateFlow<RemindActionEnum> = MutableStateFlow(RemindActionEnum.Nothing)
     private val _availableApps: MutableStateFlow<List<InstalledApp>> = MutableStateFlow(emptyList())
 
