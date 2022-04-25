@@ -11,7 +11,10 @@ import kz.flyingv.remindme.data.model.Reminder
 interface ReminderDao {
 
     @Query("SELECT * FROM Reminder")
-    fun getAll(): Flow<List<Reminder>>
+    fun getAllFlow(): Flow<List<Reminder>>
+
+    @Query("SELECT * FROM Reminder")
+    fun getAll(): List<Reminder>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(reminder: Reminder)
