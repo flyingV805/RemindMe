@@ -2,6 +2,7 @@ package kz.flyingv.remindme.ui.main.create
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
 import kz.flyingv.remindme.ui.widgets.iconselector.*
@@ -33,6 +35,13 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
 
     val remindTypes = remember { listOf(RemindTypeEnum.Daily, RemindTypeEnum.Weekly, RemindTypeEnum.Monthly, RemindTypeEnum.Yearly) }
     val remindActions = remember { listOf(RemindActionEnum.Nothing, RemindActionEnum.OpenApp, RemindActionEnum.OpenUrl) }
+
+    val remindTypeEnum = when(newReminderState.type){
+        is RemindType.Daily -> RemindTypeEnum.Daily
+        is RemindType.Monthly -> RemindTypeEnum.Monthly
+        is RemindType.Weekly -> RemindTypeEnum.Weekly
+        is RemindType.Yearly -> RemindTypeEnum.Yearly
+    }
 
     Column(
         modifier = Modifier
@@ -64,9 +73,15 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         Spacer(modifier = Modifier.height(16.dp))
         SegmentedControl(
             remindTypes,
-            newReminderState.type,
+            remindTypeEnum,
             onSegmentSelected = {
-                viewModel.makeAction(NewReminderAction.UpdateType(it))
+                when(it){
+                    RemindTypeEnum.Daily -> {viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Daily))}
+                    RemindTypeEnum.Weekly -> {viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Weekly(0)))}
+                    RemindTypeEnum.Monthly -> {viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Monthly(0)))}
+                    RemindTypeEnum.Yearly -> {viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Yearly(0)))}
+                }
+
             }
         ) {
             SegmentText(
@@ -81,21 +96,30 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        val daysOfMonthScrollState = remember{ LazyListState() }
+
         Crossfade(
             targetState = newReminderState.type,
             modifier = Modifier.fillMaxWidth().height(64.dp),
         ) { remindType ->
             when(remindType){
-                RemindTypeEnum.Daily -> Text("Remind every day")
-                RemindTypeEnum.Weekly -> DayOfWeekSelector(
+                is RemindType.Daily -> Text("Remind every day")
+                is RemindType.Weekly -> DayOfWeekSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    onSelectionChanged = {}
+                    selectedDay = (newReminderState.type as? RemindType.Weekly)?.dayOfWeek ?: 0,
+                    onSelectionChanged = {
+                        viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Weekly(it)))
+                    }
                 )
-                RemindTypeEnum.Monthly -> DayOfMonthSelector(
+                is RemindType.Monthly -> DayOfMonthSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    onSelectionChanged = {}
+                    scrollState = daysOfMonthScrollState,
+                    selectDay = (newReminderState.type as? RemindType.Monthly)?.dayOfMonth ?: 0,
+                    onSelectionChanged = {
+                        viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Monthly(it)))
+                    }
                 )
-                RemindTypeEnum.Yearly -> DayOfYearSelector(
+                is RemindType.Yearly -> DayOfYearSelector(
                     modifier = Modifier.fillMaxWidth(),
                     onSelectionChanged = {day, month ->  }
                 )
@@ -118,7 +142,9 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         Spacer(modifier = Modifier.height(16.dp))
 
         Crossfade(
-            modifier = Modifier.fillMaxWidth().height(64.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
             targetState = newReminderState.action
         ) {
             when(it){

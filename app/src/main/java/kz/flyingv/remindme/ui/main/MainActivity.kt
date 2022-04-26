@@ -35,6 +35,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
+import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.ui.main.create.NewReminderDialog
 import kz.flyingv.remindme.data.model.Reminder
 import kz.flyingv.remindme.ui.main.remindtime.ChangeRemindTime
@@ -285,7 +286,23 @@ class MainActivity : ComponentActivity() {
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(Modifier.weight(1f)) {
                     Text(text = reminder.name, style = typography.h6)
-                    Text(text = "Every month, 6-th", style = typography.h6)
+
+                    when(reminder.type){
+                        is RemindType.Daily -> {
+                            Text(text = "Every day", style = typography.h6)
+                        }
+                        is RemindType.Monthly -> {
+                            Text(text = "Every month, ${reminder.type.dayOfMonth}", style = typography.h6)
+                        }
+                        is RemindType.Weekly -> {
+                            Text(text = "Every week, ${reminder.type.dayOfWeek}", style = typography.h6)
+                        }
+                        is RemindType.Yearly -> {
+                            Text(text = "Every year, ${reminder.type.dayOfYear}", style = typography.h6)
+                        }
+                    }
+
+
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = "Last remind: 2 days ago", style = typography.caption)
                     Spacer(modifier = Modifier.height(4.dp))

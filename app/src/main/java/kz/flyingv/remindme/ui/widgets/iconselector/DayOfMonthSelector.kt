@@ -1,9 +1,13 @@
 package kz.flyingv.remindme.ui.widgets.iconselector
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -15,18 +19,21 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kz.flyingv.remindme.ui.widgets.rememberForeverLazyListState
 
 
 @Composable
 fun DayOfMonthSelector(
     modifier: Modifier = Modifier,
+    scrollState: LazyListState = rememberLazyListState(),
     days: List<String> = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"),
+    selectDay: Int,
     onSelectionChanged: (dayOfMonth: Int) -> Unit
 ){
-    val state by remember { mutableStateOf(DayOfMonthState()) }
 
     LazyRow (
         modifier = modifier.padding(16.dp),
+        state = scrollState,
         horizontalArrangement = Arrangement.Center
     ){
         items(
@@ -35,9 +42,9 @@ fun DayOfMonthSelector(
                 Spacer(modifier = Modifier.width(4.dp))
                 DayOfMonthItem(
                     name = days[it],
-                    isSelected = state.selectDayIndex == it,
+                    isSelected = selectDay == it,
                     onSelect = {
-                        state.selectDayIndex = it
+                        //state.selectDayIndex = it
                         onSelectionChanged(it)
                     }
                 )
@@ -90,6 +97,7 @@ fun DayOfMonthSelectorDemo() {
 
                 DayOfMonthSelector(
                     modifier = Modifier.fillMaxWidth(),
+                    selectDay = 0,
                     onSelectionChanged = {}
                 )
             }

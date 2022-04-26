@@ -20,7 +20,7 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
 
     private val _reminderNameText: MutableStateFlow<String> = MutableStateFlow("")
     private val _reminderIcon: MutableStateFlow<RemindIcon> = MutableStateFlow(RemindIcon.Cake)
-    private val _reminderType: MutableStateFlow<RemindTypeEnum> = MutableStateFlow(RemindTypeEnum.Daily)
+    private val _reminderType: MutableStateFlow<RemindType> = MutableStateFlow(RemindType.Daily)
     private val _reminderAction: MutableStateFlow<RemindActionEnum> = MutableStateFlow(RemindActionEnum.Nothing)
     private val _availableApps: MutableStateFlow<List<InstalledApp>> = MutableStateFlow(emptyList())
 
@@ -60,7 +60,7 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
                 Reminder(
                     name = _reminderNameText.value,
                     icon = _reminderIcon.value,
-                    type = RemindType.Weekly(1),
+                    type = _reminderType.value,
                     action = RemindAction.OpenApp("", ""),
                     lastShow = 0
                 )
@@ -69,7 +69,7 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
     }
 
     private fun initialState(): NewReminderState {
-        return NewReminderState(name = "", icon = RemindIcon.Cake, type = RemindTypeEnum.Daily, action = RemindActionEnum.Nothing, actionApps = emptyList())
+        return NewReminderState(name = "", icon = RemindIcon.Cake, type = RemindType.Daily, action = RemindActionEnum.Nothing, actionApps = emptyList())
     }
 
 }

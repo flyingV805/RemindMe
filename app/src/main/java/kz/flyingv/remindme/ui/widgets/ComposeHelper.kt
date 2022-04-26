@@ -34,7 +34,7 @@ fun previewNewReminderState(): NewReminderState {
     return NewReminderState(
         name = "",
         icon = RemindIcon.Cake,
-        type = RemindTypeEnum.Daily,
+        type = RemindType.Daily,
         action = RemindActionEnum.Nothing,
         actionApps = emptyList()
     )

@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.dp
 fun DayOfWeekSelector(
     modifier: Modifier = Modifier,
     days: List<String> = listOf("Mn", "Tu", "We", "Th", "Fr", "Sa", "Su"),
+    selectedDay: Int,
     onSelectionChanged: (dayOfWeek: Int) -> Unit
 ){
-    val state by remember { mutableStateOf(DayOfWeekState()) }
+    //val state by remember { mutableStateOf(DayOfWeekState()) }
 
     Row (
         modifier = modifier.padding(16.dp),
@@ -31,9 +32,9 @@ fun DayOfWeekSelector(
             Spacer(modifier = Modifier.width(4.dp))
             DayOfWeekItem(
                 name = nameOfDay,
-                isSelected = state.selectDayIndex == index,
+                isSelected = selectedDay == index,
                 onSelect = {
-                    state.selectDayIndex = index
+                    //state.selectDayIndex = index
                     onSelectionChanged(index)
                 }
             )
@@ -84,6 +85,7 @@ fun DayOfWeekItem(
 
                 DayOfWeekSelector(
                     modifier = Modifier.fillMaxWidth(),
+                    selectedDay = 0,
                     onSelectionChanged = {}
                 )
             }
