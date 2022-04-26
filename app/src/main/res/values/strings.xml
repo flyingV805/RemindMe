@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RemindMe</string>
+
+    <string name="open_app">OPEN APP</string>
+    <string name="open_link">OPEN LINK</string>
+
 </resources>

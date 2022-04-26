@@ -14,15 +14,17 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class DailyWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
+class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
     private val reminderRepository: ReminderRepository by inject()
 
     override fun doWork(): Result {
 
+        val notificator = Notificator(context = context)
         val currentDate = Calendar.getInstance()
 
         reminderRepository.getWorkerReminders().forEach { reminder ->
+            notificator.showNotification(reminder)
             val type = reminder.type
             when(type){
                 is RemindType.Daily -> {
