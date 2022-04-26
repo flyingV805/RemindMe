@@ -31,7 +31,7 @@ class RemindScheduler(private val context: Context) {
 
     }
 
-    fun start(hourOfDay: Int){
+    private fun start(hourOfDay: Int){
         WorkManager.getInstance(context).cancelAllWorkByTag(reminderTag)
         val currentDate = Calendar.getInstance()
         val dueDate = Calendar.getInstance()

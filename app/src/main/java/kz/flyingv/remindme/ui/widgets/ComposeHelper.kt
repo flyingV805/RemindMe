@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.uicomponents
+package kz.flyingv.remindme.ui.widgets
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -8,6 +8,7 @@ import kz.flyingv.remindme.ui.main.create.NewReminderState
 import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.data.model.Reminder
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
+import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
 
 @Composable
 fun isInPreview(): Boolean {
@@ -33,6 +34,7 @@ fun previewNewReminderState(): NewReminderState {
     return NewReminderState(
         name = "",
         icon = RemindIcon.Cake,
+        type = RemindTypeEnum.Daily,
         action = RemindActionEnum.Nothing,
         actionApps = emptyList()
     )

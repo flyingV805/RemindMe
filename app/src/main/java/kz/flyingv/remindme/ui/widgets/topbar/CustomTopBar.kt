@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.uicomponents.topbar
+package kz.flyingv.remindme.ui.widgets.topbar
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility

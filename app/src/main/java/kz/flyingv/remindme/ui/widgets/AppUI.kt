@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.uicomponents
+package kz.flyingv.remindme.ui.widgets
 
 import androidx.compose.ui.unit.dp
 

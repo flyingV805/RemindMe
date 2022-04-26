@@ -6,12 +6,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.data.repository.ReminderRepository
+import kz.flyingv.remindme.data.repository.SchedulerRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class MainViewModel: ViewModel(), KoinComponent {
 
     private val reminderRepository: ReminderRepository by inject()
+    private val schedulerRepository: SchedulerRepository by inject()
 
     private val _currentReminders = reminderRepository.getAllReminders()
     private val _isSearching: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -19,12 +21,19 @@ class MainViewModel: ViewModel(), KoinComponent {
 
     val mainStateFlow: StateFlow<MainState> =
         combine(_currentReminders, _isSearching, _searchText){list, isSearch, searchText ->
-            MainState(list, isSearch, searchText)
+
+            val remindersList = if(searchText.isNotBlank()){
+                list.filter { it.name.contains(searchText) }
+            }else{
+                list
+            }
+
+            MainState(remindersList, isSearch, searchText)
     }.stateIn(viewModelScope, SharingStarted.Lazily, initialState())
 
     init {
         viewModelScope.launch(Dispatchers.IO){
-            reminderRepository.initReminderIfNeeded()
+            schedulerRepository.initReminderIfNeeded()
         }
     }
 

@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.uicomponents.selector
+package kz.flyingv.remindme.ui.widgets.selector
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState

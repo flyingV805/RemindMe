@@ -1,7 +1,6 @@
 package kz.flyingv.remindme.ui.main.create
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -14,11 +13,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
-import kz.flyingv.remindme.ui.uicomponents.iconselector.*
-import kz.flyingv.remindme.ui.uicomponents.isInPreview
-import kz.flyingv.remindme.ui.uicomponents.previewNewReminderState
-import kz.flyingv.remindme.ui.uicomponents.selector.SegmentText
-import kz.flyingv.remindme.ui.uicomponents.selector.SegmentedControl
+import kz.flyingv.remindme.ui.widgets.iconselector.*
+import kz.flyingv.remindme.ui.widgets.isInPreview
+import kz.flyingv.remindme.ui.widgets.previewNewReminderState
+import kz.flyingv.remindme.ui.widgets.selector.SegmentText
+import kz.flyingv.remindme.ui.widgets.selector.SegmentedControl
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -33,8 +32,6 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
     }
 
     val remindTypes = remember { listOf(RemindTypeEnum.Daily, RemindTypeEnum.Weekly, RemindTypeEnum.Monthly, RemindTypeEnum.Yearly) }
-    var selectedRemindType by remember { mutableStateOf(RemindTypeEnum.Daily) }
-
     val remindActions = remember { listOf(RemindActionEnum.Nothing, RemindActionEnum.OpenApp, RemindActionEnum.OpenUrl) }
 
     Column(
@@ -64,13 +61,13 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
             },
             placeholder = { Text("Reminder Name") },
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         SegmentedControl(
             remindTypes,
-            selectedRemindType,
-            onSegmentSelected = { selectedRemindType = it }
+            newReminderState.type,
+            onSegmentSelected = {
+                viewModel.makeAction(NewReminderAction.UpdateType(it))
+            }
         ) {
             SegmentText(
                 when(it){
@@ -81,42 +78,24 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 }
             )
         }
+
         Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            androidx.compose.animation.AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(),
-                visible = selectedRemindType == RemindTypeEnum.Daily
-            ) {
-                Text("Remind every day")
-            }
-            androidx.compose.animation.AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(),
-                visible = selectedRemindType == RemindTypeEnum.Weekly
-            ) {
-                DayOfWeekSelector(
+
+        Crossfade(
+            targetState = newReminderState.type,
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+        ) { remindType ->
+            when(remindType){
+                RemindTypeEnum.Daily -> Text("Remind every day")
+                RemindTypeEnum.Weekly -> DayOfWeekSelector(
                     modifier = Modifier.fillMaxWidth(),
                     onSelectionChanged = {}
                 )
-            }
-            androidx.compose.animation.AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(),
-                visible = selectedRemindType == RemindTypeEnum.Monthly
-            ) {
-                DayOfMonthSelector(
+                RemindTypeEnum.Monthly -> DayOfMonthSelector(
                     modifier = Modifier.fillMaxWidth(),
                     onSelectionChanged = {}
                 )
-            }
-            androidx.compose.animation.AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(),
-                visible = selectedRemindType == RemindTypeEnum.Yearly
-            ) {
-                DayOfYearSelector(
+                RemindTypeEnum.Yearly -> DayOfYearSelector(
                     modifier = Modifier.fillMaxWidth(),
                     onSelectionChanged = {day, month ->  }
                 )
@@ -137,44 +116,25 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp),
-            contentAlignment = Alignment.Center){
 
-            androidx.compose.animation.AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(),
-                visible = newReminderState.action == RemindActionEnum.Nothing
-            ) {
-
-            }
-
-            androidx.compose.animation.AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(),
-                visible = newReminderState.action == RemindActionEnum.OpenApp
-            ) {
-                AppSelector(
+        Crossfade(
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+            targetState = newReminderState.action
+        ) {
+            when(it){
+                RemindActionEnum.Nothing -> Text("Do nothing")
+                RemindActionEnum.OpenApp -> AppSelector(
                     apps = newReminderState.actionApps,
                     onSelectionChanged = {}
                 )
-            }
-
-            androidx.compose.animation.AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(),
-                visible = newReminderState.action == RemindActionEnum.OpenUrl
-            ) {
-                TextField(
+                RemindActionEnum.OpenUrl -> TextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = "",
                     singleLine = true,
-                    onValueChange = {
-
-                    },
+                    onValueChange = {},
                     placeholder = { Text("Enter URL") },
                 )
             }
-
         }
 
         Spacer(modifier = Modifier.height(72.dp))

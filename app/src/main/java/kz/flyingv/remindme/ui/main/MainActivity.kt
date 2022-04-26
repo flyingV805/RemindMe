@@ -1,7 +1,6 @@
 package kz.flyingv.remindme.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -27,22 +26,23 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
+import kz.flyingv.remindme.R
 import kz.flyingv.remindme.ui.main.create.NewReminderDialog
-import kz.flyingv.remindme.ui.main.create.NewReminderViewModel
 import kz.flyingv.remindme.data.model.Reminder
-import kz.flyingv.remindme.ui.uicomponents.iconselector.getIcon
-import kz.flyingv.remindme.ui.uicomponents.isInPreview
-import kz.flyingv.remindme.ui.uicomponents.previewMainState
-import kz.flyingv.remindme.ui.uicomponents.topBarHeight
-import kz.flyingv.remindme.ui.uicomponents.topbar.CustomTopBar
+import kz.flyingv.remindme.ui.main.remindtime.ChangeRemindTime
+import kz.flyingv.remindme.ui.widgets.iconselector.getIcon
+import kz.flyingv.remindme.ui.widgets.isInPreview
+import kz.flyingv.remindme.ui.widgets.previewMainState
+import kz.flyingv.remindme.ui.widgets.topBarHeight
+import kz.flyingv.remindme.ui.widgets.topbar.CustomTopBar
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -105,8 +105,6 @@ class MainActivity : ComponentActivity() {
         val nestedScrollConnection = remember {
             object : NestedScrollConnection {
                 override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                    Log.d("ScrollOffset", remindersListScrollState.firstVisibleItemScrollOffset.toString())
-                    Log.d("available.y", available.y.toString())
 
                     val contentScrollOffset = remindersListScrollState.firstVisibleItemScrollOffset
                     val delta = available.y
@@ -121,6 +119,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        val showSettingsDialog = remember{ mutableStateOf(false) }
+
         Scaffold(
             scaffoldState = scaffoldState,
             drawerGesturesEnabled = false,
@@ -134,6 +134,7 @@ class MainActivity : ComponentActivity() {
                             .padding(start = 8.dp, end = 8.dp),
                         listState = remindersListScrollState,
                         reminders = mainState.reminders,
+                        isInSearch = mainState.isSearching
                     )
                     CustomTopBar(
                         modifier = Modifier
@@ -151,6 +152,13 @@ class MainActivity : ComponentActivity() {
                         isSearching = mainState.isSearching,
                         searchValue = mainState.searchText
                     )
+                    if(showSettingsDialog.value) {
+                        ChangeRemindTime(
+                            onDismiss = {
+                                showSettingsDialog.value = false
+                            }
+                        )
+                    }
                 }
             },
             floatingActionButtonPosition = FabPosition.End,
@@ -172,15 +180,20 @@ class MainActivity : ComponentActivity() {
                     Row {
                         Spacer(modifier = Modifier.width(8.dp))
                         IconButton(onClick = {}) {
-                            Icon(Icons.Filled.AccountCircle, "")
+                            Icon(Icons.Filled.Settings, "")
                         }
                         Spacer(modifier = Modifier.width(4.dp))
                         IconButton(onClick = {}) {
                             Icon(Icons.Filled.AccountBox, "")
                         }
                         Spacer(modifier = Modifier.width(4.dp))
-                        IconButton(onClick = {}) {
-                            Icon(Icons.Filled.Settings, "")
+                        IconButton(onClick = {
+                            showSettingsDialog.value = true
+                        }) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_baseline_alarm_24),
+                                ""
+                            )
                         }
                     }
                 }
@@ -189,10 +202,9 @@ class MainActivity : ComponentActivity() {
 
     }
 
-
     @Composable
-    private fun ReminderList(modifier: Modifier, listState: LazyListState, reminders: List<Reminder>){
-        val state = remember{ LazyListState() }
+    private fun ReminderList(modifier: Modifier, listState: LazyListState, reminders: List<Reminder>, isInSearch: Boolean){
+        //val state = remember{ LazyListState() }
         LazyColumn(
             modifier = modifier,
             state = listState,
@@ -210,14 +222,18 @@ class MainActivity : ComponentActivity() {
                     ){
                         Spacer(modifier = Modifier.height(36.dp))
                         Text(
-                            text = "Oops, you don't have any reminders yet...",
+                            text = if(!isInSearch){
+                                "Oops, you don't have any reminders yet..."
+                            }else{
+                                "Oops, can't find anything..."
+                            },
                             style = typography.h6
                         )
                         LottieAnimation(
                             composition
                         )
                         Text(
-                            text = "Create one",
+                            text = if(!isInSearch){"Create one"}else{""},
                             style = typography.h6
                         )
                     }
@@ -232,11 +248,7 @@ class MainActivity : ComponentActivity() {
             )
 
             item{
-                Spacer(modifier = Modifier
-                    .height(64.dp)
-                    .clickable {
-                        Log.d("SCROLL STATE", "state ${state.firstVisibleItemScrollOffset}")
-                    })
+                Spacer(modifier = Modifier.height(64.dp))
             }
         }
     }
@@ -282,6 +294,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     @Preview
     @Composable
     fun ComposablePreview() {

@@ -20,13 +20,13 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
 
     private val _reminderNameText: MutableStateFlow<String> = MutableStateFlow("")
     private val _reminderIcon: MutableStateFlow<RemindIcon> = MutableStateFlow(RemindIcon.Cake)
-    private val _reminderType: MutableStateFlow<RemindType> = MutableStateFlow(RemindType.Daily)
+    private val _reminderType: MutableStateFlow<RemindTypeEnum> = MutableStateFlow(RemindTypeEnum.Daily)
     private val _reminderAction: MutableStateFlow<RemindActionEnum> = MutableStateFlow(RemindActionEnum.Nothing)
     private val _availableApps: MutableStateFlow<List<InstalledApp>> = MutableStateFlow(emptyList())
 
     val newReminderStateFlow: StateFlow<NewReminderState> =
-        combine(_reminderNameText, _reminderIcon, _reminderAction, _availableApps){name, icon, action, apps  ->
-            NewReminderState(name = name, icon = icon, action = action, actionApps = apps)
+        combine(_reminderNameText, _reminderIcon, _reminderType, _reminderAction, _availableApps){name, icon, type, action, apps  ->
+            NewReminderState(name = name, icon = icon, type = type, action = action, actionApps = apps)
     }.stateIn(viewModelScope, SharingStarted.Lazily, initialState())
 
     fun makeAction(uiAction: NewReminderAction){
@@ -37,6 +37,9 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
             is NewReminderAction.UpdateIcon -> {
                 _reminderIcon.value = uiAction.icon
             }
+            is NewReminderAction.UpdateType -> {
+                _reminderType.value = uiAction.remindType
+            }
             is NewReminderAction.UpdateAction -> {
                 _reminderAction.value = uiAction.remindAction
                 if(uiAction.remindAction == RemindActionEnum.OpenApp){
@@ -46,7 +49,6 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
                 }
             }
             is NewReminderAction.CreateReminder -> {
-
                 createReminder()
             }
         }
@@ -67,7 +69,7 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
     }
 
     private fun initialState(): NewReminderState {
-        return NewReminderState(name = "", icon = RemindIcon.Cake, action = RemindActionEnum.Nothing, actionApps = emptyList())
+        return NewReminderState(name = "", icon = RemindIcon.Cake, type = RemindTypeEnum.Daily, action = RemindActionEnum.Nothing, actionApps = emptyList())
     }
 
 }

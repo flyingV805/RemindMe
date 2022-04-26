@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.uicomponents.iconselector
+package kz.flyingv.remindme.ui.widgets.iconselector
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
