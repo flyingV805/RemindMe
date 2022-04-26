@@ -48,10 +48,10 @@ class Notificator(private val context: Context) {
 
         val largeIcon = when(reminder.icon){
             RemindIcon.Cake -> R.drawable.ic_avatar_cake
-            RemindIcon.Medicine -> R.drawable.ic_avatar_cake
-            RemindIcon.Officials -> R.drawable.ic_avatar_cake
-            RemindIcon.Payday -> R.drawable.ic_avatar_cake
-            RemindIcon.Workout -> R.drawable.ic_avatar_cake
+            RemindIcon.Medicine -> R.drawable.ic_avatar_medeicine
+            RemindIcon.Officials -> R.drawable.ic_avatar_officials
+            RemindIcon.Payday -> R.drawable.ic_avatar_payday
+            RemindIcon.Workout -> R.drawable.ic_avatar_workout
         }
 
         val builder = NotificationCompat.Builder(context, notificationChannelId)
