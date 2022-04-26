@@ -1,6 +1,8 @@
 package kz.flyingv.remindme
 
 import android.app.Application
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import androidx.room.Room
 import kz.flyingv.remindme.data.datastore.Database
 import kz.flyingv.remindme.data.repository.*
@@ -14,6 +16,7 @@ class ReminderApp: Application() {
     private val appModule = module {
 
         single { Room.databaseBuilder(androidContext(), Database::class.java, "Reminder.db").build() }
+        single <SharedPreferences> { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
         single { RemindScheduler(androidContext())}
 
         single<ReminderRepository> { ReminderRepositoryImpl() }

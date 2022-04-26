@@ -5,12 +5,13 @@ import androidx.work.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.work.WorkInfo
+import kz.flyingv.remindme.data.model.RemindTime
 import java.util.concurrent.ExecutionException
 
 
 class RemindScheduler(private val context: Context) {
 
-    fun startIfNotSet(){
+    fun startIfNotSet(time: RemindTime){
         val statuses = WorkManager.getInstance(context).getWorkInfosByTag("RemindSchedulerWork")
         var running = false
         try {
@@ -26,17 +27,17 @@ class RemindScheduler(private val context: Context) {
         }
 
         if(!running){
-            start(10)
+            start(time.hour, time.minute)
         }
 
     }
 
-    private fun start(hourOfDay: Int){
+    private fun start(hourOfDay: Int, minuteOfHour: Int){
         WorkManager.getInstance(context).cancelAllWorkByTag(reminderTag)
         val currentDate = Calendar.getInstance()
         val dueDate = Calendar.getInstance()
         dueDate.set(Calendar.HOUR_OF_DAY, hourOfDay)
-        dueDate.set(Calendar.MINUTE, 0)
+        dueDate.set(Calendar.MINUTE, minuteOfHour)
         dueDate.set(Calendar.SECOND, 0)
 
         if (dueDate.before(currentDate)) {dueDate.add(Calendar.HOUR_OF_DAY, 24)}
@@ -51,9 +52,9 @@ class RemindScheduler(private val context: Context) {
         WorkManager.getInstance(context).enqueue(dailyWorkRequest)
     }
 
-    fun reschedule(newHourOfDay: Int){
+    fun reschedule(time: RemindTime){
         WorkManager.getInstance(context).cancelAllWorkByTag(reminderTag)
-        start(newHourOfDay)
+        start(time.hour, time.minute)
     }
 
     companion object {
