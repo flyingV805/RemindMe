@@ -12,13 +12,14 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kz.flyingv.remindme.R
 
 @Composable
 fun ChangeRemindTime(onDismiss:() -> Unit, viewModel: ChangeTimeViewModel = viewModel()) {
@@ -40,6 +41,7 @@ fun ChangeRemindTime(onDismiss:() -> Unit, viewModel: ChangeTimeViewModel = view
                 {
                     val picker = TimePicker(it)
                     picker.setIs24HourView(DateFormat.is24HourFormat(context))
+                    picker.setBackgroundColor(ContextCompat.getColor(context, R.color.purple_700 ))
                     if (Build.VERSION.SDK_INT >= 23 ){picker.hour = timeState.remindTime.hour}else{picker.currentHour = timeState.remindTime.hour}
                     if (Build.VERSION.SDK_INT >= 23 ){picker.minute = timeState.remindTime.minute}else{picker.currentMinute = timeState.remindTime.minute}
                     picker.setOnTimeChangedListener { _, hour, time ->
@@ -50,7 +52,7 @@ fun ChangeRemindTime(onDismiss:() -> Unit, viewModel: ChangeTimeViewModel = view
                     }
                     picker
                 },
-                modifier = Modifier.wrapContentWidth(),
+                modifier = Modifier.wrapContentWidth().wrapContentHeight(),
             )
         },
         buttons = {
@@ -59,7 +61,7 @@ fun ChangeRemindTime(onDismiss:() -> Unit, viewModel: ChangeTimeViewModel = view
                 horizontalArrangement = Arrangement.End
             ){
                 TextButton(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(bottom = 16.dp, end = 16.dp),
                     onClick = {
                         viewModel.makeAction(ChangeTimeAction.SaveTime)
                         onDismiss()
