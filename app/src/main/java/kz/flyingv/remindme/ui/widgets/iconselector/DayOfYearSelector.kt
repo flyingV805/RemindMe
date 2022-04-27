@@ -31,10 +31,11 @@ fun DayOfYearSelector(
 ) {
 
     Row(
-        modifier = modifier.padding(16.dp)
+        modifier = modifier.fillMaxHeight().padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
     ){
         Box(modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(8.dp))
+            .fillMaxHeight()
             .weight(1f)
             .background(Color.White, RoundedCornerShape(8.dp))
             .clickable {
@@ -49,6 +50,7 @@ fun DayOfYearSelector(
         Spacer(modifier = Modifier.width(8.dp))
         Box(modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(8.dp))
+            .fillMaxHeight()
             .weight(1f)
             .background(Color.White, RoundedCornerShape(8.dp))
             .clickable {

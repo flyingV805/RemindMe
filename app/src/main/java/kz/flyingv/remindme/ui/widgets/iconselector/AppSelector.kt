@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -30,10 +31,11 @@ fun AppSelector(
     val isDropdownExpanded = remember { mutableStateOf(false)}
 
     Row(
-        modifier = modifier.padding(16.dp)
+        modifier = modifier.fillMaxWidth().fillMaxHeight().padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
     ){
         Box(modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(8.dp))
+            .fillMaxHeight()
             .weight(1f)
             .background(Color.White, RoundedCornerShape(8.dp))
             .clickable {
@@ -41,14 +43,19 @@ fun AppSelector(
             },
             contentAlignment = Alignment.CenterEnd
         ){
-            Row{
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ){
                 Image(
                     modifier = Modifier.width(36.dp).height(36.dp),
                     painter = rememberDrawablePainter(drawable = selectedApp?.icon),
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Text(text = selectedApp?.name ?: "Choose app...", modifier = Modifier.weight(1f))
+                Text(
+                    text = selectedApp?.name ?: "Choose app...",
+                    modifier = Modifier.padding(8.dp).weight(1f)
+                )
             }
             Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "", modifier = Modifier.padding(end = 8.dp))
             DropdownMenu(
