@@ -49,7 +49,7 @@ fun IconSelector(
 fun getIcon(icon: RemindIcon): Painter{
     return when(icon){
         RemindIcon.Cake -> painterResource(id = R.drawable.ic_avatar_cake)
-        RemindIcon.Medicine -> painterResource(id = R.drawable.ic_avatar_medeicine)
+        RemindIcon.Medicine -> painterResource(id = R.drawable.ic_avatar_medecine)
         RemindIcon.Officials -> painterResource(id = R.drawable.ic_avatar_officials)
         RemindIcon.Payday -> painterResource(id = R.drawable.ic_avatar_payday)
         RemindIcon.Workout -> painterResource(id = R.drawable.ic_avatar_workout)

@@ -41,7 +41,7 @@ class SystemRepositoryImpl: SystemRepository, KoinComponent {
             InstalledApp(
                 name = appName,
                 icon = appIcon,
-                launchActivity = it.activityInfo.name
+                launchActivity = it.resolvePackageName
             )
         }
 

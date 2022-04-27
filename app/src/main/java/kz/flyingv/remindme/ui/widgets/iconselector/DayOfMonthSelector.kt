@@ -68,6 +68,7 @@ fun DayOfMonthItem(
     Box(modifier = Modifier
         .shadow(4.dp, CircleShape)
         .width(36.dp)
+        .height(36.dp)
         .aspectRatio(1f)
         .background(
             if (isSelected) {

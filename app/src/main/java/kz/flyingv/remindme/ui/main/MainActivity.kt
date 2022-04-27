@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.work.WorkerParameters
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
@@ -45,6 +46,8 @@ import kz.flyingv.remindme.ui.widgets.isInPreview
 import kz.flyingv.remindme.ui.widgets.previewMainState
 import kz.flyingv.remindme.ui.widgets.topBarHeight
 import kz.flyingv.remindme.ui.widgets.topbar.CustomTopBar
+import kz.flyingv.remindme.utils.notifications.Notificator
+import kz.flyingv.remindme.utils.scheduler.DailyWorker
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -60,6 +63,8 @@ class MainActivity : ComponentActivity() {
                 MainScreen()
             }
         }
+
+        val notificator = Notificator(context = this)
 
     }
 

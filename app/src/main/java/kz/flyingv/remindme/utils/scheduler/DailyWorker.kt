@@ -51,9 +51,6 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
             }
         }
 
-        Notificator(applicationContext).makeTestNotification()
-
-
         reschedule()
         return Result.success()
     }
