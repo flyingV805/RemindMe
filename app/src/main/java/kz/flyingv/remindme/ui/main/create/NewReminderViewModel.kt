@@ -9,7 +9,6 @@ import kz.flyingv.remindme.data.model.*
 import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.data.repository.SystemRepository
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
-import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

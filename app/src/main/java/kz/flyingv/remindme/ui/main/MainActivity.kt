@@ -298,7 +298,7 @@ class MainActivity : ComponentActivity() {
                             Text(text = "Every week, ${reminder.type.dayOfWeek}", style = typography.h6)
                         }
                         is RemindType.Yearly -> {
-                            Text(text = "Every year, ${reminder.type.dayOfYear}", style = typography.h6)
+                            Text(text = "Every year, ${reminder.type.dayOfMonth}", style = typography.h6)
                         }
                     }
 

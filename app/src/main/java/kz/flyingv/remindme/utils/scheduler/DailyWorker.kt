@@ -44,7 +44,7 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                 }
                 is RemindType.Yearly -> {
                     //remind if day of year is right
-                    if(currentDate.get(Calendar.DAY_OF_YEAR) == type.dayOfYear){
+                    if(currentDate.get(Calendar.DAY_OF_YEAR) == type.dayOfMonth){
 
                     }
                 }

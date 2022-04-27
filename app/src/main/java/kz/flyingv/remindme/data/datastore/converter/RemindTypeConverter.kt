@@ -13,7 +13,7 @@ class RemindTypeConverter {
             is RemindType.Daily -> { JSONObject().put("type", typeDaily).toString() }
             is RemindType.Weekly -> { JSONObject().put("type", typeWeekly).put("argument", remindType.dayOfWeek).toString() }
             is RemindType.Monthly -> { JSONObject().put("type", typeMonthly).put("argument", remindType.dayOfMonth).toString() }
-            is RemindType.Yearly -> { JSONObject().put("type", typeYearly).put("argument", remindType.dayOfYear).toString() }
+            is RemindType.Yearly -> { JSONObject().put("type", typeYearly).put("day", remindType.dayOfMonth).put("month", remindType.month).toString() }
             null -> null
         }
     }
@@ -26,7 +26,7 @@ class RemindTypeConverter {
                 0 -> RemindType.Daily
                 1 -> RemindType.Weekly(jsonObject.getInt("argument"))
                 2 -> RemindType.Monthly(jsonObject.getInt("argument"))
-                3 -> RemindType.Yearly(jsonObject.getInt("argument"))
+                3 -> RemindType.Yearly(jsonObject.getInt("day"), jsonObject.getInt("month"))
                 else -> null
             }
         }catch (e: Exception){
