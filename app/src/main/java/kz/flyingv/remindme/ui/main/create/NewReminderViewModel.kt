@@ -46,22 +46,13 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
             }
             is NewReminderAction.UpdateAction -> {
                 _reminderAction.value = uiAction.remindAction
-                when(uiAction.remindAction){
-                    is RemindAction.DoNothing -> {
-
-                    }
-                    is RemindAction.OpenApp -> {
-                        if(_availableApps.value.isEmpty()){
-                            viewModelScope.launch(Dispatchers.IO){
-                                _availableApps.value = systemRepository.getInstalledApps()
-                            }
+                if(uiAction.remindAction is RemindAction.OpenApp){
+                    if(_availableApps.value.isEmpty()){
+                        viewModelScope.launch(Dispatchers.IO){
+                            _availableApps.value = systemRepository.getInstalledApps()
                         }
                     }
-                    is RemindAction.OpenUrl -> {
-
-                    }
                 }
-
             }
             is NewReminderAction.CreateReminder -> {
                 createReminder()

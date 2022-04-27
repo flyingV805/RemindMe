@@ -10,10 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -21,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import java.util.*
 
 @Composable
 fun DayOfYearSelector(
@@ -29,6 +27,9 @@ fun DayOfYearSelector(
     months: List<String> = listOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"),
     onSelectionChanged: (day: Int, month: Int) -> Unit
 ) {
+
+    val calendar = remember { Calendar.getInstance() }
+
 
     Row(
         modifier = modifier.fillMaxHeight().padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
@@ -65,11 +66,6 @@ fun DayOfYearSelector(
 
     }
 
-}
-
-private class DayOfYearSelectorState {
-    var selectDayIndex by mutableStateOf(0)
-    var selectDayMonth by mutableStateOf(0)
 }
 
 @Preview

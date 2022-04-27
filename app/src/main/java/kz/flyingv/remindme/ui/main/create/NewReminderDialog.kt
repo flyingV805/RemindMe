@@ -57,6 +57,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
     val lastSelectedDayOfMonth = remember{ mutableStateOf(0) }
     val daysOfMonthScrollState = remember{ LazyListState() }
     val selectedApp = remember {mutableStateOf<InstalledApp?>(null)}
+    val selectedUrl = remember {mutableStateOf<String?>(null)}
 
     Column(
         modifier = Modifier
@@ -174,7 +175,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                         viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.OpenApp(selectedApp.value)))
                     }
                     RemindActionEnum.OpenUrl -> {
-                        viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.OpenUrl(null)))
+                        viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.OpenUrl(selectedUrl.value)))
                     }
                 }
             }
@@ -211,9 +212,12 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 )
                 is RemindAction.OpenUrl -> TextField(
                     modifier =Modifier.fillMaxWidth().padding(top = 4.dp, start = 16.dp, end = 16.dp),
-                    value = it.url ?: "",
+                    value = selectedUrl.value ?: "",
                     singleLine = true,
-                    onValueChange = {},
+                    onValueChange = { url ->
+                        selectedUrl.value = url
+                        //viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.OpenUrl(url)))
+                    },
                     placeholder = { Text("Enter URL") },
                 )
             }
