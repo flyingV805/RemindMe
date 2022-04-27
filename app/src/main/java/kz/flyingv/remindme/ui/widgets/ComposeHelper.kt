@@ -2,6 +2,7 @@ package kz.flyingv.remindme.ui.widgets
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalInspectionMode
+import kz.flyingv.remindme.data.model.RemindAction
 import kz.flyingv.remindme.data.model.RemindIcon
 import kz.flyingv.remindme.ui.main.MainState
 import kz.flyingv.remindme.ui.main.create.NewReminderState
@@ -35,7 +36,7 @@ fun previewNewReminderState(): NewReminderState {
         name = "",
         icon = RemindIcon.Cake,
         type = RemindType.Daily,
-        action = RemindActionEnum.Nothing,
+        action = RemindAction.DoNothing,
         actionApps = emptyList()
     )
 }

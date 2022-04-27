@@ -35,6 +35,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
+import kz.flyingv.remindme.data.model.RemindAction
 import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.ui.main.create.NewReminderDialog
 import kz.flyingv.remindme.data.model.Reminder
@@ -302,11 +303,16 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = "Last remind: 2 days ago", style = typography.caption)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "Action: Open app - Kaspi.kz", style = typography.caption)
+                    when(reminder.action){
+                        RemindAction.DoNothing -> Text(text = "Action: Not assigned", style = typography.caption)
+                        is RemindAction.OpenApp -> Text(text = "Action: Open App - ${reminder.action.installedApp?.name}", style = typography.caption)
+                        is RemindAction.OpenUrl -> Text(text = "Action: Open URL - ${reminder.action.url}", style = typography.caption)
+                        null -> Text(text = "Action: Error", style = typography.caption)
+                    }
+
                 }
             }
         }

@@ -71,7 +71,7 @@ class Notificator(private val context: Context) {
 
         when(reminder.action){
             is RemindAction.OpenApp -> {
-                val openAppIntent = context.packageManager.getLaunchIntentForPackage(reminder.action.appPackage)
+                val openAppIntent = context.packageManager.getLaunchIntentForPackage(reminder.action.installedApp?.launchActivity ?: "")
                 openAppIntent?.let {
                     val snoozePendingIntent = PendingIntent.getActivity(context, 0, openAppIntent, 0)
                     builder.addAction(R.drawable.ic_baseline_alarm_24, context.getString(R.string.open_link), snoozePendingIntent)

@@ -13,6 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import kz.flyingv.remindme.data.model.InstalledApp
+import kz.flyingv.remindme.data.model.RemindAction
 import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
@@ -44,10 +46,17 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         is RemindType.Yearly -> RemindTypeEnum.Yearly
     }
 
+    val remindActionEnum = when(newReminderState.action){
+        is RemindAction.DoNothing -> RemindActionEnum.Nothing
+        is RemindAction.OpenApp -> RemindActionEnum.OpenApp
+        is RemindAction.OpenUrl -> RemindActionEnum.OpenUrl
+    }
+
     //remember last selectors state for seamless transition
     val lastSelectedDayOfWeek = remember{ mutableStateOf(0) }
     val lastSelectedDayOfMonth = remember{ mutableStateOf(0) }
     val daysOfMonthScrollState = remember{ LazyListState() }
+    val selectedApp = remember {mutableStateOf<InstalledApp?>(null)}
 
     Column(
         modifier = Modifier
@@ -99,7 +108,6 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                         viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Yearly(0, 0)))
                     }
                 }
-
             }
         ) {
             SegmentText(
@@ -111,13 +119,14 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 }
             )
         }
-
         Spacer(modifier = Modifier.height(16.dp))
 
         //Reminder type options
         Crossfade(
             targetState = newReminderState.type,
-            modifier = Modifier.fillMaxWidth().height(64.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
         ) { remindType ->
             when(remindType){
                 is RemindType.Daily -> Box(
@@ -155,8 +164,20 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         SegmentedControl(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
             segments = remindActions,
-            selectedSegment = newReminderState.action,
-            onSegmentSelected = { viewModel.makeAction(NewReminderAction.UpdateAction(it)) }
+            selectedSegment = remindActionEnum,
+            onSegmentSelected = {
+                when(it){
+                    RemindActionEnum.Nothing -> {
+                        viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.DoNothing))
+                    }
+                    RemindActionEnum.OpenApp -> {
+                        viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.OpenApp(selectedApp.value)))
+                    }
+                    RemindActionEnum.OpenUrl -> {
+                        viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.OpenUrl(null)))
+                    }
+                }
+            }
         ) {
             SegmentText(
                 when(it){
@@ -169,18 +190,28 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         Spacer(modifier = Modifier.height(16.dp))
 
         Crossfade(
-            modifier = Modifier.fillMaxWidth().height(64.dp),
+            modifier = Modifier.fillMaxWidth().height(72.dp),
             targetState = newReminderState.action
         ) {
             when(it){
-                RemindActionEnum.Nothing -> Text("Do nothing")
-                RemindActionEnum.OpenApp -> AppSelector(
+                is RemindAction.DoNothing ->
+                    Box(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text(text = "OK, no actions")
+                    }
+                is RemindAction.OpenApp -> AppSelector(
                     apps = newReminderState.actionApps,
-                    onSelectionChanged = {}
+                    selectedApp = it.installedApp ?: selectedApp.value,
+                    onSelectionChanged = { app ->
+                        selectedApp.value = app
+                        viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.OpenApp(app)))
+                    }
                 )
-                RemindActionEnum.OpenUrl -> TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = "",
+                is RemindAction.OpenUrl -> TextField(
+                    modifier =Modifier.fillMaxWidth().padding(top = 4.dp, start = 16.dp, end = 16.dp),
+                    value = it.url ?: "",
                     singleLine = true,
                     onValueChange = {},
                     placeholder = { Text("Enter URL") },
@@ -188,7 +219,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
             }
         }
 
-        Spacer(modifier = Modifier.height(72.dp))
+        Spacer(modifier = Modifier.height(48.dp))
         ExtendedFloatingActionButton(
             icon = { Icon(Icons.Filled.Create,"") },
             text = { Text("CREATE REMINDER") },

@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 import kz.flyingv.remindme.data.model.*
 import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.data.repository.SystemRepository
-import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -20,12 +19,18 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
     private val _reminderNameText: MutableStateFlow<String> = MutableStateFlow("")
     private val _reminderIcon: MutableStateFlow<RemindIcon> = MutableStateFlow(RemindIcon.Cake)
     private val _reminderType: MutableStateFlow<RemindType> = MutableStateFlow(RemindType.Daily)
-    private val _reminderAction: MutableStateFlow<RemindActionEnum> = MutableStateFlow(RemindActionEnum.Nothing)
+    private val _reminderAction: MutableStateFlow<RemindAction> = MutableStateFlow(RemindAction.DoNothing)
     private val _availableApps: MutableStateFlow<List<InstalledApp>> = MutableStateFlow(emptyList())
 
     val newReminderStateFlow: StateFlow<NewReminderState> =
         combine(_reminderNameText, _reminderIcon, _reminderType, _reminderAction, _availableApps){name, icon, type, action, apps  ->
-            NewReminderState(name = name, icon = icon, type = type, action = action, actionApps = apps)
+            NewReminderState(
+                name = name,
+                icon = icon,
+                type = type,
+                action = action,
+                actionApps = apps
+            )
     }.stateIn(viewModelScope, SharingStarted.Lazily, initialState())
 
     fun makeAction(uiAction: NewReminderAction){
@@ -41,11 +46,22 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
             }
             is NewReminderAction.UpdateAction -> {
                 _reminderAction.value = uiAction.remindAction
-                if(uiAction.remindAction == RemindActionEnum.OpenApp){
-                    viewModelScope.launch(Dispatchers.IO){
-                        _availableApps.value = systemRepository.getInstalledApps()
+                when(uiAction.remindAction){
+                    is RemindAction.DoNothing -> {
+
+                    }
+                    is RemindAction.OpenApp -> {
+                        if(_availableApps.value.isEmpty()){
+                            viewModelScope.launch(Dispatchers.IO){
+                                _availableApps.value = systemRepository.getInstalledApps()
+                            }
+                        }
+                    }
+                    is RemindAction.OpenUrl -> {
+
                     }
                 }
+
             }
             is NewReminderAction.CreateReminder -> {
                 createReminder()
@@ -60,7 +76,7 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
                     name = _reminderNameText.value,
                     icon = _reminderIcon.value,
                     type = _reminderType.value,
-                    action = RemindAction.OpenApp("", ""),
+                    action = _reminderAction.value,
                     lastShow = 0
                 )
             )
@@ -68,7 +84,7 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
     }
 
     private fun initialState(): NewReminderState {
-        return NewReminderState(name = "", icon = RemindIcon.Cake, type = RemindType.Daily, action = RemindActionEnum.Nothing, actionApps = emptyList())
+        return NewReminderState(name = "", icon = RemindIcon.Cake, type = RemindType.Daily, action = RemindAction.DoNothing, actionApps = emptyList())
     }
 
 }

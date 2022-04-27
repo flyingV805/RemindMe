@@ -31,7 +31,7 @@ fun AppSelector(
     val isDropdownExpanded = remember { mutableStateOf(false)}
 
     Row(
-        modifier = modifier.fillMaxWidth().fillMaxHeight().padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
+        modifier = modifier.fillMaxWidth().fillMaxHeight().padding(top = 4.dp, bottom = 16.dp, start = 32.dp, end = 32.dp)
     ){
         Box(modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(8.dp))
@@ -44,6 +44,7 @@ fun AppSelector(
             contentAlignment = Alignment.CenterEnd
         ){
             Row(
+                modifier = Modifier.padding(start = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Image(
@@ -54,6 +55,7 @@ fun AppSelector(
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = selectedApp?.name ?: "Choose app...",
+                    style = MaterialTheme.typography.h6,
                     modifier = Modifier.padding(8.dp).weight(1f)
                 )
             }
