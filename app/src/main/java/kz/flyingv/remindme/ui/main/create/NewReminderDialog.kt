@@ -1,5 +1,6 @@
 package kz.flyingv.remindme.ui.main.create
 
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -9,7 +10,6 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
@@ -18,9 +18,11 @@ import kz.flyingv.remindme.data.model.RemindAction
 import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
-import kz.flyingv.remindme.ui.widgets.iconselector.*
+import kz.flyingv.remindme.ui.widgets.selector.*
 import kz.flyingv.remindme.ui.widgets.isInPreview
 import kz.flyingv.remindme.ui.widgets.previewNewReminderState
+import kz.flyingv.remindme.ui.widgets.selector.AppSelector
+import kz.flyingv.remindme.ui.widgets.selector.IconSelector
 import kz.flyingv.remindme.ui.widgets.selector.SegmentText
 import kz.flyingv.remindme.ui.widgets.selector.SegmentedControl
 
@@ -58,6 +60,8 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
     val daysOfMonthScrollState = remember{ LazyListState() }
     val selectedApp = remember {mutableStateOf<InstalledApp?>(null)}
     val selectedUrl = remember {mutableStateOf<String?>(null)}
+    val lastSelectedMonthOfYear = remember{ mutableStateOf(0) }
+    val lastSelectedDayOfMonthInYear = remember{ mutableStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -106,7 +110,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                         viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Monthly(lastSelectedDayOfMonth.value)))
                     }
                     RemindTypeEnum.Yearly -> {
-                        viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Yearly(0, 0)))
+                        viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Yearly(lastSelectedDayOfMonthInYear.value, lastSelectedMonthOfYear.value)))
                     }
                 }
             }
@@ -129,6 +133,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 .fillMaxWidth()
                 .height(64.dp),
         ) { remindType ->
+            Log.d("UpdateType FF", ((newReminderState.type as? RemindType.Yearly)?.month ?: 0).toString())
             when(remindType){
                 is RemindType.Daily -> Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(),
@@ -155,8 +160,13 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 )
                 is RemindType.Yearly -> DayOfYearSelector(
                     modifier = Modifier.fillMaxWidth(),
+                    selectedMonth = (newReminderState.type as? RemindType.Yearly)?.month ?: lastSelectedMonthOfYear.value,
+                    selectedDay = (newReminderState.type as? RemindType.Yearly)?.dayOfMonth ?: lastSelectedDayOfMonthInYear.value,
                     onSelectionChanged = {day, month ->
-                        viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Yearly(day, month)))
+                        lastSelectedDayOfMonthInYear.value = day
+                        lastSelectedMonthOfYear.value = month
+                        Log.d("UpdateType", "$day and $month")
+                        viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Yearly(dayOfMonth = day, month = month)))
                     }
                 )
             }

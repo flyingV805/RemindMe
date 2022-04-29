@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.widgets.iconselector
+package kz.flyingv.remindme.ui.widgets.selector
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background

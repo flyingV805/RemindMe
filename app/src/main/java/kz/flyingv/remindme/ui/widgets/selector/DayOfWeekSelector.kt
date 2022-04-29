@@ -1,42 +1,41 @@
-package kz.flyingv.remindme.ui.widgets.iconselector
+package kz.flyingv.remindme.ui.widgets.selector
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kz.flyingv.remindme.R
-import kz.flyingv.remindme.data.model.RemindIcon
 
 @Composable
-fun IconSelector(
+fun DayOfWeekSelector(
     modifier: Modifier = Modifier,
-    currentSelect: RemindIcon,
-    onSelectionChanged: (icon: RemindIcon) -> Unit
+    days: List<String> = listOf("Mn", "Tu", "We", "Th", "Fr", "Sa", "Su"),
+    selectedDay: Int,
+    onSelectionChanged: (dayOfWeek: Int) -> Unit
 ){
+    //val state by remember { mutableStateOf(DayOfWeekState()) }
 
     Row (
-        modifier = modifier,
+        modifier = modifier.padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ){
-        RemindIcon.values().forEach { icon ->
+        days.forEachIndexed { index, nameOfDay ->
             Spacer(modifier = Modifier.width(4.dp))
-            SelectableIcon(
-                icon = getIcon(icon),
-                isSelected = currentSelect == icon,
+            DayOfWeekItem(
+                name = nameOfDay,
+                isSelected = selectedDay == index,
                 onSelect = {
-                    onSelectionChanged(icon)
+                    //state.selectDayIndex = index
+                    onSelectionChanged(index)
                 }
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -45,25 +44,21 @@ fun IconSelector(
 
 }
 
-@Composable
-fun getIcon(icon: RemindIcon): Painter{
-    return when(icon){
-        RemindIcon.Cake -> painterResource(id = R.drawable.ic_avatar_cake)
-        RemindIcon.Medicine -> painterResource(id = R.drawable.ic_avatar_medecine)
-        RemindIcon.Officials -> painterResource(id = R.drawable.ic_avatar_officials)
-        RemindIcon.Payday -> painterResource(id = R.drawable.ic_avatar_payday)
-        RemindIcon.Workout -> painterResource(id = R.drawable.ic_avatar_workout)
-    }
+private class DayOfWeekState {
+    var selectDayIndex by mutableStateOf(0)
 }
 
 @Composable
-fun SelectableIcon(
-    icon: Painter,
+fun DayOfWeekItem(
+    name: String,
     isSelected: Boolean,
     onSelect: () -> Unit,
 ){
     Box(modifier = Modifier
         .shadow(4.dp, CircleShape)
+        .width(36.dp)
+        .height(36.dp)
+        .aspectRatio(1f)
         .background(
             if (isSelected) {
                 Color.Cyan
@@ -74,22 +69,24 @@ fun SelectableIcon(
         )
         .clickable {
             onSelect()
-        }
+        },
+        contentAlignment = Alignment.Center
     ){
-        Icon(icon, "", Modifier.padding(12.dp).width(24.dp).height(24.dp))
+        Text(name, modifier = Modifier.padding(4.dp))
+        //Icon(icon, "", Modifier.padding(12.dp).width(24.dp).height(24.dp))
     }
 }
 
 @Preview
-@Composable fun IconSelectorDemo() {
+@Composable fun DayOfWeekSelectorDemo() {
     MaterialTheme {
         Surface {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Icon Selector", style = MaterialTheme.typography.caption)
+                Text("Day of Week Selector", style = MaterialTheme.typography.caption)
 
-                IconSelector(
+                DayOfWeekSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    currentSelect = RemindIcon.Medicine,
+                    selectedDay = 0,
                     onSelectionChanged = {}
                 )
             }
