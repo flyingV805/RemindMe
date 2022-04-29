@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @Composable
 fun DayOfYearSelector(
@@ -24,8 +25,8 @@ fun DayOfYearSelector(
     onSelectionChanged: (day: Int, month: Int) -> Unit
 ) {
 
-    val months = remember { listOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December") }
-    var daysInMonthCount = remember { daysInMonth(selectedMonth + 1) }
+    val months = remember { DatetimeUtils.listOfMonths() }
+    var daysInMonthCount = remember { DatetimeUtils.daysInMonth(selectedMonth + 1) }
 
     val showMonthDropdown = remember{ mutableStateOf(false) }
     val showDayOfMonthDropdown = remember{ mutableStateOf(false) }
@@ -33,7 +34,6 @@ fun DayOfYearSelector(
     if(selectedDay > daysInMonthCount - 1){
         onSelectionChanged(daysInMonthCount - 1, selectedMonth)
     }
-
 
     Row(
         modifier = modifier
@@ -64,7 +64,7 @@ fun DayOfYearSelector(
                         //selectedMonthInner.value = index
                         showMonthDropdown.value = false
                         //+1 cause index is not month number
-                        daysInMonthCount = daysInMonth(index + 1)
+                        daysInMonthCount = DatetimeUtils.daysInMonth(index + 1)
                         onSelectionChanged(selectedDay, index)
                     }) {
                         Text(month)
@@ -127,15 +127,4 @@ fun DayOfYearSelector(
             }
         }
     }
-}
-
-fun daysInMonth(month: Int): Int{
-    val result = if (month == 4 || month == 6 || month == 9 || month == 11){
-        30
-    }else if(month == 2){
-        28
-    }else{
-        31
-    }
-    return result
 }

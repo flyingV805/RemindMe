@@ -36,10 +36,10 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.data.model.RemindAction
-import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.ui.main.create.NewReminderDialog
 import kz.flyingv.remindme.data.model.Reminder
 import kz.flyingv.remindme.ui.main.remindtime.ChangeRemindTime
+import kz.flyingv.remindme.ui.statemodel.RemindFormatter
 import kz.flyingv.remindme.ui.widgets.selector.getIcon
 import kz.flyingv.remindme.ui.widgets.isInPreview
 import kz.flyingv.remindme.ui.widgets.previewMainState
@@ -139,7 +139,8 @@ class MainActivity : ComponentActivity() {
                             .padding(start = 8.dp, end = 8.dp),
                         listState = remindersListScrollState,
                         reminders = mainState.reminders,
-                        isInSearch = mainState.isSearching
+                        isInSearch = mainState.isSearching,
+                        isInitial = mainState.isInitial
                     )
                     CustomTopBar(
                         modifier = Modifier
@@ -208,7 +209,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ReminderList(modifier: Modifier, listState: LazyListState, reminders: List<Reminder>, isInSearch: Boolean){
+    private fun ReminderList(modifier: Modifier, listState: LazyListState, reminders: List<Reminder>, isInSearch: Boolean, isInitial: Boolean){
         //val state = remember{ LazyListState() }
         LazyColumn(
             modifier = modifier,
@@ -216,7 +217,7 @@ class MainActivity : ComponentActivity() {
             contentPadding = PaddingValues(top = topBarHeight, start = 0.dp, end = 0.dp, bottom = 8.dp)
         ) {
             //show something, if user don't have any reminders
-            if(reminders.isEmpty()){
+            if(reminders.isEmpty() && !isInitial){
                 item{
                     val composition by rememberLottieComposition(LottieCompositionSpec.Asset("lottie-no-data.json"))
                     Column(
@@ -264,7 +265,9 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp)
-                .clickable { },
+                .clickable {
+                    mainViewModel.debugNotification(this, reminder)
+                },
             elevation = 8.dp
         ) {
             Row(
@@ -281,41 +284,17 @@ class MainActivity : ComponentActivity() {
                     Icon(
                         getIcon(icon = reminder.icon),
                         "",
-                        Modifier
-                            .padding(12.dp)
-                            .width(28.dp)
-                            .height(28.dp)
+                        Modifier.padding(12.dp).width(28.dp).height(28.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(Modifier.weight(1f)) {
                     Text(text = reminder.name, style = typography.h6)
-
-                    when(reminder.type){
-                        is RemindType.Daily -> {
-                            Text(text = "Every day", style = typography.h6)
-                        }
-                        is RemindType.Monthly -> {
-                            Text(text = "Every month, ${reminder.type.dayOfMonth}", style = typography.h6)
-                        }
-                        is RemindType.Weekly -> {
-                            Text(text = "Every week, ${reminder.type.dayOfWeek}", style = typography.h6)
-                        }
-                        is RemindType.Yearly -> {
-                            Text(text = "Every year, ${reminder.type.dayOfMonth}", style = typography.h6)
-                        }
-                    }
-
+                    Text(text =RemindFormatter.formatRemindType(reminder.type), style = typography.h6)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = "Last remind: 2 days ago", style = typography.caption)
                     Spacer(modifier = Modifier.height(4.dp))
-                    when(reminder.action){
-                        RemindAction.DoNothing -> Text(text = "Action: Not assigned", style = typography.caption)
-                        is RemindAction.OpenApp -> Text(text = "Action: Open App - ${reminder.action.installedApp?.name}", style = typography.caption)
-                        is RemindAction.OpenUrl -> Text(text = "Action: Open URL - ${reminder.action.url}", style = typography.caption)
-                        null -> Text(text = "Action: Error", style = typography.caption)
-                    }
-
+                    Text(text = RemindFormatter.formatRemindAction(reminder.action), style = typography.caption)
                 }
             }
         }

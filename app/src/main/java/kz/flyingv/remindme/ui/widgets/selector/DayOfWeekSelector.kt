@@ -14,11 +14,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @Composable
 fun DayOfWeekSelector(
     modifier: Modifier = Modifier,
-    days: List<String> = listOf("Mn", "Tu", "We", "Th", "Fr", "Sa", "Su"),
+    days: List<String> = DatetimeUtils.listOfDaysOfWeek(),
     selectedDay: Int,
     onSelectionChanged: (dayOfWeek: Int) -> Unit
 ){

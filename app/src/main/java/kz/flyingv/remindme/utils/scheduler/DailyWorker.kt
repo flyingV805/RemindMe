@@ -1,12 +1,15 @@
 package kz.flyingv.remindme.utils.scheduler
 
 import android.content.Context
+import android.util.Log
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.data.repository.ReminderRepository
+import kz.flyingv.remindme.data.repository.SchedulerRepository
+import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 import kz.flyingv.remindme.utils.notifications.Notificator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -17,6 +20,7 @@ import java.util.concurrent.TimeUnit
 class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
     private val reminderRepository: ReminderRepository by inject()
+    private val schedulerRepository: SchedulerRepository by inject()
 
     override fun doWork(): Result {
 
@@ -24,28 +28,41 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
         val currentDate = Calendar.getInstance()
 
         reminderRepository.getWorkerReminders().forEach { reminder ->
-            notificator.showNotification(reminder)
-            val type = reminder.type
-            when(type){
+            when(val type = reminder.type){
                 is RemindType.Daily -> {
-                    //remind anyway
-                }
-                is RemindType.Monthly -> {
-                    //remind if day of month is right
-                    if(currentDate.get(Calendar.DAY_OF_MONTH) == type.dayOfMonth){
-
-                    }
+                    notificator.showNotification(reminder)
                 }
                 is RemindType.Weekly -> {
-                    //remind if day of week is right
-                    if(currentDate.get(Calendar.DAY_OF_WEEK) == type.dayOfWeek){
-
+                    if(DatetimeUtils.dayOfWeekIndex(currentDate) == type.dayOfWeek){
+                        notificator.showNotification(reminder)
+                    }
+                }
+                is RemindType.Monthly -> {
+                    val reminderDayInMonth = (type.dayOfMonth + 1)
+                    val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
+                    if(currentDayInMonth == reminderDayInMonth){
+                        notificator.showNotification(reminder)
+                    }
+                    //extra case, month don't have much days
+                    val daysInCurrentMonth = DatetimeUtils.daysInMonth(currentDate.get(Calendar.MONTH) + 1) //currentDate.get(Calendar.MONTH)
+                    if(reminderDayInMonth > daysInCurrentMonth && currentDayInMonth == daysInCurrentMonth){
+                        notificator.showNotification(reminder)
                     }
                 }
                 is RemindType.Yearly -> {
-                    //remind if day of year is right
-                    if(currentDate.get(Calendar.DAY_OF_YEAR) == type.dayOfMonth){
+                    val reminderDayInMonth = (type.dayOfMonth + 1)
+                    val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
 
+                    val reminderMonth = (type.month)
+                    val currentMonth = currentDate.get(Calendar.MONTH)
+
+                    Log.d("Y reminderDayInMonth", reminderDayInMonth.toString())
+                    Log.d("Y currentDayInMonth", currentDayInMonth.toString())
+                    Log.d("Y reminderMonth", reminderMonth.toString())
+                    Log.d("Y currentMonth", currentMonth.toString())
+
+                    if(reminderDayInMonth == currentDayInMonth && reminderMonth == currentMonth){
+                        notificator.showNotification(reminder)
                     }
                 }
             }
@@ -59,8 +76,10 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
         val currentDate = Calendar.getInstance()
         val dueDate = Calendar.getInstance()
 
-        dueDate.set(Calendar.HOUR_OF_DAY, 10)
-        dueDate.set(Calendar.MINUTE, 0)
+        val remindTime = schedulerRepository.currentRemindTime()
+
+        dueDate.set(Calendar.HOUR_OF_DAY, remindTime.hour)
+        dueDate.set(Calendar.MINUTE, remindTime.minute)
         dueDate.set(Calendar.SECOND, 0)
         if (dueDate.before(currentDate)) {dueDate.add(Calendar.HOUR_OF_DAY, 24)}
 

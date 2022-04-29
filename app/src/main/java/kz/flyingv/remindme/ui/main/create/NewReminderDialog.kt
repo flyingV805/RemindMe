@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
@@ -64,9 +66,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
     val lastSelectedDayOfMonthInYear = remember{ mutableStateOf(0) }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp, bottom = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text ="NEW REMINDER", style = MaterialTheme.typography.h6)
@@ -91,6 +91,7 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 viewModel.makeAction(NewReminderAction.UpdateName(it))
             },
             placeholder = { Text("Reminder Name") },
+            keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
         )
         Spacer(modifier = Modifier.height(16.dp))
         //Reminder type
