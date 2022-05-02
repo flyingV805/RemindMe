@@ -4,6 +4,7 @@ import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
 import android.widget.TimePicker
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
@@ -13,10 +14,12 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kz.flyingv.remindme.R
@@ -27,7 +30,34 @@ fun ChangeRemindTime(onDismiss:() -> Unit, viewModel: ChangeTimeViewModel = view
 
     val timeState = viewModel.changeTimeStateFlow.collectAsState().value
 
-    AlertDialog(
+    Dialog(
+        onDismissRequest = {
+            viewModel.makeAction(ChangeTimeAction.SaveTime)
+            onDismiss()
+        }
+    ) {
+        AndroidView(
+            {
+                val picker = TimePicker(it)
+                picker.setIs24HourView(DateFormat.is24HourFormat(context))
+                picker.setBackgroundColor(ContextCompat.getColor(context, R.color.purple_700 ))
+                if (Build.VERSION.SDK_INT >= 23 ){picker.hour = timeState.remindTime.hour}else{picker.currentHour = timeState.remindTime.hour}
+                if (Build.VERSION.SDK_INT >= 23 ){picker.minute = timeState.remindTime.minute}else{picker.currentMinute = timeState.remindTime.minute}
+                picker.setOnTimeChangedListener { _, hour, time ->
+                    Log.d("time updated", " $hour $time " )
+                    viewModel.makeAction(
+                        ChangeTimeAction.UpdateTime(hour, time)
+                    )
+                }
+                picker
+            },
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight(),
+        )
+    }
+    /*
+    Dialog(
         shape = RoundedCornerShape(12.dp),
         title = {
             Text(
@@ -52,7 +82,9 @@ fun ChangeRemindTime(onDismiss:() -> Unit, viewModel: ChangeTimeViewModel = view
                     }
                     picker
                 },
-                modifier = Modifier.wrapContentWidth().wrapContentHeight(),
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
             )
         },
         buttons = {
@@ -72,6 +104,6 @@ fun ChangeRemindTime(onDismiss:() -> Unit, viewModel: ChangeTimeViewModel = view
             }
         },
         onDismissRequest = { onDismiss()}
-    )
+    )*/
 
 }

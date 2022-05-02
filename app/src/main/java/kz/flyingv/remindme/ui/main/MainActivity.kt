@@ -185,10 +185,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Row {
                         Spacer(modifier = Modifier.width(8.dp))
-                        IconButton(onClick = {}) {
+                        /*IconButton(onClick = {}) {
                             Icon(Icons.Filled.Settings, "")
                         }
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(4.dp))*/
                         IconButton(onClick = {
                             showSettingsDialog.value = true
                         }) {
