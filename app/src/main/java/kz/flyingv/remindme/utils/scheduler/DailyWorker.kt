@@ -30,10 +30,12 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
         reminderRepository.getWorkerReminders().forEach { reminder ->
             when(val type = reminder.type){
                 is RemindType.Daily -> {
+                    reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                     notificator.showNotification(reminder)
                 }
                 is RemindType.Weekly -> {
                     if(DatetimeUtils.dayOfWeekIndex(currentDate) == type.dayOfWeek){
+                        reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
                     }
                 }
@@ -41,12 +43,14 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                     val reminderDayInMonth = (type.dayOfMonth + 1)
                     val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
                     if(currentDayInMonth == reminderDayInMonth){
+                        reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
                     }
                     //extra case, month don't have much days
                     val currentMonth = DatetimeUtils.currentMonth(currentDate)
                     val daysInCurrentMonth = DatetimeUtils.daysInMonth(currentMonth) //currentDate.get(Calendar.MONTH)
                     if(reminderDayInMonth > daysInCurrentMonth && currentDayInMonth == daysInCurrentMonth){
+                        reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
                     }
                 }
@@ -63,10 +67,12 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                     Log.d("Y currentMonth", currentMonth.toString())
 
                     if(reminderDayInMonth == currentDayInMonth && reminderMonth == currentMonth){
+                        reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
                     }
                 }
             }
+
         }
 
         reschedule()

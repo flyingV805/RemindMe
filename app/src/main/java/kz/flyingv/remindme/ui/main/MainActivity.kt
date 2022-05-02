@@ -45,6 +45,7 @@ import kz.flyingv.remindme.ui.widgets.isInPreview
 import kz.flyingv.remindme.ui.widgets.previewMainState
 import kz.flyingv.remindme.ui.widgets.topBarHeight
 import kz.flyingv.remindme.ui.widgets.topbar.CustomTopBar
+import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -322,7 +323,7 @@ class MainActivity : ComponentActivity() {
                     Text(text = reminder.name, style = typography.h6, maxLines = 1)
                     Text(text = RemindFormatter.formatRemindType(reminder.type), style = typography.h6, maxLines = 1)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "Last remind: 2 days ago", style = typography.caption, maxLines = 1)
+                    Text(text = "Last remind: ${DatetimeUtils.lastTimeDisplayed(reminder.lastShow)}", style = typography.caption, maxLines = 1)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = RemindFormatter.formatRemindAction(reminder.action), style = typography.caption, maxLines = 1)
                 }

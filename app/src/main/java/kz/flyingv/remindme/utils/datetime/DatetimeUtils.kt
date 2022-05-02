@@ -8,6 +8,17 @@ class DatetimeUtils {
 
     companion object {
 
+        fun lastTimeDisplayed(lastShowMills: Long): String {
+            return when((System.currentTimeMillis() - lastShowMills) / 1000){
+                in 0..60 -> "Less than a minute ago"
+                in 60..600 -> "Minutes ago"
+                in 600..3600 -> "Less than an hour ago"
+                in 3600..43200 -> "Hours ago"
+                in 43200..604800 -> "Last week"
+                else -> "Haven't reminded yet"
+            }
+        }
+
         fun dayOfWeekString(dayOfWeek: DayOfWeek): String {
             return when(dayOfWeek){
                 DayOfWeek.MONDAY -> "Mn"
