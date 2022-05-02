@@ -4,6 +4,9 @@ Regular events reminder app
 <a href="https://play.google.com/store/apps/details?id=kz.flyingv.remindme"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="75"></a>
 
 ## Tech-stack
+
+Project takes advantages of MVI (UDF) approach for displaying immutable UI State, wich is can be modified in one place.
+
 Min API level is set to 21, so the presented approach is suitable for over 94% of devices running Android. 
 This project takes advantage of many popular libraries and tools of the Android ecosystem. 
 
