@@ -56,54 +56,5 @@ fun ChangeRemindTime(onDismiss:() -> Unit, viewModel: ChangeTimeViewModel = view
                 .wrapContentHeight(),
         )
     }
-    /*
-    Dialog(
-        shape = RoundedCornerShape(12.dp),
-        title = {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "SET REMIND TIME",
-                style = MaterialTheme.typography.h6.copy(textAlign = TextAlign.Center)
-            )
-        },
-        text = {
-            AndroidView(
-                {
-                    val picker = TimePicker(it)
-                    picker.setIs24HourView(DateFormat.is24HourFormat(context))
-                    picker.setBackgroundColor(ContextCompat.getColor(context, R.color.purple_700 ))
-                    if (Build.VERSION.SDK_INT >= 23 ){picker.hour = timeState.remindTime.hour}else{picker.currentHour = timeState.remindTime.hour}
-                    if (Build.VERSION.SDK_INT >= 23 ){picker.minute = timeState.remindTime.minute}else{picker.currentMinute = timeState.remindTime.minute}
-                    picker.setOnTimeChangedListener { _, hour, time ->
-                        Log.d("time updated", " $hour $time " )
-                        viewModel.makeAction(
-                            ChangeTimeAction.UpdateTime(hour, time)
-                        )
-                    }
-                    picker
-                },
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
-            )
-        },
-        buttons = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ){
-                TextButton(
-                    modifier = Modifier.padding(bottom = 16.dp, end = 16.dp),
-                    onClick = {
-                        viewModel.makeAction(ChangeTimeAction.SaveTime)
-                        onDismiss()
-                    }
-                ) {
-                    Text("SAVE")
-                }
-            }
-        },
-        onDismissRequest = { onDismiss()}
-    )*/
 
 }

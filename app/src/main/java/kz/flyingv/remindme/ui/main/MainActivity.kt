@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.ui.main.create.NewReminderDialog
 import kz.flyingv.remindme.data.model.Reminder
+import kz.flyingv.remindme.ui.main.delete.DeleteReminderDialog
 import kz.flyingv.remindme.ui.main.remindtime.ChangeRemindTime
 import kz.flyingv.remindme.ui.statemodel.RemindFormatter
 import kz.flyingv.remindme.ui.widgets.selector.getIcon
@@ -56,7 +57,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent{
-            MaterialTheme {
+            MaterialTheme(
+                colors = MaterialTheme.colors.copy(primary = colorResource(id = R.color.purple_700))
+            ) {
                 MainScreen()
             }
         }
@@ -126,6 +129,10 @@ class MainActivity : ComponentActivity() {
         }
 
         val showSettingsDialog = remember{ mutableStateOf(false) }
+
+        val showRemoveReminderDialog = remember{ mutableStateOf(false) }
+        val reminderForDelete = remember{ mutableStateOf<Reminder?>(null) }
+
         val mainColorTop = colorResource(id = R.color.purple_700)
 
         Scaffold(
@@ -142,7 +149,12 @@ class MainActivity : ComponentActivity() {
                         listState = remindersListScrollState,
                         reminders = mainState.reminders,
                         isInSearch = mainState.isSearching,
-                        isInitial = mainState.isInitial
+                        isInitial = mainState.isInitial,
+                        deleteReminder = {reminder ->
+                            reminderForDelete.value = reminder
+                            showRemoveReminderDialog.value = true
+                            println()
+                        }
                     )
                     CustomTopBar(
                         modifier = Modifier
@@ -165,6 +177,18 @@ class MainActivity : ComponentActivity() {
                         ChangeRemindTime(
                             onDismiss = {
                                 showSettingsDialog.value = false
+                            }
+                        )
+                    }
+                    if(showRemoveReminderDialog.value) {
+                        DeleteReminderDialog(
+                            reminder = reminderForDelete.value,
+                            onDismiss = {
+                                showRemoveReminderDialog.value = false
+                            },
+                            onAccept = {
+                                mainViewModel.makeAction(MainAction.DeleteReminder(reminderForDelete.value!!))
+                                showRemoveReminderDialog.value = false
                             }
                         )
                     }
@@ -210,7 +234,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ReminderList(modifier: Modifier, listState: LazyListState, reminders: List<Reminder>, isInSearch: Boolean, isInitial: Boolean){
+    private fun ReminderList(modifier: Modifier, listState: LazyListState, reminders: List<Reminder>, isInSearch: Boolean, isInitial: Boolean, deleteReminder: (reminder: Reminder) -> Unit?){
         //val state = remember{ LazyListState() }
         LazyColumn(
             modifier = modifier,
@@ -250,7 +274,10 @@ class MainActivity : ComponentActivity() {
             items(
                 count = reminders.size,
                 itemContent = {
-                    ReminderListItem(reminder = reminders[it])
+                    ReminderListItem(
+                        reminder = reminders[it],
+                        deleteReminder = {reminder -> deleteReminder(reminder)}
+                    )
                 }
             )
 
@@ -261,13 +288,13 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun ReminderListItem(reminder: Reminder) {
+    fun ReminderListItem(reminder: Reminder, deleteReminder: (reminder: Reminder) -> Unit?) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp)
                 .clickable {
-                    mainViewModel.debugNotification(this, reminder)
+                    //mainViewModel.debugNotification(this, reminder)
                 },
             elevation = 8.dp
         ) {
@@ -294,7 +321,7 @@ class MainActivity : ComponentActivity() {
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(Modifier.weight(1f)) {
                     Text(text = reminder.name, style = typography.h6, maxLines = 1)
-                    Text(text =RemindFormatter.formatRemindType(reminder.type), style = typography.h6, maxLines = 1)
+                    Text(text = RemindFormatter.formatRemindType(reminder.type), style = typography.h6, maxLines = 1)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = "Last remind: 2 days ago", style = typography.caption, maxLines = 1)
                     Spacer(modifier = Modifier.height(4.dp))
@@ -309,10 +336,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun deleteReminder(reminder: Reminder){
-        mainViewModel.makeAction(MainAction.DeleteReminder(reminder))
     }
 
     @Preview

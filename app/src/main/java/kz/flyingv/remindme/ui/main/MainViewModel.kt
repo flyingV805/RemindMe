@@ -2,6 +2,7 @@ package kz.flyingv.remindme.ui.main
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,7 @@ class MainViewModel: ViewModel(), KoinComponent {
         combine(_currentReminders, _isSearching, _searchText){list, isSearch, searchText ->
 
             val remindersList = if(searchText.isNotBlank()){
-                list.filter { it.name.contains(searchText) }
+                list.filter { it.name.lowercase(Locale.getDefault()).contains(searchText.lowercase(Locale.getDefault())) }
             }else{
                 list
             }
@@ -73,6 +74,7 @@ class MainViewModel: ViewModel(), KoinComponent {
         _searchText.value = searchText
     }
 
+    /*
     //debug section
     fun debugNotification(context: Context, reminder: Reminder){
         val notificator = Notificator(context = context)
@@ -83,6 +85,6 @@ class MainViewModel: ViewModel(), KoinComponent {
             }
         }
 
-    }
+    }*/
 
 }
