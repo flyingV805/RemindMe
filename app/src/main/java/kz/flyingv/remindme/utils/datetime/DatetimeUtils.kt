@@ -1,5 +1,7 @@
 package kz.flyingv.remindme.utils.datetime
 
+import kz.flyingv.remindme.data.model.DayOfWeek
+import kz.flyingv.remindme.data.model.MonthOfYear
 import java.util.*
 
 class DatetimeUtils {
@@ -13,23 +15,71 @@ class DatetimeUtils {
 
         fun listOfDaysOfWeek() = daysOfWeekList
 
-        fun dayOfWeekIndex(calendar: Calendar): Int{
-            return when(calendar.get(Calendar.DAY_OF_WEEK)){
-                Calendar.MONDAY -> 0
-                Calendar.TUESDAY -> 1
-                Calendar.WEDNESDAY -> 2
-                Calendar.THURSDAY -> 3
-                Calendar.FRIDAY -> 4
-                Calendar.SATURDAY -> 5
-                Calendar.SUNDAY -> 6
-                else -> 0
+        fun dayOfWeekString(dayOfWeek: DayOfWeek): String {
+            return when(dayOfWeek){
+                DayOfWeek.MONDAY -> "Mn"
+                DayOfWeek.TUESDAY -> "Tu"
+                DayOfWeek.WEDNESDAY -> "We"
+                DayOfWeek.THURSDAY -> "Th"
+                DayOfWeek.FRIDAY -> "Fr"
+                DayOfWeek.SATURDAY -> "Sa"
+                DayOfWeek.SUNDAY -> "Su"
             }
         }
 
-        fun daysInMonth(month: Int): Int{
-            val result = if (month == 4 || month == 6 || month == 9 || month == 11){
+        fun monthOfYearString(monthOfYear: MonthOfYear): String {
+            return when(monthOfYear){
+                MonthOfYear.January -> "January"
+                MonthOfYear.February -> "February"
+                MonthOfYear.March -> "March"
+                MonthOfYear.April -> "April"
+                MonthOfYear.May -> "May"
+                MonthOfYear.June -> "June"
+                MonthOfYear.July -> "July"
+                MonthOfYear.August -> "August"
+                MonthOfYear.September -> "September"
+                MonthOfYear.October -> "October"
+                MonthOfYear.November -> "November"
+                MonthOfYear.December -> "December"
+            }
+        }
+
+        fun dayOfWeekIndex(calendar: Calendar): DayOfWeek{
+            return when(calendar.get(Calendar.DAY_OF_WEEK)){
+                Calendar.MONDAY -> DayOfWeek.MONDAY
+                Calendar.TUESDAY -> DayOfWeek.TUESDAY
+                Calendar.WEDNESDAY -> DayOfWeek.WEDNESDAY
+                Calendar.THURSDAY -> DayOfWeek.THURSDAY
+                Calendar.FRIDAY -> DayOfWeek.FRIDAY
+                Calendar.SATURDAY -> DayOfWeek.SATURDAY
+                Calendar.SUNDAY -> DayOfWeek.SUNDAY
+                else -> DayOfWeek.MONDAY
+            }
+        }
+
+        fun currentMonth(calendar: Calendar): MonthOfYear {
+            return when(calendar.get(Calendar.MONTH)){
+                Calendar.JANUARY -> MonthOfYear.January
+                Calendar.FEBRUARY -> MonthOfYear.February
+                Calendar.MARCH -> MonthOfYear.March
+                Calendar.APRIL -> MonthOfYear.April
+                Calendar.MAY -> MonthOfYear.May
+                Calendar.JUNE -> MonthOfYear.June
+                Calendar.JULY -> MonthOfYear.July
+                Calendar.AUGUST -> MonthOfYear.August
+                Calendar.SEPTEMBER -> MonthOfYear.September
+                Calendar.OCTOBER -> MonthOfYear.October
+                Calendar.NOVEMBER -> MonthOfYear.November
+                Calendar.DECEMBER -> MonthOfYear.December
+                else -> MonthOfYear.January
+            }
+        }
+
+        fun daysInMonth(month: MonthOfYear): Int{
+            val monthIndex = month.ordinal + 1
+            val result = if (monthIndex == 4 || monthIndex == 6 || monthIndex == 9 || monthIndex == 11){
                 30
-            }else if(month == 2){
+            }else if(monthIndex == 2){
                 28
             }else{
                 31

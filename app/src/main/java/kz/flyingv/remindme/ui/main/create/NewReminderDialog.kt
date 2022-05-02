@@ -15,9 +15,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
-import kz.flyingv.remindme.data.model.InstalledApp
-import kz.flyingv.remindme.data.model.RemindAction
-import kz.flyingv.remindme.data.model.RemindType
+import kz.flyingv.remindme.data.model.*
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
 import kz.flyingv.remindme.ui.widgets.selector.*
@@ -57,13 +55,13 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
     }
 
     //remember last selectors state for seamless transition
-    val lastSelectedDayOfWeek = remember{ mutableStateOf(0) }
-    val lastSelectedDayOfMonth = remember{ mutableStateOf(0) }
+    val lastSelectedDayOfWeek = remember{ mutableStateOf(DayOfWeek.MONDAY) }
+    val lastSelectedDayOfMonth = remember{ mutableStateOf(1) }
     val daysOfMonthScrollState = remember{ LazyListState() }
     val selectedApp = remember {mutableStateOf<InstalledApp?>(null)}
     val selectedUrl = remember {mutableStateOf<String?>(null)}
-    val lastSelectedMonthOfYear = remember{ mutableStateOf(0) }
-    val lastSelectedDayOfMonthInYear = remember{ mutableStateOf(0) }
+    val lastSelectedMonthOfYear = remember{ mutableStateOf(MonthOfYear.January) }
+    val lastSelectedDayOfMonthInYear = remember{ mutableStateOf(1) }
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp),
@@ -134,7 +132,6 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 .fillMaxWidth()
                 .height(64.dp),
         ) { remindType ->
-            Log.d("UpdateType FF", ((newReminderState.type as? RemindType.Yearly)?.month ?: 0).toString())
             when(remindType){
                 is RemindType.Daily -> Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(),

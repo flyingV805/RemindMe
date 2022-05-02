@@ -15,24 +15,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kz.flyingv.remindme.data.model.MonthOfYear
 import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @Composable
 fun DayOfYearSelector(
     modifier: Modifier = Modifier,
-    selectedDay: Int = 0,
-    selectedMonth: Int = 0,
-    onSelectionChanged: (day: Int, month: Int) -> Unit
+    selectedDay: Int = 1,
+    selectedMonth: MonthOfYear = MonthOfYear.January,
+    onSelectionChanged: (day: Int, month: MonthOfYear) -> Unit
 ) {
 
-    val months = remember { DatetimeUtils.listOfMonths() }
-    var daysInMonthCount = remember { DatetimeUtils.daysInMonth(selectedMonth + 1) }
+    var daysInMonthCount = remember { DatetimeUtils.daysInMonth(selectedMonth) }
 
     val showMonthDropdown = remember{ mutableStateOf(false) }
     val showDayOfMonthDropdown = remember{ mutableStateOf(false) }
 
-    if(selectedDay > daysInMonthCount - 1){
-        onSelectionChanged(daysInMonthCount - 1, selectedMonth)
+    if(selectedDay > daysInMonthCount){
+        onSelectionChanged(daysInMonthCount, selectedMonth)
     }
 
     Row(
@@ -51,7 +51,7 @@ fun DayOfYearSelector(
             contentAlignment = Alignment.CenterEnd
         ){
             Text(
-                text = months[selectedMonth],
+                text = DatetimeUtils.monthOfYearString(selectedMonth),
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 textAlign = TextAlign.Center
             )
@@ -59,15 +59,13 @@ fun DayOfYearSelector(
             DropdownMenu(
                 expanded = showMonthDropdown.value,
                 onDismissRequest = { showMonthDropdown.value = false }) {
-                months.forEachIndexed { index, month ->
+                MonthOfYear.values().forEach {month ->
                     DropdownMenuItem(onClick = {
-                        //selectedMonthInner.value = index
                         showMonthDropdown.value = false
-                        //+1 cause index is not month number
-                        daysInMonthCount = DatetimeUtils.daysInMonth(index + 1)
-                        onSelectionChanged(selectedDay, index)
+                        daysInMonthCount = DatetimeUtils.daysInMonth(month)
+                        onSelectionChanged(selectedDay, month)
                     }) {
-                        Text(month)
+                        Text(DatetimeUtils.monthOfYearString(month))
                     }
                 }
             }
@@ -85,7 +83,7 @@ fun DayOfYearSelector(
             contentAlignment = Alignment.CenterEnd
         ){
             Text(
-                text = (selectedDay + 1).toString(),
+                text = (selectedDay).toString(),
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 textAlign = TextAlign.Center
             )
@@ -94,13 +92,13 @@ fun DayOfYearSelector(
                 expanded = showDayOfMonthDropdown.value,
                 onDismissRequest = { showDayOfMonthDropdown.value = false }) {
 
-                for (index in 0 until daysInMonthCount){
+                for (day in 1..daysInMonthCount){
                     DropdownMenuItem(onClick = {
                         //selectedDayOfMonthInner = index
                         showDayOfMonthDropdown.value = false
-                        onSelectionChanged(index, selectedMonth)
+                        onSelectionChanged(day, selectedMonth)
                     }) {
-                        Text((index + 1).toString())
+                        Text((day).toString())
                     }
                 }
 

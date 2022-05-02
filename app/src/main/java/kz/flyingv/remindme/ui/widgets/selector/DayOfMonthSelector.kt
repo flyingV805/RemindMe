@@ -36,6 +36,20 @@ fun DayOfMonthSelector(
         state = scrollState,
         horizontalArrangement = Arrangement.Center
     ){
+        for(day in 1..31){
+            item{
+                Spacer(modifier = Modifier.width(4.dp))
+                DayOfMonthItem(
+                    name = day.toString(),
+                    isSelected = selectDay == day,
+                    onSelect = {
+                        //state.selectDayIndex = it
+                        onSelectionChanged(day)
+                    }
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+        }/*
         items(
             count = days.count(),
             itemContent = {
@@ -50,7 +64,7 @@ fun DayOfMonthSelector(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
             }
-        )
+        )*/
     }
 
 }

@@ -11,9 +11,9 @@ class RemindFormatter {
         fun formatRemindType(remindType: RemindType): String {
             return when(remindType){
                 is RemindType.Daily -> "Every day"
-                is RemindType.Monthly -> "Every month, ${remindType.dayOfMonth + 1}${DatetimeUtils.getDayOfMonthSuffix(remindType.dayOfMonth + 1)}"
-                is RemindType.Weekly -> "Every week, ${DatetimeUtils.listOfDaysOfWeek()[remindType.dayOfWeek]}"
-                is RemindType.Yearly -> "Every year, ${DatetimeUtils.listOfMonths()[remindType.month]} ${remindType.dayOfMonth + 1}${DatetimeUtils.getDayOfMonthSuffix(remindType.dayOfMonth + 1)}"
+                is RemindType.Monthly -> "Every month, ${remindType.dayOfMonth}${DatetimeUtils.getDayOfMonthSuffix(remindType.dayOfMonth)}"
+                is RemindType.Weekly -> "Every week, ${DatetimeUtils.dayOfWeekString(remindType.dayOfWeek)}"
+                is RemindType.Yearly -> "Every year, ${DatetimeUtils.monthOfYearString(remindType.month)} ${remindType.dayOfMonth}${DatetimeUtils.getDayOfMonthSuffix(remindType.dayOfMonth)}"
             }
 
         }

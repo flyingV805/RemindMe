@@ -14,14 +14,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kz.flyingv.remindme.data.model.DayOfWeek
 import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @Composable
 fun DayOfWeekSelector(
     modifier: Modifier = Modifier,
-    days: List<String> = DatetimeUtils.listOfDaysOfWeek(),
-    selectedDay: Int,
-    onSelectionChanged: (dayOfWeek: Int) -> Unit
+    selectedDay: DayOfWeek,
+    onSelectionChanged: (dayOfWeek: DayOfWeek) -> Unit
 ){
     //val state by remember { mutableStateOf(DayOfWeekState()) }
 
@@ -29,14 +29,14 @@ fun DayOfWeekSelector(
         modifier = modifier.padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ){
-        days.forEachIndexed { index, nameOfDay ->
+        DayOfWeek.values().forEach { day ->
             Spacer(modifier = Modifier.width(4.dp))
             DayOfWeekItem(
-                name = nameOfDay,
-                isSelected = selectedDay == index,
+                name = dayOfWeekName(day),
+                isSelected = selectedDay == day,
                 onSelect = {
                     //state.selectDayIndex = index
-                    onSelectionChanged(index)
+                    onSelectionChanged(day)
                 }
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -45,8 +45,16 @@ fun DayOfWeekSelector(
 
 }
 
-private class DayOfWeekState {
-    var selectDayIndex by mutableStateOf(0)
+private fun dayOfWeekName(dayOfWeek: DayOfWeek): String{
+    return when(dayOfWeek){
+        DayOfWeek.MONDAY -> "Mn"
+        DayOfWeek.TUESDAY -> "Tu"
+        DayOfWeek.WEDNESDAY -> "We"
+        DayOfWeek.THURSDAY -> "Th"
+        DayOfWeek.FRIDAY -> "Fr"
+        DayOfWeek.SATURDAY -> "Sa"
+        DayOfWeek.SUNDAY -> "Su"
+    }
 }
 
 @Composable
@@ -87,7 +95,7 @@ fun DayOfWeekItem(
 
                 DayOfWeekSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    selectedDay = 0,
+                    selectedDay = DayOfWeek.MONDAY,
                     onSelectionChanged = {}
                 )
             }

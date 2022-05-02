@@ -44,7 +44,8 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                         notificator.showNotification(reminder)
                     }
                     //extra case, month don't have much days
-                    val daysInCurrentMonth = DatetimeUtils.daysInMonth(currentDate.get(Calendar.MONTH) + 1) //currentDate.get(Calendar.MONTH)
+                    val currentMonth = DatetimeUtils.currentMonth(currentDate)
+                    val daysInCurrentMonth = DatetimeUtils.daysInMonth(currentMonth) //currentDate.get(Calendar.MONTH)
                     if(reminderDayInMonth > daysInCurrentMonth && currentDayInMonth == daysInCurrentMonth){
                         notificator.showNotification(reminder)
                     }
@@ -54,7 +55,7 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                     val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
 
                     val reminderMonth = (type.month)
-                    val currentMonth = currentDate.get(Calendar.MONTH)
+                    val currentMonth = DatetimeUtils.currentMonth(currentDate)
 
                     Log.d("Y reminderDayInMonth", reminderDayInMonth.toString())
                     Log.d("Y currentDayInMonth", currentDayInMonth.toString())
