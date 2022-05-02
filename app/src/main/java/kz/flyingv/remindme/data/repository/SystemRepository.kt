@@ -2,7 +2,6 @@ package kz.flyingv.remindme.data.repository
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import kz.flyingv.remindme.data.model.InstalledApp
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

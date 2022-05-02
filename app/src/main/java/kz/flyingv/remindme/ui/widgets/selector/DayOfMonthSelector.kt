@@ -1,13 +1,11 @@
 package kz.flyingv.remindme.ui.widgets.selector
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -21,7 +19,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kz.flyingv.remindme.R
-import kz.flyingv.remindme.ui.widgets.rememberForeverLazyListState
 
 
 @Composable
@@ -69,10 +66,6 @@ fun DayOfMonthSelector(
         )*/
     }
 
-}
-
-private class DayOfMonthState {
-    var selectDayIndex by mutableStateOf(0)
 }
 
 @Composable

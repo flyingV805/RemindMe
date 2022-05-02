@@ -1,6 +1,5 @@
 package kz.flyingv.remindme.ui.main.remindtime
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -9,10 +8,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kz.flyingv.remindme.data.model.RemindIcon
 import kz.flyingv.remindme.data.model.RemindTime
 import kz.flyingv.remindme.data.repository.SchedulerRepository
-import kz.flyingv.remindme.ui.main.create.NewReminderState
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

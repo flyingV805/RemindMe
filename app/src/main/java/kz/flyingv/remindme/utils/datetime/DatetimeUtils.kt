@@ -8,13 +8,6 @@ class DatetimeUtils {
 
     companion object {
 
-        private val daysOfWeekList = listOf("Mn", "Tu", "We", "Th", "Fr", "Sa", "Su")
-        private val monthsList = listOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
-
-        fun listOfMonths() = monthsList
-
-        fun listOfDaysOfWeek() = daysOfWeekList
-
         fun dayOfWeekString(dayOfWeek: DayOfWeek): String {
             return when(dayOfWeek){
                 DayOfWeek.MONDAY -> "Mn"

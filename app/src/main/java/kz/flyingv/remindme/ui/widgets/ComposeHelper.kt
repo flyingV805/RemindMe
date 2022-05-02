@@ -8,8 +8,6 @@ import kz.flyingv.remindme.ui.main.MainState
 import kz.flyingv.remindme.ui.main.create.NewReminderState
 import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.data.model.Reminder
-import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
-import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
 import kz.flyingv.remindme.ui.statemodel.ValidationError
 
 @Composable

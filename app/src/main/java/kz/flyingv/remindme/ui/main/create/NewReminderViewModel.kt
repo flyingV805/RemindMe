@@ -122,10 +122,6 @@ class NewReminderViewModel: ViewModel(), KoinComponent {
         }
     }
 
-    private fun validate(){
-
-    }
-
     private fun initialState(): NewReminderState {
         return NewReminderState(name = "", icon = RemindIcon.Cake, type = RemindType.Daily, action = RemindAction.DoNothing, actionApps = emptyList(), error = ValidationError.AllGood)
     }

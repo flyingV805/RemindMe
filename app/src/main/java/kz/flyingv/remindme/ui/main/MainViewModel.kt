@@ -1,22 +1,14 @@
 package kz.flyingv.remindme.ui.main
 
-import android.content.Context
-import android.util.Log
-import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kz.flyingv.remindme.data.model.RemindType
-import kz.flyingv.remindme.data.model.Reminder
 import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.data.repository.SchedulerRepository
-import kz.flyingv.remindme.utils.datetime.DatetimeUtils
-import kz.flyingv.remindme.utils.notifications.Notificator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.time.LocalDate
 import java.util.*
 
 class MainViewModel: ViewModel(), KoinComponent {

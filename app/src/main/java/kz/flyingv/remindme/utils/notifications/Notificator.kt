@@ -9,38 +9,16 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.data.model.RemindAction
 import kz.flyingv.remindme.data.model.RemindIcon
-import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.data.model.Reminder
 import kz.flyingv.remindme.ui.statemodel.RemindFormatter
 
 class Notificator(private val context: Context) {
-
-    fun makeTestNotification(){
-        initNotificationChannel()
-
-        val builder = NotificationCompat.Builder(context, notificationChannelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            //.setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher_round))
-            .setContentTitle("Remind me test")
-            .setContentText("Remind me test")
-            .setColor(ContextCompat.getColor(context, R.color.purple_700))
-            .setStyle(NotificationCompat.BigTextStyle().bigText("Remind me test"))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            //.setContentIntent(contentIntent)
-            .setAutoCancel(true)
-            .setChannelId(notificationChannelId)
-            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-
-        NotificationManagerCompat.from(context).notify(521, builder.build())
-
-    }
 
     fun showNotification(reminder: Reminder){
         initNotificationChannel()
@@ -79,7 +57,7 @@ class Notificator(private val context: Context) {
             is RemindAction.OpenApp -> {
                 val openAppIntent = context.packageManager.getLaunchIntentForPackage(reminder.action.installedApp?.launchActivity ?: "")
                 openAppIntent?.let {
-                    val snoozePendingIntent = PendingIntent.getActivity(context, 0, openAppIntent, 0)
+                    val snoozePendingIntent = PendingIntent.getActivity(context, 0, openAppIntent, PendingIntent.FLAG_IMMUTABLE )
                     builder.addAction(largeIcon, context.getString(R.string.open_app), snoozePendingIntent)
                 }
             }
@@ -87,7 +65,7 @@ class Notificator(private val context: Context) {
                 val openLinkIntent = Intent(Intent.ACTION_VIEW).apply {
                     data = Uri.parse(reminder.action.url)
                 }
-                val snoozePendingIntent = PendingIntent.getActivity(context, 0, openLinkIntent, 0)
+                val snoozePendingIntent = PendingIntent.getActivity(context, 0, openLinkIntent, PendingIntent.FLAG_IMMUTABLE)
                 builder.addAction(largeIcon, context.getString(R.string.open_link), snoozePendingIntent)
             }
             else -> {}

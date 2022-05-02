@@ -20,7 +20,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.android.material.color.MaterialColors
 
 @Composable fun CustomTopBar(
     modifier: Modifier = Modifier,

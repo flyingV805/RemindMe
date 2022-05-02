@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.data.model.DayOfWeek
-import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @Composable
 fun DayOfWeekSelector(

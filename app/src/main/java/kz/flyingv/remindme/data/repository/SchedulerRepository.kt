@@ -35,7 +35,7 @@ class SchedulerRepositoryImpl: SchedulerRepository, KoinComponent {
         preferences.edit()
             .putInt("remindHourOfDay", newTime.hour)
             .putInt("remindMinuteOfHour", newTime.minute)
-            .commit()
+            .apply()
     }
 
 }

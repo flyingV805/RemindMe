@@ -98,7 +98,7 @@ fun AppSelectorDemo() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    onSelectionChanged = {_ ->  }
+                    onSelectionChanged = {}
                 )
             }
         }

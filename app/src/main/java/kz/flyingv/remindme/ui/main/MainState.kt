@@ -7,7 +7,4 @@ data class MainState(
     val isSearching: Boolean,
     val searchText: String,
     val isInitial: Boolean = false
-) {
-
-
-}
+)

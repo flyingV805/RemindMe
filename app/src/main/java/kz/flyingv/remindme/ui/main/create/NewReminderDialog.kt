@@ -16,7 +16,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.data.model.*
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
