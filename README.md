@@ -1,7 +1,7 @@
 # RemindMe
 Regular events reminder app
 
-<a href="https://play.google.com/store/apps/details?id=kz.flyingv.remindme"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="75"></a>
+<a href="https://play.google.com/store/apps/details?id=kz.flyingv.remindme"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="32"></a>
 
 ## Tech-stack
 
