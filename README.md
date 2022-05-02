@@ -14,6 +14,6 @@ This project takes advantage of many popular libraries and tools of the Android 
     -   [Room](https://developer.android.com/topic/libraries/architecture/room);
     -   [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel);
 -   [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html);
--    [Coroutines Flow](https://kotlinlang.org/docs/reference/coroutines-overview.html);
+    -   [Coroutines Flow](https://kotlinlang.org/docs/reference/coroutines-overview.html);
 -   [Koin](https://insert-koin.io/docs/quickstart/android)
 -   [Lottie](https://github.com/airbnb/lottie-android)
