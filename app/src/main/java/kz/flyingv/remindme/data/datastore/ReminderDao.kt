@@ -1,9 +1,6 @@
 package kz.flyingv.remindme.data.datastore
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import kz.flyingv.remindme.data.model.Reminder
 
@@ -18,5 +15,8 @@ interface ReminderDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(reminder: Reminder)
+
+    @Delete
+    fun delete(reminder: Reminder)
 
 }

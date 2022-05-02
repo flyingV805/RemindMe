@@ -57,6 +57,11 @@ class MainViewModel: ViewModel(), KoinComponent {
             is MainAction.UpdateSearch -> {
                 updateSearch(uiAction.text)
             }
+            is MainAction.DeleteReminder -> {
+                viewModelScope.launch(Dispatchers.IO){
+                    reminderRepository.deleteRemind(uiAction.reminder)
+                }
+            }
         }
     }
 

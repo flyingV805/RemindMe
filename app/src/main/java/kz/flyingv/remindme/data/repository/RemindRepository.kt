@@ -11,6 +11,7 @@ interface ReminderRepository {
     fun addNewRemind(reminder: Reminder)
     fun getAllReminders(): Flow<List<Reminder>>
     fun getWorkerReminders(): List<Reminder>
+    fun deleteRemind(reminder: Reminder)
 
 }
 
@@ -30,4 +31,9 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
     override fun getWorkerReminders(): List<Reminder> {
         return database.reminderDao().getAll()
     }
+
+    override fun deleteRemind(reminder: Reminder) {
+        database.reminderDao().delete(reminder)
+    }
+
 }

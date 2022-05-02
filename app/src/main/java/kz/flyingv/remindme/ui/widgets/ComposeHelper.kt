@@ -10,6 +10,7 @@ import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.data.model.Reminder
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
+import kz.flyingv.remindme.ui.statemodel.ValidationError
 
 @Composable
 fun isInPreview(): Boolean {
@@ -37,6 +38,7 @@ fun previewNewReminderState(): NewReminderState {
         icon = RemindIcon.Cake,
         type = RemindType.Daily,
         action = RemindAction.DoNothing,
-        actionApps = emptyList()
+        actionApps = emptyList(),
+        error = ValidationError.AllGood
     )
 }

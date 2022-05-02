@@ -1,6 +1,7 @@
 package kz.flyingv.remindme.ui.main.create
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -20,6 +21,7 @@ import kz.flyingv.remindme.R
 import kz.flyingv.remindme.data.model.*
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
+import kz.flyingv.remindme.ui.statemodel.ValidationError
 import kz.flyingv.remindme.ui.widgets.selector.*
 import kz.flyingv.remindme.ui.widgets.isInPreview
 import kz.flyingv.remindme.ui.widgets.previewNewReminderState
@@ -30,7 +32,7 @@ import kz.flyingv.remindme.ui.widgets.selector.SegmentedControl
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminderViewModel = viewModel()){
+fun NewReminderDialog(viewModel: NewReminderViewModel = viewModel(), close: () -> Unit?){
 
     val scope = rememberCoroutineScope()
 
@@ -38,6 +40,11 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         viewModel.newReminderStateFlow.collectAsState().value
     }else{
         previewNewReminderState()
+    }
+
+    if(newReminderState.error == ValidationError.Created){
+        close()
+        //scope.launch { dialogState.hide() }
     }
 
     val remindTypes = remember { listOf(RemindTypeEnum.Daily, RemindTypeEnum.Weekly, RemindTypeEnum.Monthly, RemindTypeEnum.Yearly) }
@@ -66,7 +73,9 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
     val lastSelectedDayOfMonthInYear = remember{ mutableStateOf(1) }
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text ="NEW REMINDER", style = MaterialTheme.typography.h6)
@@ -84,15 +93,26 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         Spacer(modifier = Modifier.height(16.dp))
         //Reminder name
         TextField(
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp),
             value = newReminderState.name,
             singleLine = true,
+            isError = newReminderState.error == ValidationError.NeedName,
             onValueChange = {
                 viewModel.makeAction(NewReminderAction.UpdateName(it))
             },
             placeholder = { Text("Reminder Name") },
             keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
         )
+        AnimatedVisibility(visible = newReminderState.error == ValidationError.NeedName) {
+            Text(
+                text = "You need to name it, trust me",
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
         //Reminder type
         SegmentedControl(
@@ -136,7 +156,9 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         ) { remindType ->
             when(remindType){
                 is RemindType.Daily -> Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
                     contentAlignment = Alignment.Center
                 ){
                     Text(text = "Remind every day!")
@@ -201,13 +223,17 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         Spacer(modifier = Modifier.height(16.dp))
 
         Crossfade(
-            modifier = Modifier.fillMaxWidth().height(72.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(72.dp),
             targetState = newReminderState.action
         ) {
             when(it){
                 is RemindAction.DoNothing ->
                     Box(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
                         contentAlignment = Alignment.Center
                     ){
                         Text(text = "OK, no actions")
@@ -221,7 +247,9 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                     }
                 )
                 is RemindAction.OpenUrl -> TextField(
-                    modifier =Modifier.fillMaxWidth().padding(top = 4.dp, start = 16.dp, end = 16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, start = 16.dp, end = 16.dp),
                     value = selectedUrl.value ?: "",
                     singleLine = true,
                     onValueChange = { url ->
@@ -232,6 +260,22 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
                 )
             }
         }
+        AnimatedVisibility(visible = newReminderState.error == ValidationError.NeedApp) {
+            Text(
+                text = "Need to pick an app",
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
+        AnimatedVisibility(visible = newReminderState.error == ValidationError.NeedLink) {
+            Text(
+                text = "You should set a link, to use it",
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(48.dp))
         ExtendedFloatingActionButton(
@@ -241,7 +285,6 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
             contentColor = colorResource(id = R.color.white),
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             onClick = {
-                scope.launch { dialogState.hide() }
                 viewModel.makeAction(NewReminderAction.CreateReminder)
             }
         )

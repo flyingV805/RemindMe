@@ -76,7 +76,12 @@ class MainActivity : ComponentActivity() {
         ModalBottomSheetLayout(
             sheetState = modalBottomState,
             sheetShape = shapes.large.copy(topStart = CornerSize(16.dp), topEnd = CornerSize(16.dp)),
-            sheetContent = { NewReminderDialog(modalBottomState) }
+            sheetContent = {
+                NewReminderDialog{
+                    scope.launch { modalBottomState.hide() }
+                    println()
+                }
+            }
         ) {
             BackHandler(enabled = modalBottomState.isVisible) {
                 scope.launch {modalBottomState.hide()}
@@ -288,15 +293,26 @@ class MainActivity : ComponentActivity() {
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(text = reminder.name, style = typography.h6)
-                    Text(text =RemindFormatter.formatRemindType(reminder.type), style = typography.h6)
+                    Text(text = reminder.name, style = typography.h6, maxLines = 1)
+                    Text(text =RemindFormatter.formatRemindType(reminder.type), style = typography.h6, maxLines = 1)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "Last remind: 2 days ago", style = typography.caption)
+                    Text(text = "Last remind: 2 days ago", style = typography.caption, maxLines = 1)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = RemindFormatter.formatRemindAction(reminder.action), style = typography.caption)
+                    Text(text = RemindFormatter.formatRemindAction(reminder.action), style = typography.caption, maxLines = 1)
+                }
+                IconButton(
+                    onClick = {
+                        deleteReminder(reminder)
+                    }
+                ) {
+                    Icon(Icons.Filled.Delete, "delete")
                 }
             }
         }
+    }
+
+    private fun deleteReminder(reminder: Reminder){
+        mainViewModel.makeAction(MainAction.DeleteReminder(reminder))
     }
 
     @Preview
