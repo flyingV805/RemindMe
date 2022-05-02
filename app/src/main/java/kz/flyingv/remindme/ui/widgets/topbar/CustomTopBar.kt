@@ -20,9 +20,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.material.color.MaterialColors
 
 @Composable fun CustomTopBar(
     modifier: Modifier = Modifier,
+    color: Color = Color(0xFF1976D2),
     onSearchStarted: () -> Unit,
     onSearchUpdate: (String) -> Unit,
     onSearchClose: () -> Unit,
@@ -33,7 +35,7 @@ import androidx.compose.ui.unit.dp
     val focusRequester = remember { FocusRequester() }
     Box(
         modifier = modifier
-            .background(color = MaterialTheme.colors.primaryVariant, shape = RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp))
+            .background(color = color, shape = RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp))
             .padding(top = 8.dp, start = 8.dp, bottom = 8.dp, end = 8.dp)
     ){
         Box(

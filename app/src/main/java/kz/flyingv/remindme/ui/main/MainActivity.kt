@@ -26,6 +26,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -35,7 +36,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
-import kz.flyingv.remindme.data.model.RemindAction
 import kz.flyingv.remindme.ui.main.create.NewReminderDialog
 import kz.flyingv.remindme.data.model.Reminder
 import kz.flyingv.remindme.ui.main.remindtime.ChangeRemindTime
@@ -45,7 +45,6 @@ import kz.flyingv.remindme.ui.widgets.isInPreview
 import kz.flyingv.remindme.ui.widgets.previewMainState
 import kz.flyingv.remindme.ui.widgets.topBarHeight
 import kz.flyingv.remindme.ui.widgets.topbar.CustomTopBar
-import kz.flyingv.remindme.utils.notifications.Notificator
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -61,8 +60,6 @@ class MainActivity : ComponentActivity() {
                 MainScreen()
             }
         }
-
-        val notificator = Notificator(context = this)
 
     }
 
@@ -95,7 +92,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun CreateScaffold(showNewReminderDialog: () -> Unit){
         val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-        val materialBlue700 = Color(0xFF1976D2)
 
         val mainState = if(!isInPreview()){
             mainViewModel.mainStateFlow.collectAsState().value
@@ -125,6 +121,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val showSettingsDialog = remember{ mutableStateOf(false) }
+        val mainColorTop = colorResource(id = R.color.purple_700)
 
         Scaffold(
             scaffoldState = scaffoldState,
@@ -152,6 +149,7 @@ class MainActivity : ComponentActivity() {
                                     y = toolbarOffsetHeightPx.value.roundToInt()
                                 )
                             },
+                        color = mainColorTop,
                         onSearchStarted = {mainViewModel.makeAction(MainAction.StartSearch)},
                         onSearchUpdate = {text -> mainViewModel.makeAction(MainAction.UpdateSearch(text))},
                         onSearchClose = {mainViewModel.makeAction(MainAction.EndSearch)},
@@ -170,6 +168,8 @@ class MainActivity : ComponentActivity() {
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
                 FloatingActionButton(
+                    backgroundColor = colorResource(id = R.color.purple_700),
+                    contentColor = colorResource(id = R.color.white),
                     onClick = {
                         showNewReminderDialog()
                     }
@@ -180,17 +180,13 @@ class MainActivity : ComponentActivity() {
             isFloatingActionButtonDocked = true,
             bottomBar = {
                 BottomAppBar(
-                    backgroundColor = materialBlue700,
+                    backgroundColor = colorResource(id = R.color.teal_200),
                     cutoutShape = shapes.small.copy(CornerSize(percent = 50)),
                 ) {
                     Row {
                         Spacer(modifier = Modifier.width(8.dp))
                         IconButton(onClick = {}) {
                             Icon(Icons.Filled.Settings, "")
-                        }
-                        Spacer(modifier = Modifier.width(4.dp))
-                        IconButton(onClick = {}) {
-                            Icon(Icons.Filled.AccountBox, "")
                         }
                         Spacer(modifier = Modifier.width(4.dp))
                         IconButton(onClick = {
@@ -278,13 +274,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .width(56.dp)
                         .height(56.dp)
-                        .background(Color.Blue, CircleShape),
+                        .background(colorResource(id = R.color.purple_200), CircleShape),
                     contentAlignment = Alignment.Center
                 ){
                     Icon(
                         getIcon(icon = reminder.icon),
                         "",
-                        Modifier.padding(12.dp).width(28.dp).height(28.dp)
+                        Modifier
+                            .padding(12.dp)
+                            .width(28.dp)
+                            .height(28.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))

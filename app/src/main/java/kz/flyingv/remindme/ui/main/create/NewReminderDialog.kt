@@ -11,10 +11,12 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import kz.flyingv.remindme.R
 import kz.flyingv.remindme.data.model.*
 import kz.flyingv.remindme.ui.statemodel.RemindActionEnum
 import kz.flyingv.remindme.ui.statemodel.RemindTypeEnum
@@ -235,6 +237,8 @@ fun NewReminderDialog(dialogState: ModalBottomSheetState, viewModel: NewReminder
         ExtendedFloatingActionButton(
             icon = { Icon(Icons.Filled.Create,"") },
             text = { Text("CREATE REMINDER") },
+            backgroundColor = colorResource(id = R.color.purple_700),
+            contentColor = colorResource(id = R.color.white),
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             onClick = {
                 scope.launch { dialogState.hide() }
