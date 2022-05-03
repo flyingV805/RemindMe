@@ -22,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -38,6 +39,8 @@ import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.ui.main.create.NewReminderDialog
 import kz.flyingv.remindme.data.model.Reminder
+import kz.flyingv.remindme.ui.darkUI
+import kz.flyingv.remindme.ui.lightUI
 import kz.flyingv.remindme.ui.main.delete.DeleteReminderDialog
 import kz.flyingv.remindme.ui.main.remindtime.ChangeRemindTime
 import kz.flyingv.remindme.ui.statemodel.RemindFormatter
@@ -59,11 +62,11 @@ class MainActivity : ComponentActivity() {
 
         setContent{
             MaterialTheme(
-                colors = if(isSystemInDarkTheme()) {
-                    MaterialTheme.colors.copy(primary = colorResource(id = R.color.purple_700))
-                }else{
-                    MaterialTheme.colors.copy(primary = colorResource(id = R.color.purple_700))
-                }
+                colors = /*if(isSystemInDarkTheme()) {
+                    darkUI()
+                }else{*/
+                    lightUI()
+               /* }*/
             ) {
                 MainScreen()
             }
