@@ -77,7 +77,12 @@ fun SelectableIcon(
             onSelect()
         }
     ){
-        Icon(icon, "", Modifier.padding(12.dp).width(24.dp).height(24.dp))
+        Icon(
+            painter = icon,
+            contentDescription = "",
+            modifier = Modifier.padding(12.dp).width(24.dp).height(24.dp),
+            tint = MaterialTheme.colors.onPrimary
+        )
     }
 }
 

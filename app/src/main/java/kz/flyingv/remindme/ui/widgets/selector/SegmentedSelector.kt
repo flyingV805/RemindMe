@@ -193,7 +193,7 @@ private val BACKGROUND_SHAPE = RoundedCornerShape(8.dp)
                 )
             )
             .shadow(4.dp, BACKGROUND_SHAPE)
-            .background(Color.White, BACKGROUND_SHAPE)
+            .background(MaterialTheme.colors.surface, BACKGROUND_SHAPE)
     )
 }
 

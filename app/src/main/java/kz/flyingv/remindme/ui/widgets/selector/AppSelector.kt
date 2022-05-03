@@ -36,7 +36,7 @@ fun AppSelector(
             .shadow(8.dp, RoundedCornerShape(8.dp))
             .fillMaxHeight()
             .weight(1f)
-            .background(Color.White, RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colors.surface, RoundedCornerShape(8.dp))
             .clickable {
                 isDropdownExpanded.value = true
             },

@@ -40,7 +40,7 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                     }
                 }
                 is RemindType.Monthly -> {
-                    val reminderDayInMonth = (type.dayOfMonth + 1)
+                    val reminderDayInMonth = type.dayOfMonth
                     val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
                     if(currentDayInMonth == reminderDayInMonth){
                         reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
@@ -55,7 +55,7 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                     }
                 }
                 is RemindType.Yearly -> {
-                    val reminderDayInMonth = (type.dayOfMonth + 1)
+                    val reminderDayInMonth = type.dayOfMonth
                     val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
 
                     val reminderMonth = (type.month)

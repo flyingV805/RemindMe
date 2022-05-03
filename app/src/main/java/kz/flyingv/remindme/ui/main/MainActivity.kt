@@ -318,12 +318,10 @@ class MainActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ){
                     Icon(
-                        getIcon(icon = reminder.icon),
-                        "",
-                        Modifier
-                            .padding(12.dp)
-                            .width(28.dp)
-                            .height(28.dp)
+                        painter = getIcon(icon = reminder.icon),
+                        contentDescription = "",
+                        modifier = Modifier.padding(12.dp).width(28.dp).height(28.dp),
+                        tint = MaterialTheme.colors.onPrimary
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))

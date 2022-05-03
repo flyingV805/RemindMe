@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
                 .fillMaxWidth()
                 .height(56.dp)
                 .shadow(4.dp, RoundedCornerShape(8.dp))
-                .background(Color.White, RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colors.background, RoundedCornerShape(8.dp))
         ){
             BackHandler(enabled = isSearching) {
                 onSearchClose()

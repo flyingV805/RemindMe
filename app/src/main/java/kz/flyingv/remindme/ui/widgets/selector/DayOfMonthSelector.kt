@@ -92,7 +92,7 @@ fun DayOfMonthItem(
         },
         contentAlignment = Alignment.Center
     ){
-        Text(name, modifier = Modifier.padding(4.dp))
+        Text(name, modifier = Modifier.padding(4.dp), color = MaterialTheme.colors.onPrimary)
         //Icon(icon, "", Modifier.padding(12.dp).width(24.dp).height(24.dp))
     }
 }
