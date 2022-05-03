@@ -22,7 +22,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -62,11 +61,11 @@ class MainActivity : ComponentActivity() {
 
         setContent{
             MaterialTheme(
-                colors = /*if(isSystemInDarkTheme()) {
+                colors = if(isSystemInDarkTheme()) {
                     darkUI()
-                }else{*/
+                }else{
                     lightUI()
-               /* }*/
+                }
             ) {
                 MainScreen()
             }
@@ -243,7 +242,6 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun ReminderList(modifier: Modifier, listState: LazyListState, reminders: List<Reminder>, isInSearch: Boolean, isInitial: Boolean, deleteReminder: (reminder: Reminder) -> Unit?){
-        //val state = remember{ LazyListState() }
         LazyColumn(
             modifier = modifier,
             state = listState,
