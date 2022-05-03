@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -58,7 +59,11 @@ class MainActivity : ComponentActivity() {
 
         setContent{
             MaterialTheme(
-                colors = MaterialTheme.colors.copy(primary = colorResource(id = R.color.purple_700))
+                colors = if(isSystemInDarkTheme()) {
+                    MaterialTheme.colors.copy(primary = colorResource(id = R.color.purple_700))
+                }else{
+                    MaterialTheme.colors.copy(primary = colorResource(id = R.color.purple_700))
+                }
             ) {
                 MainScreen()
             }
