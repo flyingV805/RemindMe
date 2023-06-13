@@ -31,7 +31,9 @@ pipeline {
             }
         }
     }
-    always {
-        archiveArtifacts(artifacts: '**/build/reports/**', allowEmptyArchive: true)
+    post {
+        always {
+            archiveArtifacts(artifacts: '**/build/reports/**', allowEmptyArchive: true)
+        }
     }
 }
