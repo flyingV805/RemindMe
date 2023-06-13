@@ -1,7 +1,10 @@
 #!groovy
 pipeline {
     agent {
-        label "android"
+        docker {
+            image "android-sdk"
+            args '-it --memory=12g --cpus="4"'
+        }
     }
     parameters {
         string(
@@ -27,5 +30,8 @@ pipeline {
                 echo "deploy stage"
             }
         }
+    }
+    always {
+        archiveArtifacts(artifacts: '**/build/reports/**', allowEmptyArchive: true)
     }
 }
