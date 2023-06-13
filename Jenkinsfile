@@ -4,6 +4,7 @@ pipeline {
         docker {
             image "android-sdk"
             args '-it --memory=12g --cpus="4"'
+            label "android"
         }
     }
     parameters {
