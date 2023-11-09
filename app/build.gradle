@@ -5,12 +5,14 @@ plugins {
 }
 
 android {
+
+    namespace 'kz.flyingv.remindme'
     compileSdk 32
 
     defaultConfig {
         applicationId "kz.flyingv.remindme"
         minSdk 21
-        targetSdk 32
+        targetSdk 34
         versionCode 5
         versionName "1.0"
 
@@ -33,9 +35,12 @@ android {
         jvmTarget = '1.8'
     }
 
-    buildFeatures.compose = true
+    buildFeatures {
+        compose true
+    }
+
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion '1.5.3'
     }
 
 }
@@ -53,11 +58,14 @@ dependencies {
     implementation "com.airbnb.android:lottie-compose:5.0.3"
     //ui compose
     implementation 'androidx.activity:activity-compose:1.4.0'
-    implementation 'androidx.compose.material:material:1.1.1'
-    implementation 'androidx.compose.animation:animation:1.1.1'
-    implementation 'androidx.compose.ui:ui-tooling:1.1.1'
+    implementation 'androidx.compose.material:material:1.5.4'
+    implementation 'androidx.compose.animation:animation:1.5.4'
+    implementation 'androidx.compose.ui:ui-tooling:1.5.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1'
     implementation "com.google.android.material:compose-theme-adapter:1.1.7"
+
+    implementation 'androidx.compose.material3:material3:1.0.0-rc01'
+
     implementation "com.google.accompanist:accompanist-drawablepainter:0.16.0" //0.16.0
 
     //storage
@@ -67,7 +75,6 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.0'
 
     //arch
-    implementation "io.insert-koin:koin-android:3.1.5"
     implementation "io.insert-koin:koin-android:3.1.5"
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
