@@ -98,7 +98,7 @@ class MainActivity : ComponentActivity() {
             }
             CreateScaffold{
                scope.launch {
-                   modalBottomState.animateTo(ModalBottomSheetValue.Expanded)
+                   //modalBottomState.animateTo(ModalBottomSheetValue.Expanded)
                }
             }
         }
