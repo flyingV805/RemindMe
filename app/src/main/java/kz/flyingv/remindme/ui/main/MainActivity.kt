@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent{
+        /*setContent{
             MaterialTheme(
                 colors = if(isSystemInDarkTheme()) {
                     darkUI()
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 MainScreen()
             }
-        }
+        }*/
 
     }
 

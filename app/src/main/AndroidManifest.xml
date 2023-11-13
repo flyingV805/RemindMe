@@ -18,7 +18,7 @@
         android:name=".ReminderApp"
         android:theme="@style/Theme.RemindMe">
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ReminderActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
