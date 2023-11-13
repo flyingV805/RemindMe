@@ -55,6 +55,8 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
         floatingActionButtonPosition = FabPosition.EndOverlay
     ) { innerPadding ->
 
+
+
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
                 .padding(innerPadding)
