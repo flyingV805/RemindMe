@@ -47,7 +47,7 @@ fun ReminderAppBar(
 
 ) {
 
-    val focusRequester = remember { FocusRequester() }
+    //val focusRequester = remember { FocusRequester() }
 
     Box(
         modifier = modifier
@@ -78,8 +78,8 @@ fun ReminderAppBar(
                         Spacer(modifier = Modifier.width(4.dp))
                         TextField(
                             modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequester),
+                                .weight(1f),
+                                //.focusRequester(focusRequester),
                             value = searchValue,
                             placeholder = { Text("Searching for...") },
                             singleLine = true,

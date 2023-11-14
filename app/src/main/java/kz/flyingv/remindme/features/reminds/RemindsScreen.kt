@@ -1,9 +1,11 @@
 package kz.flyingv.remindme.features.reminds
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
@@ -20,6 +22,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
@@ -30,6 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +45,6 @@ import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.ui.widget.ReminderAppBar
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
@@ -56,11 +60,16 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            ReminderAppBar(
+            TopAppBar(
+                modifier = Modifier.background(color = Color(0xFF1976D2), shape = RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp)),
+                     title = { Text(text = "dfgdfg") },
+                     scrollBehavior = scrollBehavior
+                 )
+            /*ReminderAppBar(
                 onSearchStarted = {},
                 onSearchUpdate = {value -> },
                 onSearchClosed = {}
-            )
+            )*/
         },
         bottomBar = {
             BottomAppBar(
@@ -71,20 +80,21 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 },
                 floatingActionButton = {
                     FloatingActionButton(
-                        onClick = {  }
+                        onClick = { showBottomSheet = true }
                     ) {
                         Icon(Icons.Filled.Add, "")
                     }
                 }
             )
         },
-        floatingActionButtonPosition = FabPosition.EndOverlay
     ) { innerPadding ->
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
+                .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
+                .background(Color.Red),WWW
         ) {
             items(50) { item ->
                 Text(modifier = Modifier.padding(8.dp), text = "Item $item")
