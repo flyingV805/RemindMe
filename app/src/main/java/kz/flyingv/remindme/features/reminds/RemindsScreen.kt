@@ -94,7 +94,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 .fillMaxWidth()
                 .padding(innerPadding)
                 .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
-                .background(Color.Red),WWW
+                .background(Color.Red),
         ) {
             items(50) { item ->
                 Text(modifier = Modifier.padding(8.dp), text = "Item $item")
