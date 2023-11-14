@@ -81,7 +81,7 @@ fun ReminderAppBar(
                                 .weight(1f)
                                 .focusRequester(focusRequester),
                             value = searchValue,
-                            placeholder = { androidx.compose.material.Text("Searching for...") },
+                            placeholder = { Text("Searching for...") },
                             singleLine = true,
                             onValueChange = { newValue -> onSearchUpdate(newValue) },
                             colors = TextFieldDefaults.textFieldColors(
@@ -92,6 +92,7 @@ fun ReminderAppBar(
                         )
                         Box(modifier = Modifier.padding(8.dp)){
                             IconButton(onClick = {
+
                                 onSearchClosed()
                             }) {
                                 Icon(Icons.Filled.Close, "search")
