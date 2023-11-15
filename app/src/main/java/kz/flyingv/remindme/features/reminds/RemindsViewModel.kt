@@ -8,6 +8,19 @@ class RemindsViewModel: UIViewModel<RemindsState, RemindsAction>(
 
     override fun reduce(action: RemindsAction) {
         super.reduce(action)
+
+        when(action){
+            RemindsAction.StartSearch -> {
+                pushState(currentState().copy(searching = true))
+            }
+            is RemindsAction.Search -> {
+
+            }
+            RemindsAction.EndSearch -> {
+                pushState(currentState().copy(searching = false))
+            }
+        }
+
     }
 
 }
