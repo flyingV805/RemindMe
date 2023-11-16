@@ -6,6 +6,10 @@ class RemindsViewModel: UIViewModel<RemindsState, RemindsAction>(
     RemindsState()
 ) {
 
+    init {
+
+    }
+
     override fun reduce(action: RemindsAction) {
         super.reduce(action)
 

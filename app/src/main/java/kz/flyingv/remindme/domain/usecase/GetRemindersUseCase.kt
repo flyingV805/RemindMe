@@ -1,8 +1,11 @@
 package kz.flyingv.remindme.domain.usecase
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 class GetRemindersUseCase {
 
-    inline fun invoke(){
+    suspend operator fun invoke() {
 
     }
 

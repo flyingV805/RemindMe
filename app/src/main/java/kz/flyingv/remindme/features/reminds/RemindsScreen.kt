@@ -139,15 +139,9 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 },
                 scrollBehavior = scrollBehavior
             )
-            /*ReminderAppBar(
-                onSearchStarted = {},
-                onSearchUpdate = {value -> },
-                onSearchClosed = {}
-            )*/
         },
         bottomBar = {
             BottomAppBar(
-                // modifier = Modifier.clip(RoundedCornerShape(8.dp, 8.dp, 0.dp, 0.dp)),
                 actions = {
                     IconButton(onClick = { /* do something */ }) {
                         Icon(painterResource(id = R.drawable.ic_baseline_alarm_24), contentDescription = "Localized description")
