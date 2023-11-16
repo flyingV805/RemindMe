@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
@@ -52,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.features.create.NewRemindScreen
@@ -66,6 +70,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
+    val focusRequester = remember { FocusRequester() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -89,27 +94,18 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                                 TextField(
                                     value = "",
                                     onValueChange = {},
-                                    modifier = Modifier.weight(1f),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .focusRequester(focusRequester),
                                     singleLine = true,
                                     placeholder = { Text("Searching for...") },
                                     colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = Color.Transparent,
                                         unfocusedContainerColor = Color.Transparent,
-                                    )
-                                )
-                                /*TextField(
-                                    modifier = Modifier
-                                        .weight(1f),
-                                    //.focusRequester(focusRequester),
-                                    value = "",
-                                    placeholder = { Text("Searching for...") },
-                                    singleLine = true,
-                                    onValueChange = { newValue: String -> },
-                                    colors = TextFieldDefaults.textFieldColors(
-                                        backgroundColor = Color.Transparent,
-                                        focusedIndicatorColor =  Color.Transparent, //hide the indicator
+                                        focusedIndicatorColor =  Color.Transparent,
                                         unfocusedIndicatorColor = Color.Transparent
                                     )
-                                )*/
+                                )
                                 Box(modifier = Modifier.padding(8.dp)){
                                    IconButton(
                                        onClick = {viewModel.reduce(RemindsAction.EndSearch)}
@@ -129,7 +125,13 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                                 Text("Remind Me", style = MaterialTheme.typography.h6)
                                 Spacer(Modifier.weight(1f))
                                 IconButton(
-                                    onClick = { viewModel.reduce(RemindsAction.StartSearch)}
+                                    onClick = {
+                                        viewModel.reduce(RemindsAction.StartSearch)
+                                        scope.launch {
+                                            delay(100)
+                                            focusRequester.requestFocus()
+                                        }
+                                    }
                                 ) {
                                     Icon(Icons.Filled.Search, "search")
                                 }
