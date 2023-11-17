@@ -38,6 +38,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,12 +67,13 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
     val uiState by viewModel.provideState().collectAsStateWithLifecycle()
 
+    val focusRequester = remember { FocusRequester() }
+    val focusSearchField by remember { derivedStateOf { uiState.searching } }
     var showBottomSheet by remember { mutableStateOf(false) }
+
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-
-    val focusRequester = remember { FocusRequester() }
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -127,10 +129,6 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                                 IconButton(
                                     onClick = {
                                         viewModel.reduce(RemindsAction.StartSearch)
-                                        scope.launch {
-                                            delay(100)
-                                            focusRequester.requestFocus()
-                                        }
                                     }
                                 ) {
                                     Icon(Icons.Filled.Search, "search")
@@ -164,7 +162,6 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
                 .background(Color.Red),
         ) {
             items(50) { item ->
@@ -192,6 +189,12 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
             }
         }
 
+    }
+
+    LaunchedEffect(focusSearchField){
+        if(focusSearchField) {
+            focusRequester.requestFocus()
+        }
     }
 
 }
