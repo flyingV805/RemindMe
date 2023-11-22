@@ -1,35 +1,25 @@
 package kz.flyingv.remindme.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import kz.flyingv.remindme.data.model.Reminder
 import kz.flyingv.remindme.data.datastore.Database
+import kz.flyingv.remindme.domain.entity.Reminder
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-
-interface ReminderRepository {
-
-    fun addNewRemind(reminder: Reminder)
-    fun getAllReminders(): Flow<List<Reminder>>
-    fun getWorkerReminders(): List<Reminder>
-    fun updateLastShow(reminder: Reminder, lastShowMills: Long)
-    fun deleteRemind(reminder: Reminder)
-
-}
 
 class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
 
     private val database: Database by inject()
 
     override fun addNewRemind(reminder: Reminder) {
-        database.reminderDao().insert(reminder)
+        //database.reminderDao().insert(reminder)
     }
 
     override fun getAllReminders(): Flow<List<Reminder>> {
-        return database.reminderDao().getAllFlow()
+        TODO("Not yet implemented")
     }
 
     override fun getWorkerReminders(): List<Reminder> {
-        return database.reminderDao().getAll()
+        TODO("Not yet implemented")
     }
 
     override fun updateLastShow(reminder: Reminder, lastShowMills: Long) {
@@ -37,7 +27,7 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
     }
 
     override fun deleteRemind(reminder: Reminder) {
-        database.reminderDao().delete(reminder)
+        TODO("Not yet implemented")
     }
 
 }

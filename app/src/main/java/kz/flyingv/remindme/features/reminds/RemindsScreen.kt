@@ -1,32 +1,33 @@
 package kz.flyingv.remindme.features.reminds
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -51,21 +52,29 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
+import kz.flyingv.remindme.domain.entity.Reminder
 import kz.flyingv.remindme.features.create.NewRemindScreen
+import kz.flyingv.remindme.ui.utils.RemindFormatter
+import kz.flyingv.remindme.ui.widgets.selector.getIcon
+import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
     val uiState by viewModel.provideState().collectAsStateWithLifecycle()
+
+    val listState by remember {
+        derivedStateOf { uiState.reminds }
+    }
 
     val focusRequester = remember { FocusRequester() }
     val focusSearchField by remember { derivedStateOf { uiState.searching } }
@@ -124,7 +133,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                                 verticalAlignment = Alignment.CenterVertically
                             ){
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Remind Me", style = MaterialTheme.typography.h6)
+                                Text("Remind Me", style = MaterialTheme.typography.titleLarge)
                                 Spacer(Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
@@ -137,13 +146,19 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                         }
                     }
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
                 scrollBehavior = scrollBehavior
             )
         },
         bottomBar = {
             BottomAppBar(
+                modifier = Modifier.clip(RoundedCornerShape(8.dp, 8.dp, 0.dp, 0.dp)),
                 actions = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(
+                        onClick = { /* do something */ }
+                    ) {
                         Icon(painterResource(id = R.drawable.ic_baseline_alarm_24), contentDescription = "Localized description")
                     }
                 },
@@ -162,10 +177,19 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .background(Color.Red),
+                .padding(horizontal = 8.dp),
         ) {
-            items(50) { item ->
-                Text(modifier = Modifier.padding(8.dp), text = "Item $item")
+            items(listState){
+                RemindItem(
+                    reminder = it,
+                    deleteReminder = {
+
+                    }
+                )
+            }
+
+            item {
+                Box(modifier = Modifier.height(16.dp))
             }
         }
 
@@ -197,6 +221,58 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
         }
     }
 
+}
+
+
+@Composable
+fun RemindItem(reminder: Reminder, deleteReminder: (reminder: Reminder) -> Unit?) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
+            .clickable {
+                //mainViewModel.debugNotification(this, reminder)
+            },
+    ) {
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(56.dp)
+                    .height(56.dp)
+                    .background(colorResource(id = R.color.purple_200), CircleShape),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    painter = getIcon(icon = reminder.icon),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .width(28.dp)
+                        .height(28.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(Modifier.weight(1f)) {
+                Text(text = reminder.name, style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                Text(text = RemindFormatter.formatRemindType(reminder.type), style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = "Last remind: ${DatetimeUtils.lastTimeDisplayed(reminder.lastShow)}", style = MaterialTheme.typography.bodyMedium, maxLines = 1)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = RemindFormatter.formatRemindAction(reminder.action), style = MaterialTheme.typography.bodySmall, maxLines = 1)
+            }
+            androidx.compose.material.IconButton(
+                onClick = {
+                    deleteReminder(reminder)
+                }
+            ) {
+                androidx.compose.material.Icon(Icons.Filled.Delete, "delete")
+            }
+        }
+    }
 }
 
 @Preview

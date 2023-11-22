@@ -16,8 +16,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kz.flyingv.remindme.R
-import kz.flyingv.remindme.data.model.DayOfWeek
-
+/*
 @Composable
 fun DayOfWeekSelector(
     modifier: Modifier = Modifier,
@@ -102,4 +101,4 @@ fun DayOfWeekItem(
             }
         }
     }
-}
+}*/

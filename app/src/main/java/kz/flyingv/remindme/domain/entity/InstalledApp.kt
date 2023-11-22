@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.data.model
+package kz.flyingv.remindme.domain.entity
 
 import android.graphics.drawable.Drawable
 

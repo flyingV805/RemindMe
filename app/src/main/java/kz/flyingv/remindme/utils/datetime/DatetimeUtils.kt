@@ -1,7 +1,5 @@
 package kz.flyingv.remindme.utils.datetime
 
-import kz.flyingv.remindme.data.model.DayOfWeek
-import kz.flyingv.remindme.data.model.MonthOfYear
 import java.util.*
 
 class DatetimeUtils {
@@ -18,7 +16,7 @@ class DatetimeUtils {
                 else -> "Haven't reminded yet"
             }
         }
-
+/*
         fun dayOfWeekString(dayOfWeek: DayOfWeek): String {
             return when(dayOfWeek){
                 DayOfWeek.MONDAY -> "Mn"
@@ -98,7 +96,7 @@ class DatetimeUtils {
                 3 -> "rd"
                 else -> if(dayOfMonth > 30){"st"}else{"th"}
             }
-        }
+        }*/
 
     }
 

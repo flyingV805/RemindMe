@@ -2,24 +2,24 @@ package kz.flyingv.remindme.data.datastore
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import kz.flyingv.remindme.data.model.Reminder
+import kz.flyingv.remindme.data.datastore.model.ReminderDTO
 
 @Dao
 interface ReminderDao {
 
-    @Query("SELECT * FROM Reminder")
-    fun getAllFlow(): Flow<List<Reminder>>
+    @Query("SELECT * FROM ReminderDTO")
+    fun getAllFlow(): Flow<List<ReminderDTO>>
 
-    @Query("SELECT * FROM Reminder")
-    fun getAll(): List<Reminder>
+    @Query("SELECT * FROM ReminderDTO")
+    fun getAll(): List<ReminderDTO>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(reminder: Reminder)
+    fun insert(reminder: ReminderDTO)
 
-    @Query("UPDATE Reminder SET lastShow = :lastShowMills WHERE id = :id")
+    @Query("UPDATE ReminderDTO SET lastShow = :lastShowMills WHERE id = :id")
     fun updateLastShow(id: Int, lastShowMills: Long)
 
     @Delete
-    fun delete(reminder: Reminder)
+    fun delete(reminder: ReminderDTO)
 
 }

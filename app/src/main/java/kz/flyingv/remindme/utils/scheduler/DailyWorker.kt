@@ -6,9 +6,9 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import kz.flyingv.remindme.data.model.RemindType
 import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.data.repository.SchedulerRepository
+import kz.flyingv.remindme.domain.entity.ReminderType
 import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 import kz.flyingv.remindme.utils.notifications.Notificator
 import org.koin.core.component.KoinComponent
@@ -29,17 +29,17 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
 
         reminderRepository.getWorkerReminders().forEach { reminder ->
             when(val type = reminder.type){
-                is RemindType.Daily -> {
+                is ReminderType.Daily -> {
                     reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                     notificator.showNotification(reminder)
                 }
-                is RemindType.Weekly -> {
-                    if(DatetimeUtils.dayOfWeekIndex(currentDate) == type.dayOfWeek){
+                is ReminderType.Weekly -> {
+                    /*if(DatetimeUtils.dayOfWeekIndex(currentDate) == type.dayOfWeek){
                         reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
-                    }
+                    }*/
                 }
-                is RemindType.Monthly -> {
+                is ReminderType.Monthly -> {
                     val reminderDayInMonth = type.dayOfMonth
                     val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
                     if(currentDayInMonth == reminderDayInMonth){
@@ -47,19 +47,19 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                         notificator.showNotification(reminder)
                     }
                     //extra case, month don't have much days
-                    val currentMonth = DatetimeUtils.currentMonth(currentDate)
+                    /*val currentMonth = DatetimeUtils.currentMonth(currentDate)
                     val daysInCurrentMonth = DatetimeUtils.daysInMonth(currentMonth) //currentDate.get(Calendar.MONTH)
                     if(reminderDayInMonth > daysInCurrentMonth && currentDayInMonth == daysInCurrentMonth){
                         reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
-                    }
+                    }*/
                 }
-                is RemindType.Yearly -> {
+                is ReminderType.Yearly -> {
                     val reminderDayInMonth = type.dayOfMonth
                     val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
 
                     val reminderMonth = (type.month)
-                    val currentMonth = DatetimeUtils.currentMonth(currentDate)
+                    /*val currentMonth = DatetimeUtils.currentMonth(currentDate)
 
                     Log.d("Y reminderDayInMonth", reminderDayInMonth.toString())
                     Log.d("Y currentDayInMonth", currentDayInMonth.toString())
@@ -69,7 +69,7 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
                     if(reminderDayInMonth == currentDayInMonth && reminderMonth == currentMonth){
                         reminderRepository.updateLastShow(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
-                    }
+                    }*/
                 }
             }
 

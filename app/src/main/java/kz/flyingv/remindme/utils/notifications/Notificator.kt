@@ -13,10 +13,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import kz.flyingv.remindme.R
-import kz.flyingv.remindme.data.model.RemindAction
-import kz.flyingv.remindme.data.model.RemindIcon
-import kz.flyingv.remindme.data.model.Reminder
-import kz.flyingv.remindme.ui.statemodel.RemindFormatter
+import kz.flyingv.remindme.domain.entity.Reminder
+import kz.flyingv.remindme.domain.entity.ReminderAction
+import kz.flyingv.remindme.domain.entity.ReminderIcon
+import kz.flyingv.remindme.ui.utils.RemindFormatter
 
 class Notificator(private val context: Context) {
 
@@ -24,19 +24,19 @@ class Notificator(private val context: Context) {
         initNotificationChannel()
 
         val smallIcon = when(reminder.icon){
-            RemindIcon.Cake -> R.drawable.ic_notification_cake
-            RemindIcon.Medicine -> R.drawable.ic_notification_medecine
-            RemindIcon.Officials -> R.drawable.ic_notification_officials
-            RemindIcon.Payday -> R.drawable.ic_notification_payday
-            RemindIcon.Workout -> R.drawable.ic_notification_workout
+            ReminderIcon.Cake -> R.drawable.ic_notification_cake
+            ReminderIcon.Medicine -> R.drawable.ic_notification_medecine
+            ReminderIcon.Officials -> R.drawable.ic_notification_officials
+            ReminderIcon.Payday -> R.drawable.ic_notification_payday
+            ReminderIcon.Workout -> R.drawable.ic_notification_workout
         }
 
         val largeIcon = when(reminder.icon){
-            RemindIcon.Cake -> R.drawable.ic_avatar_cake
-            RemindIcon.Medicine -> R.drawable.ic_avatar_medecine
-            RemindIcon.Officials -> R.drawable.ic_avatar_officials
-            RemindIcon.Payday -> R.drawable.ic_avatar_payday
-            RemindIcon.Workout -> R.drawable.ic_avatar_workout
+            ReminderIcon.Cake -> R.drawable.ic_avatar_cake
+            ReminderIcon.Medicine -> R.drawable.ic_avatar_medecine
+            ReminderIcon.Officials -> R.drawable.ic_avatar_officials
+            ReminderIcon.Payday -> R.drawable.ic_avatar_payday
+            ReminderIcon.Workout -> R.drawable.ic_avatar_workout
         }
 
         val notificationText = RemindFormatter.formatRemindType(reminder.type)
@@ -54,14 +54,14 @@ class Notificator(private val context: Context) {
             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 
         when(reminder.action){
-            is RemindAction.OpenApp -> {
+            is ReminderAction.OpenApp -> {
                 val openAppIntent = context.packageManager.getLaunchIntentForPackage(reminder.action.installedApp?.launchActivity ?: "")
                 openAppIntent?.let {
                     val snoozePendingIntent = PendingIntent.getActivity(context, 0, openAppIntent, PendingIntent.FLAG_IMMUTABLE )
                     builder.addAction(largeIcon, context.getString(R.string.open_app), snoozePendingIntent)
                 }
             }
-            is RemindAction.OpenUrl -> {
+            is ReminderAction.OpenUrl -> {
                 val openLinkIntent = Intent(Intent.ACTION_VIEW).apply {
                     data = Uri.parse(reminder.action.url)
                 }
@@ -71,7 +71,7 @@ class Notificator(private val context: Context) {
             else -> {}
         }
 
-        NotificationManagerCompat.from(context).notify(reminder.id, builder.build())
+        //NotificationManagerCompat.from(context).notify(reminder.id, builder.build())
     }
 
     private fun initNotificationChannel(){

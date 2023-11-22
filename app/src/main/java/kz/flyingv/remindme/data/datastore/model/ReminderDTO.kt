@@ -1,14 +1,14 @@
-package kz.flyingv.remindme.data.model
+package kz.flyingv.remindme.data.datastore.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Reminder(
+data class ReminderDTO(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val icon: RemindIcon,
-    val type: RemindType,
-    val action: RemindAction?,
+    val icon: Int,
+    val type: String,
+    val action: String?,
     val lastShow: Long
 )

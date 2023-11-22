@@ -5,8 +5,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
@@ -42,7 +42,6 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChangeConsumed
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.onClick
@@ -60,6 +59,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
+/*
 @Preview
 @Composable fun SegmentedDemo() {
     MaterialTheme {
@@ -356,7 +356,7 @@ private class SegmentedControlState {
                 .toInt()
                 .coerceIn(0, segmentCount - 1)
 
-        forEachGesture {
+        awaitEachGesture {
             awaitPointerEventScope {
                 val down = awaitFirstDown()
 
@@ -415,8 +415,8 @@ private suspend fun AwaitPointerEventScope.waitForUpOrCancellation(inBounds: Rec
         // Check for cancel by position consumption. We can look on the Final pass of the
         // existing pointer event because it comes after the Main pass we checked above.
         val consumeCheck = awaitPointerEvent(PointerEventPass.Final)
-        if (consumeCheck.changes.any { it.positionChangeConsumed() }) {
+        if (consumeCheck.changes.any { it.isConsumed }) {
             return null
         }
     }
-}
+}*/

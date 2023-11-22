@@ -4,10 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -18,20 +18,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kz.flyingv.remindme.R
-import kz.flyingv.remindme.data.model.RemindIcon
+import kz.flyingv.remindme.domain.entity.ReminderIcon
 
 @Composable
 fun IconSelector(
     modifier: Modifier = Modifier,
-    currentSelect: RemindIcon,
-    onSelectionChanged: (icon: RemindIcon) -> Unit
+    currentSelect: ReminderIcon,
+    onSelectionChanged: (icon: ReminderIcon) -> Unit
 ){
 
     Row (
         modifier = modifier,
         horizontalArrangement = Arrangement.Center
     ){
-        RemindIcon.values().forEach { icon ->
+        ReminderIcon.values().forEach { icon ->
             Spacer(modifier = Modifier.width(4.dp))
             SelectableIcon(
                 icon = getIcon(icon),
@@ -47,13 +47,13 @@ fun IconSelector(
 }
 
 @Composable
-fun getIcon(icon: RemindIcon): Painter{
+fun getIcon(icon: ReminderIcon): Painter {
     return when(icon){
-        RemindIcon.Cake -> painterResource(id = R.drawable.ic_avatar_cake)
-        RemindIcon.Medicine -> painterResource(id = R.drawable.ic_avatar_medecine)
-        RemindIcon.Officials -> painterResource(id = R.drawable.ic_avatar_officials)
-        RemindIcon.Payday -> painterResource(id = R.drawable.ic_avatar_payday)
-        RemindIcon.Workout -> painterResource(id = R.drawable.ic_avatar_workout)
+        ReminderIcon.Cake -> painterResource(id = R.drawable.ic_avatar_cake)
+        ReminderIcon.Medicine -> painterResource(id = R.drawable.ic_avatar_medecine)
+        ReminderIcon.Officials -> painterResource(id = R.drawable.ic_avatar_officials)
+        ReminderIcon.Payday -> painterResource(id = R.drawable.ic_avatar_payday)
+        ReminderIcon.Workout -> painterResource(id = R.drawable.ic_avatar_workout)
     }
 }
 
@@ -81,7 +81,7 @@ fun SelectableIcon(
             painter = icon,
             contentDescription = "",
             modifier = Modifier.padding(12.dp).width(24.dp).height(24.dp),
-            tint = MaterialTheme.colors.onPrimary
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -91,11 +91,11 @@ fun SelectableIcon(
     MaterialTheme {
         Surface {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Icon Selector", style = MaterialTheme.typography.caption)
+                Text("Icon Selector", style = MaterialTheme.typography.labelSmall)
 
                 IconSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    currentSelect = RemindIcon.Medicine,
+                    currentSelect = ReminderIcon.Medicine,
                     onSelectionChanged = {}
                 )
             }

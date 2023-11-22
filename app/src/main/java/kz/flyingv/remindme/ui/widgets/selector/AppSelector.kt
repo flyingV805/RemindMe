@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import kz.flyingv.remindme.data.model.InstalledApp
+import kz.flyingv.remindme.domain.entity.InstalledApp
 
 
 @Composable

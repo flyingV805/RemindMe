@@ -5,13 +5,13 @@ import androidx.work.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.work.WorkInfo
-import kz.flyingv.remindme.data.model.RemindTime
+import kz.flyingv.remindme.domain.entity.ReminderTime
 import java.util.concurrent.ExecutionException
 
 
 class RemindScheduler(private val context: Context) {
 
-    fun startIfNotSet(time: RemindTime){
+    fun startIfNotSet(time: ReminderTime){
         val statuses = WorkManager.getInstance(context).getWorkInfosByTag("RemindSchedulerWork")
         var running = false
         try {
@@ -52,7 +52,7 @@ class RemindScheduler(private val context: Context) {
         WorkManager.getInstance(context).enqueue(dailyWorkRequest)
     }
 
-    fun reschedule(time: RemindTime){
+    fun reschedule(time: ReminderTime){
         WorkManager.getInstance(context).cancelAllWorkByTag(reminderTag)
         start(time.hour, time.minute)
     }
