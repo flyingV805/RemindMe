@@ -6,6 +6,6 @@ data class Reminder(
     val name: String,
     val icon: ReminderIcon,
     val type: ReminderType,
-    val action: ReminderAction?,
+    val action: ReminderAction,
     val lastShow: Long
 )

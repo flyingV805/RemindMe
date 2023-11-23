@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kz.flyingv.remindme.domain.entity.Reminder
 
-class GetRemindersLiveUseCase {
+class GetRemindersUseCase {
 
     suspend operator fun invoke()/*: Flow<PagingData<Reminder>>*/ {
         /*return Pager(
