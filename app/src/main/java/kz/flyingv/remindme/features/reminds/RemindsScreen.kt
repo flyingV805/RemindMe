@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,10 +40,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.domain.entity.Reminder
@@ -72,13 +70,10 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
     val uiState by viewModel.provideState().collectAsStateWithLifecycle()
 
-    val listState by remember {
-        derivedStateOf { uiState.reminds }
-    }
+    val listState = viewModel.remindersPaged.collectAsLazyPagingItems()
 
     val focusRequester = remember { FocusRequester() }
     val focusSearchField by remember { derivedStateOf { uiState.searching } }
-    var showBottomSheet by remember { mutableStateOf(false) }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val sheetState = rememberModalBottomSheetState()
@@ -164,7 +159,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 },
                 floatingActionButton = {
                     FloatingActionButton(
-                        onClick = { showBottomSheet = true }
+                        onClick = { viewModel.reduce(RemindsAction.ShowNewReminder) }
                     ) {
                         Icon(Icons.Filled.Add, "")
                     }
@@ -179,9 +174,10 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 .padding(innerPadding)
                 .padding(horizontal = 8.dp),
         ) {
-            items(listState){
+
+            items(listState.itemCount){
                 RemindItem(
-                    reminder = it,
+                    reminder = listState[it],
                     deleteReminder = {
 
                     }
@@ -191,12 +187,13 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
             item {
                 Box(modifier = Modifier.height(16.dp))
             }
+
         }
 
         //add new reminder
-        if (showBottomSheet) {
+        if (uiState.showNewReminder) {
             ModalBottomSheet(
-                onDismissRequest = { showBottomSheet = false },
+                onDismissRequest = { viewModel.reduce(RemindsAction.HideNewReminder) },
                 sheetState = sheetState
             ) {
 
@@ -204,7 +201,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                     onHide = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                                viewModel.reduce(RemindsAction.HideNewReminder)
                             }
                         }
                     }
@@ -225,12 +222,15 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
 
 @Composable
-fun RemindItem(reminder: Reminder, deleteReminder: (reminder: Reminder) -> Unit?) {
+fun RemindItem(reminder: Reminder?, deleteReminder: (reminder: Reminder) -> Unit?) {
+    reminder ?: return Box {}
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp)
             .clickable {
+                deleteReminder(reminder)
                 //mainViewModel.debugNotification(this, reminder)
             },
     ) {

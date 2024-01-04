@@ -6,23 +6,17 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.domain.entity.Reminder
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class GetRemindersUseCase {
+class GetRemindersUseCase: KoinComponent {
 
-    suspend operator fun invoke()/*: Flow<PagingData<Reminder>>*/ {
-        /*return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                prefetchDistance = 10,
-                initialLoadSize = 20,
-            ),
-            pagingSourceFactory = {
-                //messagesRepository.getMessagesPaged(chat)
-            }
-        ).flow {
+    private val reminderRepository: ReminderRepository by inject()
 
-        }*/
+    operator fun invoke(): Flow<PagingData<Reminder>> {
+        return reminderRepository.getAllRemindersPaged()
     }
 
 }

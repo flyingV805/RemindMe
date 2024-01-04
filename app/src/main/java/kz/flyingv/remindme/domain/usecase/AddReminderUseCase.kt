@@ -10,8 +10,7 @@ class AddReminderUseCase: KoinComponent {
 
     private val reminderRepository: ReminderRepository by inject()
 
-    operator fun invoke(reminder: Reminder): Boolean {
-        Calendar.JANUARY
+    suspend operator fun invoke(reminder: Reminder): Boolean {
         return reminderRepository.addNewRemind(reminder)
     }
 

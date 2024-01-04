@@ -36,9 +36,9 @@ class ReminderActionMapper {
             }
         }
 
-        fun mapFromString(data: String): ReminderAction? {
+        fun mapFromString(data: String?): ReminderAction? {
             return try {
-                val jsonObject = JSONObject(data)
+                val jsonObject = JSONObject(data ?: "")
                 when(jsonObject.optInt("type", -1)){
                     typeOpenApp -> {
                         val installedApp = InstalledApp(
