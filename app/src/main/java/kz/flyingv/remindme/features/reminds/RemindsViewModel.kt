@@ -23,7 +23,7 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
                 pushState(currentState().copy(searching = true))
             }
             is RemindsAction.Search -> {
-
+                pushState(currentState().copy(searchString = action.input))
             }
             RemindsAction.EndSearch -> {
                 pushState(currentState().copy(searching = false))

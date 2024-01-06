@@ -103,8 +103,8 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                             ){
                                 Spacer(modifier = Modifier.width(4.dp))
                                 TextField(
-                                    value = "",
-                                    onValueChange = {},
+                                    value = uiState.searchString,
+                                    onValueChange = { viewModel.reduce(RemindsAction.Search(it)) },
                                     modifier = Modifier
                                         .weight(1f)
                                         .focusRequester(focusRequester),
