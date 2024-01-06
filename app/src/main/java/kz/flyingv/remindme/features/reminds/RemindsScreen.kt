@@ -1,6 +1,7 @@
 package kz.flyingv.remindme.features.reminds
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -49,6 +52,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.domain.entity.Reminder
@@ -156,6 +161,42 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                     ) {
                         Icon(painterResource(id = R.drawable.ic_baseline_alarm_24), contentDescription = "Localized description")
                     }
+
+                    IconButton(
+                        onClick = {
+                            /* do something */
+                        }
+                    ) {
+
+                        if(uiState.authorized){
+                            Image(
+                                painter = rememberAsyncImagePainter(uiState.avatarUrl),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Icon(painterResource(id = R.drawable.baseline_person_add_24), contentDescription = "Localized description")
+                        }
+
+                    }
+
+                    if(uiState.sync){
+                        IconButton(
+                            onClick = {
+                                /* do something */
+                            }
+                        ){
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    }
+
                 },
                 floatingActionButton = {
                     FloatingActionButton(
@@ -264,12 +305,12 @@ fun RemindItem(reminder: Reminder?, deleteReminder: (reminder: Reminder) -> Unit
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = RemindFormatter.formatRemindAction(reminder.action), style = MaterialTheme.typography.bodySmall, maxLines = 1)
             }
-            androidx.compose.material.IconButton(
+            IconButton(
                 onClick = {
                     deleteReminder(reminder)
                 }
             ) {
-                androidx.compose.material.Icon(Icons.Filled.Delete, "delete")
+                Icon(Icons.Filled.Delete, "delete", tint = MaterialTheme.colorScheme.primary)
             }
         }
     }
