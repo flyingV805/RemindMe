@@ -49,7 +49,7 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
         ).flow.map { pagingData ->
             pagingData.map { reminderDto ->
                 Reminder(
-                    id = reminderDto.id,
+                    id = reminderDto.id.toInt(),
                     name = reminderDto.name,
                     icon = ReminderIconMapper.mapFromInt(reminderDto.icon),
                     type = ReminderTypeMapper.mapFromString(reminderDto.type) ?: ReminderType.Daily,

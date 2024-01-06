@@ -1,12 +1,12 @@
-package kz.flyingv.remindme.ui.widgets.selector
+package kz.flyingv.remindme.features.create.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,20 +16,20 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kz.flyingv.remindme.R
-/*
+import kz.flyingv.remindme.domain.entity.DayOfWeek
+
 @Composable
 fun DayOfWeekSelector(
     modifier: Modifier = Modifier,
     selectedDay: DayOfWeek,
     onSelectionChanged: (dayOfWeek: DayOfWeek) -> Unit
 ){
-    //val state by remember { mutableStateOf(DayOfWeekState()) }
 
     Row (
         modifier = modifier.padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ){
-        DayOfWeek.values().forEach { day ->
+        DayOfWeek.entries.forEach { day ->
             Spacer(modifier = Modifier.width(4.dp))
             DayOfWeekItem(
                 name = dayOfWeekName(day),
@@ -47,13 +47,13 @@ fun DayOfWeekSelector(
 
 private fun dayOfWeekName(dayOfWeek: DayOfWeek): String{
     return when(dayOfWeek){
-        DayOfWeek.MONDAY -> "Mn"
-        DayOfWeek.TUESDAY -> "Tu"
-        DayOfWeek.WEDNESDAY -> "We"
-        DayOfWeek.THURSDAY -> "Th"
-        DayOfWeek.FRIDAY -> "Fr"
-        DayOfWeek.SATURDAY -> "Sa"
-        DayOfWeek.SUNDAY -> "Su"
+        DayOfWeek.Mon -> "Mn"
+        DayOfWeek.Tue -> "Tu"
+        DayOfWeek.Wed -> "We"
+        DayOfWeek.Thu -> "Th"
+        DayOfWeek.Fri -> "Fr"
+        DayOfWeek.Sat -> "Sa"
+        DayOfWeek.Sun -> "Su"
     }
 }
 
@@ -81,7 +81,7 @@ fun DayOfWeekItem(
         },
         contentAlignment = Alignment.Center
     ){
-        Text(name, modifier = Modifier.padding(4.dp), color = MaterialTheme.colors.onPrimary)
+        Text(name, modifier = Modifier.padding(4.dp), color = MaterialTheme.colorScheme.onPrimary)
         //Icon(icon, "", Modifier.padding(12.dp).width(24.dp).height(24.dp))
     }
 }
@@ -91,14 +91,14 @@ fun DayOfWeekItem(
     MaterialTheme {
         Surface {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Day of Week Selector", style = MaterialTheme.typography.caption)
+                Text("Day of Week Selector", style = MaterialTheme.typography.labelSmall)
 
                 DayOfWeekSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    selectedDay = DayOfWeek.MONDAY,
+                    selectedDay = DayOfWeek.Mon,
                     onSelectionChanged = {}
                 )
             }
         }
     }
-}*/
+}

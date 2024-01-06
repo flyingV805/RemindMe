@@ -10,13 +10,12 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.domain.entity.Reminder
 import kz.flyingv.remindme.domain.entity.ReminderAction
 import kz.flyingv.remindme.domain.entity.ReminderIcon
-import kz.flyingv.remindme.ui.utils.RemindFormatter
+import kz.flyingv.remindme.features.reminds.uidata.RemindFormatter
 
 class Notificator(private val context: Context) {
 

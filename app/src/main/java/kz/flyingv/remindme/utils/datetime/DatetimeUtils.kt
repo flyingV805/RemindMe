@@ -1,5 +1,6 @@
 package kz.flyingv.remindme.utils.datetime
 
+import kz.flyingv.remindme.domain.entity.MonthOfYear
 import java.util.*
 
 class DatetimeUtils {
@@ -16,6 +17,28 @@ class DatetimeUtils {
                 else -> "Haven't reminded yet"
             }
         }
+
+
+        fun daysInMonth(month: MonthOfYear): Int{
+            val monthIndex = month.ordinal + 1
+
+            return when {
+                (monthIndex == 4 || monthIndex == 6 || monthIndex == 9 || monthIndex == 11) -> 30
+                (monthIndex == 2) -> 28
+                else -> 31
+            }
+
+        }
+
+        fun getDayOfMonthSuffix(dayOfMonth: Int): String{
+            return when(dayOfMonth % 20){
+                1 -> "st"
+                2 -> "nd"
+                3 -> "rd"
+                else -> if(dayOfMonth > 30){"st"}else{"th"}
+            }
+        }
+
 /*
         fun dayOfWeekString(dayOfWeek: DayOfWeek): String {
             return when(dayOfWeek){
@@ -76,27 +99,7 @@ class DatetimeUtils {
                 else -> MonthOfYear.January
             }
         }
-
-        fun daysInMonth(month: MonthOfYear): Int{
-            val monthIndex = month.ordinal + 1
-            val result = if (monthIndex == 4 || monthIndex == 6 || monthIndex == 9 || monthIndex == 11){
-                30
-            }else if(monthIndex == 2){
-                28
-            }else{
-                31
-            }
-            return result
-        }
-
-        fun getDayOfMonthSuffix(dayOfMonth: Int): String{
-            return when(dayOfMonth % 20){
-                1 -> "st"
-                2 -> "nd"
-                3 -> "rd"
-                else -> if(dayOfMonth > 30){"st"}else{"th"}
-            }
-        }*/
+*/
 
     }
 

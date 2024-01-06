@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.utils
+package kz.flyingv.remindme.features.reminds.uidata
 
 import kz.flyingv.remindme.domain.entity.ReminderAction
 import kz.flyingv.remindme.domain.entity.ReminderType

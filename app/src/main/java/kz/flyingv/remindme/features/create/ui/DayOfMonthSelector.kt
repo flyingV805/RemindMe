@@ -1,16 +1,24 @@
-package kz.flyingv.remindme.ui.widgets.selector
+package kz.flyingv.remindme.features.create.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -20,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kz.flyingv.remindme.R
 
-
 @Composable
 fun DayOfMonthSelector(
     modifier: Modifier = Modifier,
@@ -28,15 +35,15 @@ fun DayOfMonthSelector(
     days: List<String> = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"),
     selectDay: Int,
     onSelectionChanged: (dayOfMonth: Int) -> Unit
-){
+) {
 
     LazyRow (
         modifier = modifier.padding(16.dp),
         state = scrollState,
         horizontalArrangement = Arrangement.Center
-    ){
-        for(day in 1..31){
-            item{
+    ) {
+        for (day in 1..31) {
+            item {
                 Spacer(modifier = Modifier.width(4.dp))
                 DayOfMonthItem(
                     name = day.toString(),
@@ -48,24 +55,8 @@ fun DayOfMonthSelector(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
             }
-        }/*
-        items(
-            count = days.count(),
-            itemContent = {
-                Spacer(modifier = Modifier.width(4.dp))
-                DayOfMonthItem(
-                    name = days[it],
-                    isSelected = selectDay == it,
-                    onSelect = {
-                        //state.selectDayIndex = it
-                        onSelectionChanged(it)
-                    }
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-            }
-        )*/
+        }
     }
-
 }
 
 @Composable
@@ -92,7 +83,7 @@ fun DayOfMonthItem(
         },
         contentAlignment = Alignment.Center
     ){
-        Text(name, modifier = Modifier.padding(4.dp), color = MaterialTheme.colors.onPrimary)
+        Text(name, modifier = Modifier.padding(4.dp), color = MaterialTheme.colorScheme.onPrimary)
         //Icon(icon, "", Modifier.padding(12.dp).width(24.dp).height(24.dp))
     }
 }
@@ -103,7 +94,7 @@ fun DayOfMonthSelectorDemo() {
     MaterialTheme {
         Surface {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Day Of Month Selector", style = MaterialTheme.typography.caption)
+                Text("Day Of Month Selector", style = MaterialTheme.typography.labelSmall)
 
                 DayOfMonthSelector(
                     modifier = Modifier.fillMaxWidth(),

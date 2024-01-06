@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.widgets.selector
+package kz.flyingv.remindme.features.create.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,13 +15,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kz.flyingv.remindme.domain.entity.MonthOfYear
 import kz.flyingv.remindme.utils.datetime.DatetimeUtils
-/*
+
 @Composable
 fun DayOfYearSelector(
     modifier: Modifier = Modifier,
     selectedDay: Int = 1,
-    selectedMonth: MonthOfYear = MonthOfYear.January,
+    selectedMonth: MonthOfYear = MonthOfYear.Jan,
     onSelectionChanged: (day: Int, month: MonthOfYear) -> Unit
 ) {
 
@@ -50,7 +51,7 @@ fun DayOfYearSelector(
             contentAlignment = Alignment.CenterEnd
         ){
             Text(
-                text = DatetimeUtils.monthOfYearString(selectedMonth),
+                text = "",//DatetimeUtils.monthOfYearString(selectedMonth),
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 textAlign = TextAlign.Center
             )
@@ -64,7 +65,9 @@ fun DayOfYearSelector(
                         daysInMonthCount = DatetimeUtils.daysInMonth(month)
                         onSelectionChanged(selectedDay, month)
                     }) {
-                        Text(DatetimeUtils.monthOfYearString(month))
+                        Text(
+                            ""//DatetimeUtils.monthOfYearString(month)
+                        )
                     }
                 }
             }
@@ -124,4 +127,4 @@ fun DayOfYearSelector(
             }
         }
     }
-}*/
+}

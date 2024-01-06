@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.widgets.selector
+package kz.flyingv.remindme.features.create.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

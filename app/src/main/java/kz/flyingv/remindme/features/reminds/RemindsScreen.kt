@@ -60,8 +60,8 @@ import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.domain.entity.Reminder
 import kz.flyingv.remindme.features.create.NewRemindScreen
-import kz.flyingv.remindme.ui.utils.RemindFormatter
-import kz.flyingv.remindme.ui.widgets.selector.getIcon
+import kz.flyingv.remindme.features.create.ui.getIcon
+import kz.flyingv.remindme.features.reminds.uidata.RemindFormatter
 import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +76,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
     val focusSearchField by remember { derivedStateOf { uiState.searching } }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
     Scaffold(

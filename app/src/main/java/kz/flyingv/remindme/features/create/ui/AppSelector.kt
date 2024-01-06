@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.ui.widgets.selector
+package kz.flyingv.remindme.features.create.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,7 +30,7 @@ fun AppSelector(
     val isDropdownExpanded = remember { mutableStateOf(false)}
 
     Row(
-        modifier = modifier.fillMaxWidth().fillMaxHeight().padding(top = 4.dp, bottom = 16.dp, start = 32.dp, end = 32.dp)
+        modifier = modifier.fillMaxWidth().fillMaxHeight().padding(top = 4.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
     ){
         Box(modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(8.dp))
