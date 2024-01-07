@@ -259,8 +259,8 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
             items(listState.itemCount){
                 RemindItem(
                     reminder = listState[it],
-                    deleteReminder = {
-
+                    deleteReminder = {reminder ->
+                        viewModel.reduce(RemindsAction.AskForDelete(reminder))
                     }
                 )
             }
@@ -272,9 +272,15 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
         }
 
         //delete reminder
-        if (uiState.reminderForDelete != null){
+        uiState.reminderForDelete?.let {reminder ->
             DeleteRemind(
-                onHide = {}
+                reminder,
+                delete = {
+                    viewModel.reduce(RemindsAction.Delete(it))
+                },
+                cancel = {
+                    viewModel.reduce(RemindsAction.CancelDelete)
+                }
             )
         }
 

@@ -21,9 +21,9 @@ interface ReminderDao {
     fun insert(reminder: ReminderDTO): Long
 
     @Query("UPDATE ReminderDTO SET lastShow = :lastShowMills WHERE id = :id")
-    fun updateLastShow(id: Int, lastShowMills: Long)
+    fun updateLastShow(id: Long, lastShowMills: Long)
 
-    @Delete
-    fun delete(reminder: ReminderDTO)
+    @Query("DELETE FROM ReminderDTO WHERE id = :reminderId")
+    fun delete(reminderId: Long)
 
 }

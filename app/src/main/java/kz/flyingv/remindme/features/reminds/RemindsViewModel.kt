@@ -2,7 +2,10 @@ package kz.flyingv.remindme.features.reminds
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kz.flyingv.cleanmvi.UIViewModel
+import kz.flyingv.remindme.domain.usecase.DeleteReminderUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -12,6 +15,7 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
 ) {
 
     private val remindersUseCase: GetRemindersUseCase by inject()
+    private val deleteReminderUseCase: DeleteReminderUseCase by inject()
 
     val remindersPaged = remindersUseCase().cachedIn(viewModelScope)
 
@@ -33,6 +37,18 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
             }
             RemindsAction.ShowNewReminder -> {
                 pushState(currentState().copy(showNewReminder = true))
+            }
+            is RemindsAction.AskForDelete -> {
+                pushState(currentState().copy(reminderForDelete = action.reminder))
+            }
+            RemindsAction.CancelDelete -> {
+                pushState(currentState().copy(reminderForDelete = null))
+            }
+            is RemindsAction.Delete -> {
+                viewModelScope.launch(Dispatchers.IO){
+                    deleteReminderUseCase(action.reminder)
+                    pushState(currentState().copy(reminderForDelete = null))
+                }
             }
         }
 

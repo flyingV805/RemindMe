@@ -49,7 +49,7 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
         ).flow.map { pagingData ->
             pagingData.map { reminderDto ->
                 Reminder(
-                    id = reminderDto.id.toInt(),
+                    id = reminderDto.id,
                     name = reminderDto.name,
                     icon = ReminderIconMapper.mapFromInt(reminderDto.icon),
                     type = ReminderTypeMapper.mapFromString(reminderDto.type) ?: ReminderType.Daily,
@@ -69,7 +69,7 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
     }
 
     override suspend fun deleteRemind(reminder: Reminder) {
-        TODO("Not yet implemented")
+        database.reminderDao().delete(reminder.id)
     }
 
 }
