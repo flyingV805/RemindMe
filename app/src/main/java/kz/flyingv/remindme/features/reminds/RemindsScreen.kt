@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,17 +57,22 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.domain.entity.Reminder
 import kz.flyingv.remindme.features.create.NewRemindScreen
 import kz.flyingv.remindme.features.create.ui.getIcon
+import kz.flyingv.remindme.features.reminds.dialog.DeleteRemind
 import kz.flyingv.remindme.features.reminds.uidata.RemindFormatter
 import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
@@ -199,10 +206,12 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
                 },
                 floatingActionButton = {
-                    FloatingActionButton(
+                    ExtendedFloatingActionButton(
                         onClick = { viewModel.reduce(RemindsAction.ShowNewReminder) }
                     ) {
-                        Icon(Icons.Filled.Add, "")
+                        Icon(Icons.Filled.Add, null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "CREATE")
                     }
                 }
             )
@@ -215,6 +224,37 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 .padding(innerPadding)
                 .padding(horizontal = 8.dp),
         ) {
+
+            if(listState.itemCount == 0){
+                item{
+                    val composition by rememberLottieComposition(LottieCompositionSpec.Asset("lottie-no-data.json"))
+                    Column(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        Spacer(modifier = Modifier.height(36.dp))
+                        Text(
+                            text = if(!uiState.searching){
+                                "Oops, you don't have any reminders yet..."
+                            }else{
+                                "Oops, can't find anything..."
+                            },
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center
+                        )
+                        LottieAnimation(
+                            composition
+                        )
+                        Text(
+                            text = if(!uiState.searching){"Create one ↓"}else{""},
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
 
             items(listState.itemCount){
                 RemindItem(
@@ -229,6 +269,13 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 Box(modifier = Modifier.height(16.dp))
             }
 
+        }
+
+        //delete reminder
+        if (uiState.reminderForDelete != null){
+            DeleteRemind(
+                onHide = {}
+            )
         }
 
         //add new reminder

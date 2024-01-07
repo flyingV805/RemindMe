@@ -1,15 +1,14 @@
-package kz.flyingv.remindme.utils.scheduler
+package kz.flyingv.remindme.features.notificator
 
 import android.content.Context
-import android.util.Log
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.data.repository.SchedulerRepository
+import kz.flyingv.remindme.data.scheduler.RemindScheduler
 import kz.flyingv.remindme.domain.entity.ReminderType
-import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 import kz.flyingv.remindme.utils.notifications.Notificator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -17,7 +16,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
+class NotificatorWorker(
+    private val context: Context,
+    workerParams: WorkerParameters
+) : Worker(context, workerParams), KoinComponent {
 
     private val reminderRepository: ReminderRepository by inject()
     private val schedulerRepository: SchedulerRepository by inject()
@@ -92,7 +94,7 @@ class DailyWorker(val context: Context, workerParams: WorkerParameters) : Worker
 
         val timeDiff = dueDate.timeInMillis - currentDate.timeInMillis
 
-        val dailyWorkRequest = OneTimeWorkRequestBuilder<DailyWorker>()
+        val dailyWorkRequest = OneTimeWorkRequestBuilder<NotificatorWorker>()
             .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
             .addTag(RemindScheduler.reminderTag)
             .build()

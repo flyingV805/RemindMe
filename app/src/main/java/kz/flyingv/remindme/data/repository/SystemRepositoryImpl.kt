@@ -2,6 +2,10 @@ package kz.flyingv.remindme.data.repository
 
 import android.content.Context
 import android.content.Intent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kz.flyingv.remindme.domain.entity.InstalledApp
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -11,7 +15,7 @@ class SystemRepositoryImpl: SystemRepository, KoinComponent {
 
     private val context: Context by inject()
 
-    override fun getInstalledApps(): List<InstalledApp> {
+    override suspend fun getInstalledApps(): List<InstalledApp> {
         val packageManager = context.packageManager
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -19,6 +23,7 @@ class SystemRepositoryImpl: SystemRepository, KoinComponent {
         val resolveInfo = packageManager.queryIntentActivities(mainIntent, 0)
 
         return resolveInfo.map {
+
             val appRes = packageManager.getResourcesForApplication(it.activityInfo.applicationInfo)
 
             val appName = if(it.activityInfo.labelRes != 0){
@@ -34,8 +39,19 @@ class SystemRepositoryImpl: SystemRepository, KoinComponent {
                 icon = appIcon,
                 launchActivity = it.activityInfo.packageName
             )
+
         }
 
+    }
+
+    override suspend fun getInstalledAppsCached(): List<InstalledApp> {
+        return emptyList()
+    }
+
+    override suspend fun getInstalledAppsAsFlow(): Flow<List<InstalledApp>> {
+        return flow {
+            emit(getInstalledApps())
+        }
     }
 
 }

@@ -7,8 +7,10 @@ import androidx.room.Room
 import kz.flyingv.remindme.data.datastore.Database
 import kz.flyingv.remindme.data.repository.*
 import kz.flyingv.remindme.domain.usecase.AddReminderUseCase
+import kz.flyingv.remindme.domain.usecase.CheckSchedulerUseCase
+import kz.flyingv.remindme.domain.usecase.GetInstalledAppsUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
-import kz.flyingv.remindme.utils.scheduler.RemindScheduler
+import kz.flyingv.remindme.data.scheduler.RemindScheduler
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -19,7 +21,8 @@ class ReminderApp: Application() {
 
         single { Room.databaseBuilder(androidContext(), Database::class.java, "Reminder.db").build() }
         single <SharedPreferences> { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
-        single { RemindScheduler(androidContext())}
+
+        single { RemindScheduler(androidContext()) }
 
         single<ReminderRepository> { ReminderRepositoryImpl() }
         single<SchedulerRepository> { SchedulerRepositoryImpl() }
@@ -27,6 +30,8 @@ class ReminderApp: Application() {
 
         factory { AddReminderUseCase() }
         factory { GetRemindersUseCase() }
+        factory { GetInstalledAppsUseCase() }
+        factory { CheckSchedulerUseCase() }
     }
 
     override fun onCreate() {

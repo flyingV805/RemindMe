@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +45,13 @@ fun NewRemindScreen(
 ) {
 
     val viewState by viewModel.provideState().collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = viewState.done){
+        if(viewState.done){
+            onHide()
+            viewModel.reduce(NewRemindAction.Hidden)
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -185,11 +193,10 @@ fun NewRemindScreen(
                         Text(text = "OK, no actions")
                     }
                 RemindAction.OpenApp -> AppSelector(
-                    apps = emptyList(),
+                    apps = viewState.availableApps,
                     selectedApp = viewState.actionApp,
                     onSelectionChanged = { app ->
-
-                        //viewModel.reduce(NewRemindAction.UpdateAction(RemindAction.OpenApp(app)))
+                        viewModel.reduce(NewRemindAction.UpdateApp(app))
                     }
                 )
                 RemindAction.OpenUrl -> TextField(
@@ -199,8 +206,7 @@ fun NewRemindScreen(
                     value = viewState.actionUrl,
                     singleLine = true,
                     onValueChange = { url ->
-
-                        //viewModel.makeAction(NewReminderAction.UpdateAction(RemindAction.OpenUrl(url)))
+                        viewModel.reduce(NewRemindAction.UpdateLink(url))
                     },
                     placeholder = { Text("Enter URL") },
                 )

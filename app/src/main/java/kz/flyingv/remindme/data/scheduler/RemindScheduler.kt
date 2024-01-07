@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.utils.scheduler
+package kz.flyingv.remindme.data.scheduler
 
 import android.content.Context
 import androidx.work.*
@@ -6,6 +6,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.work.WorkInfo
 import kz.flyingv.remindme.domain.entity.ReminderTime
+import kz.flyingv.remindme.features.notificator.NotificatorWorker
 import java.util.concurrent.ExecutionException
 
 
@@ -44,7 +45,7 @@ class RemindScheduler(private val context: Context) {
 
         val timeDiff = dueDate.timeInMillis - currentDate.timeInMillis
 
-        val dailyWorkRequest = OneTimeWorkRequestBuilder<DailyWorker>()
+        val dailyWorkRequest = OneTimeWorkRequestBuilder<NotificatorWorker>()
             .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
             .addTag(reminderTag)
             .build()

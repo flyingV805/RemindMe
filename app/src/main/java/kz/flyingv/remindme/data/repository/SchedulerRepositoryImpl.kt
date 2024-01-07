@@ -2,7 +2,7 @@ package kz.flyingv.remindme.data.repository
 
 import android.content.SharedPreferences
 import kz.flyingv.remindme.domain.entity.ReminderTime
-import kz.flyingv.remindme.utils.scheduler.RemindScheduler
+import kz.flyingv.remindme.data.scheduler.RemindScheduler
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

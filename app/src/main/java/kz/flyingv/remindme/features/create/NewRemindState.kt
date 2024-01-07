@@ -28,10 +28,12 @@ data class NewRemindState(
     val action: RemindAction = RemindAction.Nothing,
     //action app
     val actionApp: InstalledApp? = null,
+    val availableApps: List<InstalledApp> = emptyList(),
     //action url
     val actionUrl: String = "",
     //
-    val errors: List<ValidationError> = emptyList()
+    val errors: List<ValidationError> = emptyList(),
+    val done: Boolean = false
 ): UIState
 
 

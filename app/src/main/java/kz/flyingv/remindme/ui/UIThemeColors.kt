@@ -10,6 +10,7 @@ import kz.flyingv.remindme.R
 
 @Composable
 fun lightUI(): ColorScheme {
+
     return lightColorScheme(
         primary = colorResource(id = R.color.purple_700),
         //primaryVariant = colorResource(id = R.color.purple_500),
