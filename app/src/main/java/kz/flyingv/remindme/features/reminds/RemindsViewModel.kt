@@ -50,6 +50,12 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
                     pushState(currentState().copy(reminderForDelete = null))
                 }
             }
+            RemindsAction.ShowReminderTime -> {
+                pushState(currentState().copy(showRemindTime = true))
+            }
+            RemindsAction.HideReminderTime -> {
+                pushState(currentState().copy(showRemindTime = false))
+            }
         }
 
     }

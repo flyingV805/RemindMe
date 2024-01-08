@@ -1,6 +1,7 @@
 package kz.flyingv.remindme.data.repository
 
 import android.content.SharedPreferences
+import kz.flyingv.remindme.data.preferences.PreferencesKeys
 import kz.flyingv.remindme.domain.entity.ReminderTime
 import kz.flyingv.remindme.data.scheduler.RemindScheduler
 import org.koin.core.component.KoinComponent
@@ -12,9 +13,13 @@ class SchedulerRepositoryImpl: SchedulerRepository, KoinComponent {
     private val scheduler: RemindScheduler by inject()
 
     override fun currentRemindTime(): ReminderTime {
+
+        val selectedHour = preferences.getInt(PreferencesKeys.remindHour, PreferencesKeys.defaultRemindHour)
+        val remindMinute = preferences.getInt(PreferencesKeys.remindMinute, PreferencesKeys.defaultRemindMinute)
+
         return ReminderTime(
-            hour = preferences.getInt("remindHourOfDay", 9),
-            minute = preferences.getInt("remindMinuteOfHour", 0)
+            hour = selectedHour,
+            minute = remindMinute
         )
     }
 
@@ -25,8 +30,8 @@ class SchedulerRepositoryImpl: SchedulerRepository, KoinComponent {
     override fun reschedule(newTime: ReminderTime) {
         scheduler.reschedule(newTime)
         preferences.edit()
-            .putInt("remindHourOfDay", newTime.hour)
-            .putInt("remindMinuteOfHour", newTime.minute)
+            .putInt(PreferencesKeys.remindHour, newTime.hour)
+            .putInt(PreferencesKeys.remindMinute, newTime.minute)
             .apply()
     }
 

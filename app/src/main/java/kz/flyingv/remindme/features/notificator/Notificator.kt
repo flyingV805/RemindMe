@@ -1,4 +1,4 @@
-package kz.flyingv.remindme.utils.notifications
+package kz.flyingv.remindme.features.notificator
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

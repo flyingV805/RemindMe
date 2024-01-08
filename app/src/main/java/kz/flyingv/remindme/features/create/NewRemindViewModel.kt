@@ -48,6 +48,15 @@ class NewRemindViewModel: KoinComponent, UIViewModel<NewRemindState, NewRemindAc
             is NewRemindAction.UpdateType -> {
                 pushState( currentState().copy(type = action.type) )
             }
+            is NewRemindAction.UpdateDayOfWeek -> {
+                pushState( currentState().copy(dayOfWeek = action.day) )
+            }
+            is NewRemindAction.UpdateDayOfMonth -> {
+                pushState( currentState().copy(dayOfMonth = action.day) )
+            }
+            is NewRemindAction.UpdateDayOfYear -> {
+                pushState( currentState().copy(dayOfYear = action.day, monthOfYear = action.monthOfYear) )
+            }
             is NewRemindAction.UpdateApp -> {
                 pushState( currentState().copy(actionApp = action.app) )
             }

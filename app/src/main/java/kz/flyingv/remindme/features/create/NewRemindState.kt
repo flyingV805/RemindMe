@@ -20,9 +20,9 @@ data class NewRemindState(
     //daily
     val dayOfWeek: DayOfWeek = DayOfWeek.Mon,
     //monthly
-    val dayOfMonth: Int = 0,
+    val dayOfMonth: Int = 1,
     //yearly
-    val dayOfYear: Int = 0,
+    val dayOfYear: Int = 1,
     val monthOfYear: MonthOfYear = MonthOfYear.Jan,
     //action
     val action: RemindAction = RemindAction.Nothing,

@@ -10,6 +10,8 @@ sealed class RemindsAction: UIAction {
     data object EndSearch: RemindsAction()
     data object ShowNewReminder: RemindsAction()
     data object HideNewReminder: RemindsAction()
+    data object ShowReminderTime: RemindsAction()
+    data object HideReminderTime: RemindsAction()
     data class AskForDelete(val reminder: Reminder): RemindsAction()
     data object CancelDelete: RemindsAction()
     data class Delete(val reminder: Reminder): RemindsAction()

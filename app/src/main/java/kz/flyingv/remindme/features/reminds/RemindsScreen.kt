@@ -74,6 +74,7 @@ import kz.flyingv.remindme.features.create.NewRemindScreen
 import kz.flyingv.remindme.features.create.ui.getIcon
 import kz.flyingv.remindme.features.reminds.dialog.DeleteRemind
 import kz.flyingv.remindme.features.reminds.uidata.RemindFormatter
+import kz.flyingv.remindme.features.remindtime.RemindTimeDialog
 import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -164,7 +165,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 modifier = Modifier.clip(RoundedCornerShape(8.dp, 8.dp, 0.dp, 0.dp)),
                 actions = {
                     IconButton(
-                        onClick = { /* do something */ }
+                        onClick = {  viewModel.reduce(RemindsAction.ShowReminderTime) }
                     ) {
                         Icon(painterResource(id = R.drawable.ic_baseline_alarm_24), contentDescription = "Localized description")
                     }
@@ -284,6 +285,15 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
             )
         }
 
+        //change remind time
+        if (uiState.showRemindTime) {
+            RemindTimeDialog(
+                hide = {
+                    viewModel.reduce(RemindsAction.HideReminderTime)
+                }
+            )
+        }
+
         //add new reminder
         if (uiState.showNewReminder) {
             ModalBottomSheet(
@@ -325,7 +335,6 @@ fun RemindItem(reminder: Reminder?, deleteReminder: (reminder: Reminder) -> Unit
             .padding(top = 12.dp)
             .clickable {
                 deleteReminder(reminder)
-                //mainViewModel.debugNotification(this, reminder)
             },
     ) {
         Row(

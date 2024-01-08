@@ -1,5 +1,6 @@
 package kz.flyingv.remindme.utils.datetime
 
+import kz.flyingv.remindme.domain.entity.DayOfWeek
 import kz.flyingv.remindme.domain.entity.MonthOfYear
 import java.util.*
 
@@ -17,7 +18,6 @@ class DatetimeUtils {
                 else -> "Haven't reminded yet"
             }
         }
-
 
         fun daysInMonth(month: MonthOfYear): Int{
             val monthIndex = month.ordinal + 1
@@ -39,35 +39,37 @@ class DatetimeUtils {
             }
         }
 
-/*
-        fun dayOfWeekString(dayOfWeek: DayOfWeek): String {
-            return when(dayOfWeek){
-                DayOfWeek.MONDAY -> "Mn"
-                DayOfWeek.TUESDAY -> "Tu"
-                DayOfWeek.WEDNESDAY -> "We"
-                DayOfWeek.THURSDAY -> "Th"
-                DayOfWeek.FRIDAY -> "Fr"
-                DayOfWeek.SATURDAY -> "Sa"
-                DayOfWeek.SUNDAY -> "Su"
+        fun monthOfYearString(monthOfYear: MonthOfYear): String {
+            return when(monthOfYear){
+                MonthOfYear.Jan -> "January"
+                MonthOfYear.Feb -> "February"
+                MonthOfYear.Mar -> "March"
+                MonthOfYear.Apr -> "April"
+                MonthOfYear.May -> "May"
+                MonthOfYear.Jun -> "June"
+                MonthOfYear.Jul -> "July"
+                MonthOfYear.Aug -> "August"
+                MonthOfYear.Sep -> "September"
+                MonthOfYear.Oct -> "October"
+                MonthOfYear.Nov -> "November"
+                MonthOfYear.Dec -> "December"
             }
         }
 
-        fun monthOfYearString(monthOfYear: MonthOfYear): String {
-            return when(monthOfYear){
-                MonthOfYear.January -> "January"
-                MonthOfYear.February -> "February"
-                MonthOfYear.March -> "March"
-                MonthOfYear.April -> "April"
-                MonthOfYear.May -> "May"
-                MonthOfYear.June -> "June"
-                MonthOfYear.July -> "July"
-                MonthOfYear.August -> "August"
-                MonthOfYear.September -> "September"
-                MonthOfYear.October -> "October"
-                MonthOfYear.November -> "November"
-                MonthOfYear.December -> "December"
+        fun dayOfWeekString(dayOfWeek: DayOfWeek): String {
+            return when(dayOfWeek){
+                DayOfWeek.Mon -> "Monday"
+                DayOfWeek.Tue -> "Tuesday"
+                DayOfWeek.Wed -> "Wednesday"
+                DayOfWeek.Thu -> "Thursday"
+                DayOfWeek.Fri -> "Friday"
+                DayOfWeek.Sat -> "Saturday"
+                DayOfWeek.Sun -> "Sunday"
             }
         }
+
+/*
+
 
         fun dayOfWeekIndex(calendar: Calendar): DayOfWeek{
             return when(calendar.get(Calendar.DAY_OF_WEEK)){

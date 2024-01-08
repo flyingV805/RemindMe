@@ -9,7 +9,6 @@ import kz.flyingv.remindme.data.repository.ReminderRepository
 import kz.flyingv.remindme.data.repository.SchedulerRepository
 import kz.flyingv.remindme.data.scheduler.RemindScheduler
 import kz.flyingv.remindme.domain.entity.ReminderType
-import kz.flyingv.remindme.utils.notifications.Notificator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*

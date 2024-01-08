@@ -12,6 +12,8 @@ import kz.flyingv.remindme.domain.usecase.GetInstalledAppsUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
 import kz.flyingv.remindme.data.scheduler.RemindScheduler
 import kz.flyingv.remindme.domain.usecase.DeleteReminderUseCase
+import kz.flyingv.remindme.domain.usecase.GetReminderTimeUseCase
+import kz.flyingv.remindme.domain.usecase.RescheduleUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -33,7 +35,10 @@ class ReminderApp: Application() {
         factory { GetRemindersUseCase() }
         factory { DeleteReminderUseCase() }
         factory { GetInstalledAppsUseCase() }
+        factory { RescheduleUseCase() }
         factory { CheckSchedulerUseCase() }
+        factory { GetReminderTimeUseCase() }
+
     }
 
     override fun onCreate() {

@@ -11,9 +11,12 @@ class RemindFormatter {
         fun formatRemindType(remindType: ReminderType): String {
             return when(remindType){
                 is ReminderType.Daily -> "Every day"
-                is ReminderType.Monthly -> "Every month,"
-                is ReminderType.Weekly -> "Every week, "
-                is ReminderType.Yearly -> "Every year, "
+                is ReminderType.Monthly -> "Every month, ".plus(remindType.dayOfMonth).plus(DatetimeUtils.getDayOfMonthSuffix(remindType.dayOfMonth))
+                is ReminderType.Weekly -> "Every week, ".plus(DatetimeUtils.dayOfWeekString(remindType.dayOfWeek))
+                is ReminderType.Yearly -> "Every year, ".plus(DatetimeUtils.monthOfYearString(remindType.month))
+                    .plus(" ")
+                    .plus(remindType.dayOfMonth)
+                    .plus(DatetimeUtils.getDayOfMonthSuffix(remindType.dayOfMonth))
             }
 
         }

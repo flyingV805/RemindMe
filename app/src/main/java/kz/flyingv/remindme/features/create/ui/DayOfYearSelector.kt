@@ -51,7 +51,7 @@ fun DayOfYearSelector(
             contentAlignment = Alignment.CenterEnd
         ){
             Text(
-                text = "",//DatetimeUtils.monthOfYearString(selectedMonth),
+                text = DatetimeUtils.monthOfYearString(selectedMonth),
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 textAlign = TextAlign.Center
             )
@@ -59,19 +59,16 @@ fun DayOfYearSelector(
             DropdownMenu(
                 expanded = showMonthDropdown.value,
                 onDismissRequest = { showMonthDropdown.value = false }) {
-                MonthOfYear.values().forEach {month ->
+                MonthOfYear.entries.forEach { month ->
                     DropdownMenuItem(onClick = {
                         showMonthDropdown.value = false
                         daysInMonthCount = DatetimeUtils.daysInMonth(month)
                         onSelectionChanged(selectedDay, month)
                     }) {
-                        Text(
-                            ""//DatetimeUtils.monthOfYearString(month)
-                        )
+                        Text(DatetimeUtils.monthOfYearString(month))
                     }
                 }
             }
-            //Icon(icon, "", Modifier.padding(12.dp).width(24.dp).height(24.dp))
         }
         Spacer(modifier = Modifier.width(8.dp))
         Box(modifier = Modifier

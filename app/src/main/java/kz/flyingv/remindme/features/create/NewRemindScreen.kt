@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -45,6 +46,8 @@ fun NewRemindScreen(
 ) {
 
     val viewState by viewModel.provideState().collectAsStateWithLifecycle()
+
+    val dayOfMonthScrollState = rememberLazyListState()
 
     LaunchedEffect(key1 = viewState.done){
         if(viewState.done){
@@ -130,16 +133,15 @@ fun NewRemindScreen(
                     modifier = Modifier.fillMaxWidth(),
                     selectedDay = viewState.dayOfWeek,
                     onSelectionChanged = {
-
-                        //viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Weekly(it)))
+                        viewModel.reduce(NewRemindAction.UpdateDayOfWeek(it))
                     }
                 )
                 RemindType.Monthly -> DayOfMonthSelector(
                     modifier = Modifier.fillMaxWidth(),
                     selectDay = viewState.dayOfMonth,
+                    scrollState = dayOfMonthScrollState,
                     onSelectionChanged = {
-
-                        //viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Monthly(it)))
+                        viewModel.reduce(NewRemindAction.UpdateDayOfMonth(it))
                     }
                 )
                 RemindType.Yearly -> DayOfYearSelector(
@@ -147,8 +149,7 @@ fun NewRemindScreen(
                     selectedMonth = viewState.monthOfYear,
                     selectedDay = viewState.dayOfYear,
                     onSelectionChanged = {day, month ->
-
-                        //viewModel.makeAction(NewReminderAction.UpdateType(RemindType.Yearly(dayOfMonth = day, month = month)))
+                        viewModel.reduce(NewRemindAction.UpdateDayOfYear(day, month))
                     }
                 )
             }
