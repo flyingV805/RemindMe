@@ -61,11 +61,33 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
     }
 
     override fun getWorkerReminders(): List<Reminder> {
-        TODO("Not yet implemented")
+        return database.reminderDao().getAll().map { reminderDto ->
+            Reminder(
+                id = reminderDto.id,
+                name = reminderDto.name,
+                icon = ReminderIconMapper.mapFromInt(reminderDto.icon),
+                type = ReminderTypeMapper.mapFromString(reminderDto.type) ?: ReminderType.Daily,
+                action = ReminderActionMapper.mapFromString(reminderDto.action) ?: ReminderAction.DoNothing,
+                lastShow = reminderDto.lastShow
+            )
+        }
     }
 
     override fun updateLastShow(reminder: Reminder, lastShowMills: Long) {
         database.reminderDao().updateLastShow(reminder.id, lastShowMills)
+    }
+
+    override suspend fun searchReminders(search: String): List<Reminder> {
+        return database.reminderDao().search("%$search%").map { reminderDto ->
+            Reminder(
+                id = reminderDto.id,
+                name = reminderDto.name,
+                icon = ReminderIconMapper.mapFromInt(reminderDto.icon),
+                type = ReminderTypeMapper.mapFromString(reminderDto.type) ?: ReminderType.Daily,
+                action = ReminderActionMapper.mapFromString(reminderDto.action) ?: ReminderAction.DoNothing,
+                lastShow = reminderDto.lastShow
+            )
+        }
     }
 
     override suspend fun deleteRemind(reminder: Reminder) {

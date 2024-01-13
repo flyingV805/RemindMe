@@ -1,15 +1,18 @@
 package kz.flyingv.remindme.features.notificator
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import kz.flyingv.remindme.R
 import kz.flyingv.remindme.domain.entity.Reminder
@@ -70,7 +73,10 @@ class Notificator(private val context: Context) {
             else -> {}
         }
 
-        //NotificationManagerCompat.from(context).notify(reminder.id, builder.build())
+        if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED){
+            NotificationManagerCompat.from(context).notify(reminder.id.toInt(), builder.build())
+        }
+
     }
 
     private fun initNotificationChannel(){

@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+key.properties
+/app/remindme.jks
+/app/google-services.json

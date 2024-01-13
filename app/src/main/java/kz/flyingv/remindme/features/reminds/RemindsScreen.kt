@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -28,7 +30,6 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +56,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,6 +72,8 @@ import kz.flyingv.remindme.R
 import kz.flyingv.remindme.domain.entity.Reminder
 import kz.flyingv.remindme.features.create.NewRemindScreen
 import kz.flyingv.remindme.features.create.ui.getIcon
+import kz.flyingv.remindme.features.profile.ProfileDialog
+import kz.flyingv.remindme.features.reminds.dialog.AskPermissionDialog
 import kz.flyingv.remindme.features.reminds.dialog.DeleteRemind
 import kz.flyingv.remindme.features.reminds.uidata.RemindFormatter
 import kz.flyingv.remindme.features.remindtime.RemindTimeDialog
@@ -82,7 +84,6 @@ import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
     val uiState by viewModel.provideState().collectAsStateWithLifecycle()
-
     val listState = viewModel.remindersPaged.collectAsLazyPagingItems()
 
     val focusRequester = remember { FocusRequester() }
@@ -155,7 +156,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 ),
                 scrollBehavior = scrollBehavior
             )
@@ -172,7 +173,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
                     IconButton(
                         onClick = {
-                            /* do something */
+                            viewModel.reduce(RemindsAction.ShowProfile)
                         }
                     ) {
 
@@ -191,7 +192,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
                     }
 
-                    if(uiState.sync){
+                    if(uiState.syncInProgress){
                         IconButton(
                             onClick = {
                                 /* do something */
@@ -226,9 +227,10 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 .padding(horizontal = 8.dp),
         ) {
 
-            if(listState.itemCount == 0){
+            if(listState.itemCount == 0 || (uiState.searching &&  uiState.searchReminds.isEmpty()) ) {
                 item{
                     val composition by rememberLottieComposition(LottieCompositionSpec.Asset("lottie-no-data.json"))
+
                     Column(
                         modifier = Modifier
                             .wrapContentHeight()
@@ -246,7 +248,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                             textAlign = TextAlign.Center
                         )
                         LottieAnimation(
-                            composition
+                            composition = composition
                         )
                         Text(
                             text = if(!uiState.searching){"Create one ↓"}else{""},
@@ -257,13 +259,24 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                 }
             }
 
-            items(listState.itemCount){
-                RemindItem(
-                    reminder = listState[it],
-                    deleteReminder = {reminder ->
-                        viewModel.reduce(RemindsAction.AskForDelete(reminder))
-                    }
-                )
+            if(!uiState.searching) {
+                items(listState.itemCount){
+                    RemindItem(
+                        reminder = listState[it],
+                        deleteReminder = {reminder ->
+                            viewModel.reduce(RemindsAction.AskForDelete(reminder))
+                        }
+                    )
+                }
+            } else {
+                items(uiState.searchReminds){
+                    RemindItem(
+                        reminder = it,
+                        deleteReminder = {reminder ->
+                            viewModel.reduce(RemindsAction.AskForDelete(reminder))
+                        }
+                    )
+                }
             }
 
             item {
@@ -272,54 +285,73 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
         }
 
-        //delete reminder
-        uiState.reminderForDelete?.let {reminder ->
-            DeleteRemind(
-                reminder,
-                delete = {
-                    viewModel.reduce(RemindsAction.Delete(it))
-                },
-                cancel = {
-                    viewModel.reduce(RemindsAction.CancelDelete)
-                }
-            )
-        }
+    }
 
-        //change remind time
-        if (uiState.showRemindTime) {
-            RemindTimeDialog(
-                hide = {
-                    viewModel.reduce(RemindsAction.HideReminderTime)
-                }
-            )
-        }
 
-        //add new reminder
-        if (uiState.showNewReminder) {
-            ModalBottomSheet(
-                onDismissRequest = { viewModel.reduce(RemindsAction.HideNewReminder) },
-                sheetState = sheetState
-            ) {
+    //ask for permissions
+    if (uiState.showPermissionsRequest){
+        AskPermissionDialog(hide = {
+            viewModel.reduce(RemindsAction.HidePermissionDialog)
+        })
+    }
 
-                NewRemindScreen(
-                    onHide = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                viewModel.reduce(RemindsAction.HideNewReminder)
-                            }
+    //delete reminder
+    uiState.reminderForDelete?.let {reminder ->
+        DeleteRemind(
+            reminder,
+            delete = {
+                viewModel.reduce(RemindsAction.Delete(it))
+            },
+            cancel = {
+                viewModel.reduce(RemindsAction.CancelDelete)
+            }
+        )
+    }
+
+    //change remind time
+    if (uiState.showRemindTime) {
+        RemindTimeDialog(
+            hide = {
+                viewModel.reduce(RemindsAction.HideReminderTime)
+            }
+        )
+    }
+
+    //add new reminder
+    if (uiState.showNewReminder) {
+        ModalBottomSheet(
+            onDismissRequest = { viewModel.reduce(RemindsAction.HideNewReminder) },
+            sheetState = sheetState
+        ) {
+
+            NewRemindScreen(
+                onHide = {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            viewModel.reduce(RemindsAction.HideNewReminder)
                         }
                     }
-                )
+                }
+            )
 
-            }
         }
+    }
 
+    //show auth dialog
+    if (uiState.showAuthDialog){
+        ProfileDialog(
+            hide = { viewModel.reduce(RemindsAction.HideProfile) }
+        )
     }
 
     LaunchedEffect(focusSearchField){
         if(focusSearchField) {
             focusRequester.requestFocus()
         }
+    }
+
+    LaunchedEffect(Unit){
+        viewModel.reduce(RemindsAction.CheckPermissions)
     }
 
 }
@@ -345,7 +377,7 @@ fun RemindItem(reminder: Reminder?, deleteReminder: (reminder: Reminder) -> Unit
                 modifier = Modifier
                     .width(56.dp)
                     .height(56.dp)
-                    .background(colorResource(id = R.color.purple_200), CircleShape),
+                    .background(MaterialTheme.colorScheme.secondary, CircleShape),
                 contentAlignment = Alignment.Center
             ){
                 Icon(

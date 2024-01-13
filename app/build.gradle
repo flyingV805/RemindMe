@@ -2,6 +2,13 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -19,9 +26,28 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
+    signingConfigs {
+        debug {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
         release {
-            minifyEnabled false
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -69,12 +95,19 @@ dependencies {
     implementation 'androidx.compose.material3:material3:1.2.0-beta01'
 
     implementation "com.google.accompanist:accompanist-drawablepainter:0.30.0" //0.16.0
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.30.0"
+    implementation 'com.google.accompanist:accompanist-permissions:0.30.0'
 
     implementation "androidx.paging:paging-runtime-ktx:3.2.1"
     implementation "androidx.paging:paging-compose:3.2.1"
 
     implementation "io.coil-kt:coil-compose:2.3.0"
     implementation "io.coil-kt:coil:2.3.0"
+
+    //firebase auth
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
     //storage
     implementation "androidx.room:room-runtime:2.6.0"

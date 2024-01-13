@@ -13,6 +13,7 @@ fun lightUI(): ColorScheme {
 
     return lightColorScheme(
         primary = colorResource(id = R.color.purple_700),
+        primaryContainer = colorResource(id = R.color.purple_200),
         //primaryVariant = colorResource(id = R.color.purple_500),
         secondary = colorResource(id = R.color.teal_200),
         //secondaryVariant =  colorResource(id = R.color.teal_200),
@@ -32,6 +33,7 @@ fun darkUI(): ColorScheme {
 
     return darkColorScheme(
         primary = colorResource(id = R.color.purple_700),
+        primaryContainer = colorResource(id = R.color.purple_700),
         //primaryVariant = colorResource(id = R.color.purple_500),
         secondary = colorResource(id = R.color.teal_200),
         //secondaryVariant =  colorResource(id = R.color.teal_200),

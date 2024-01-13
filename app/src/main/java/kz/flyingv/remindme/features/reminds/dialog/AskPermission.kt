@@ -1,5 +1,10 @@
 package kz.flyingv.remindme.features.reminds.dialog
 
+import android.Manifest
+import android.content.Context
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,19 +21,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import kz.flyingv.remindme.domain.entity.Reminder
-import kz.flyingv.remindme.features.reminds.uidata.RemindFormatter
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeleteRemind(
-    reminder: Reminder,
-    delete: (reminder: Reminder) -> Unit,
-    cancel: () -> Unit
-){
+fun AskPermissionDialog(
+    hide: () -> Unit
+) {
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->  }
 
     BasicAlertDialog(
-        onDismissRequest = { cancel() },
+        onDismissRequest = { hide() },
         properties = DialogProperties()
     ) {
 
@@ -40,28 +45,26 @@ fun DeleteRemind(
             ){
 
                 Text(
-                    (reminder.name).plus(" - ").plus(RemindFormatter.formatRemindType(reminder.type)),
+                    "This app uses notifications for reminders",
                     modifier = Modifier.fillMaxWidth(),
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1
+                    style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    "You sure you want to delete it, right?",
+                    "For this to work correctly, you must obtain permission to display notifications on your phone.",
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    onClick = { delete(reminder) }
+                    onClick = {
+                        hide()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            requestPermissionLauncher.launch( Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }
                 ) {
-                    Text("Yes, delete it")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = { cancel() }
-                ) {
-                    Text("No, keep it")
+                    Text("OK, got it")
                 }
 
             }

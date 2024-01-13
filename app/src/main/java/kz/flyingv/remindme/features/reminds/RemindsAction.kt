@@ -5,6 +5,8 @@ import kz.flyingv.remindme.domain.entity.Reminder
 
 sealed class RemindsAction: UIAction {
 
+    data object CheckPermissions: RemindsAction()
+    data object HidePermissionDialog: RemindsAction()
     data object StartSearch: RemindsAction()
     data class Search(val input: String): RemindsAction()
     data object EndSearch: RemindsAction()
@@ -15,5 +17,8 @@ sealed class RemindsAction: UIAction {
     data class AskForDelete(val reminder: Reminder): RemindsAction()
     data object CancelDelete: RemindsAction()
     data class Delete(val reminder: Reminder): RemindsAction()
+
+    data object ShowProfile: RemindsAction()
+    data object HideProfile: RemindsAction()
 
 }

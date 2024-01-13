@@ -11,5 +11,6 @@ interface ReminderRepository {
     fun getAllRemindersPaged(): Flow<PagingData<Reminder>>
     fun getWorkerReminders(): List<Reminder>
     fun updateLastShow(reminder: Reminder, lastShowMills: Long)
+    suspend fun searchReminders(search: String): List<Reminder>
     suspend fun deleteRemind(reminder: Reminder)
 }

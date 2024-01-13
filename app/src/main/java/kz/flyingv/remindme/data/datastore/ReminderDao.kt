@@ -17,6 +17,9 @@ interface ReminderDao {
     @Query("SELECT * FROM ReminderDTO")
     fun getAll(): List<ReminderDTO>
 
+    @Query("SELECT * FROM ReminderDTO WHERE name LIKE :searchFor")
+    fun search(searchFor: String): List<ReminderDTO>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(reminder: ReminderDTO): Long
 

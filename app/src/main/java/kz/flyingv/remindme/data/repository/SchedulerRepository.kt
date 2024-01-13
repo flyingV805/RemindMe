@@ -8,5 +8,6 @@ interface SchedulerRepository {
     fun currentRemindTime(): ReminderTime
     fun initReminderIfNeeded()
     fun reschedule(newTime: ReminderTime)
+    fun updateScheduler()
 
 }

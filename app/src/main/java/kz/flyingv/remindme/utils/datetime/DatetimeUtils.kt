@@ -68,40 +68,40 @@ class DatetimeUtils {
             }
         }
 
-/*
+
 
 
         fun dayOfWeekIndex(calendar: Calendar): DayOfWeek{
             return when(calendar.get(Calendar.DAY_OF_WEEK)){
-                Calendar.MONDAY -> DayOfWeek.MONDAY
-                Calendar.TUESDAY -> DayOfWeek.TUESDAY
-                Calendar.WEDNESDAY -> DayOfWeek.WEDNESDAY
-                Calendar.THURSDAY -> DayOfWeek.THURSDAY
-                Calendar.FRIDAY -> DayOfWeek.FRIDAY
-                Calendar.SATURDAY -> DayOfWeek.SATURDAY
-                Calendar.SUNDAY -> DayOfWeek.SUNDAY
-                else -> DayOfWeek.MONDAY
+                Calendar.MONDAY -> DayOfWeek.Mon
+                Calendar.TUESDAY -> DayOfWeek.Tue
+                Calendar.WEDNESDAY -> DayOfWeek.Wed
+                Calendar.THURSDAY -> DayOfWeek.Thu
+                Calendar.FRIDAY -> DayOfWeek.Fri
+                Calendar.SATURDAY -> DayOfWeek.Sat
+                Calendar.SUNDAY -> DayOfWeek.Sun
+                else -> DayOfWeek.Mon
             }
         }
 
         fun currentMonth(calendar: Calendar): MonthOfYear {
             return when(calendar.get(Calendar.MONTH)){
-                Calendar.JANUARY -> MonthOfYear.January
-                Calendar.FEBRUARY -> MonthOfYear.February
-                Calendar.MARCH -> MonthOfYear.March
-                Calendar.APRIL -> MonthOfYear.April
+                Calendar.JANUARY -> MonthOfYear.Jan
+                Calendar.FEBRUARY -> MonthOfYear.Feb
+                Calendar.MARCH -> MonthOfYear.Mar
+                Calendar.APRIL -> MonthOfYear.Apr
                 Calendar.MAY -> MonthOfYear.May
-                Calendar.JUNE -> MonthOfYear.June
-                Calendar.JULY -> MonthOfYear.July
-                Calendar.AUGUST -> MonthOfYear.August
-                Calendar.SEPTEMBER -> MonthOfYear.September
-                Calendar.OCTOBER -> MonthOfYear.October
-                Calendar.NOVEMBER -> MonthOfYear.November
-                Calendar.DECEMBER -> MonthOfYear.December
-                else -> MonthOfYear.January
+                Calendar.JUNE -> MonthOfYear.Jun
+                Calendar.JULY -> MonthOfYear.Jul
+                Calendar.AUGUST -> MonthOfYear.Aug
+                Calendar.SEPTEMBER -> MonthOfYear.Sep
+                Calendar.OCTOBER -> MonthOfYear.Oct
+                Calendar.NOVEMBER -> MonthOfYear.Nov
+                Calendar.DECEMBER -> MonthOfYear.Dec
+                else -> MonthOfYear.Jan
             }
         }
-*/
+
 
     }
 
