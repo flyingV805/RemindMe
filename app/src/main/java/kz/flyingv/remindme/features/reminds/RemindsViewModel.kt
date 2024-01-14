@@ -18,6 +18,7 @@ import kz.flyingv.remindme.domain.usecase.DeleteReminderUseCase
 import kz.flyingv.remindme.domain.usecase.GetCurrentUserUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
 import kz.flyingv.remindme.domain.usecase.SearchRemindersUseCase
+import kz.flyingv.remindme.domain.usecase.SyncRemindsUseCase
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -26,19 +27,19 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
     RemindsState()
 ) {
 
+    private val context: Context by inject()
+
     private val remindersUseCase: GetRemindersUseCase by inject()
     private val searchRemindersUseCase: SearchRemindersUseCase by inject()
     private val deleteReminderUseCase: DeleteReminderUseCase by inject()
     private val getCurrentUserUseCase: GetCurrentUserUseCase by inject()
-
-    private val context: Context by inject()
-
-    val remindersPaged = remindersUseCase().cachedIn(viewModelScope)
+    private val syncRemindsUseCase: SyncRemindsUseCase by inject()
 
     private val searchFlow = MutableSharedFlow<String>()
 
-    init {
+    val remindersPaged = remindersUseCase().cachedIn(viewModelScope)
 
+    init {
         viewModelScope.launch(Dispatchers.IO){
             searchFlow.debounce(300).collectLatest { searchFor ->
                 if(searchFor.isBlank()){
@@ -52,7 +53,7 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
         }
 
         updateProfile()
-
+        syncReminds()
     }
 
     private fun updateProfile(){
@@ -64,6 +65,14 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
                     avatarUrl = currentUser?.avatarUrl ?: ""
                 )
             )
+        }
+    }
+
+    private fun syncReminds(){
+        viewModelScope.launch(Dispatchers.IO){
+            pushState(currentState().copy(syncInProgress = true))
+            val syncResult = syncRemindsUseCase()
+            pushState(currentState().copy(syncInProgress = false))
         }
     }
 
@@ -117,11 +126,12 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
                 pushState(currentState().copy(showRemindTime = false))
             }
             RemindsAction.ShowProfile -> {
-                pushState(currentState().copy(showAuthDialog = true))
+                pushState(currentState().copy(showProfileDialog = true))
             }
             RemindsAction.HideProfile -> {
-                pushState(currentState().copy(showAuthDialog = false))
+                pushState(currentState().copy(showProfileDialog = false))
                 updateProfile()
+                syncReminds()
             }
         }
 

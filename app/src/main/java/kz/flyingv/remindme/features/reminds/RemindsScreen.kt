@@ -338,7 +338,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
     }
 
     //show auth dialog
-    if (uiState.showAuthDialog){
+    if (uiState.showProfileDialog){
         ProfileDialog(
             hide = { viewModel.reduce(RemindsAction.HideProfile) }
         )

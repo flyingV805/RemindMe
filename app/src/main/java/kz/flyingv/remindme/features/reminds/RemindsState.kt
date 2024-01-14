@@ -14,7 +14,6 @@ data class RemindsState(
     val searchReminds: List<Reminder> = emptyList(),
     val authorized: Boolean = false,
     val avatarUrl: String = "",
-    val showAuthDialog: Boolean = false,
     // auth and sync
     val showProfileDialog: Boolean = false,
     val syncInProgress: Boolean = false
