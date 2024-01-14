@@ -22,6 +22,7 @@ import kz.flyingv.remindme.domain.usecase.GetWorkerRemindersUseCase
 import kz.flyingv.remindme.domain.usecase.GetReminderTimeUseCase
 import kz.flyingv.remindme.domain.usecase.RescheduleUseCase
 import kz.flyingv.remindme.domain.usecase.SearchRemindersUseCase
+import kz.flyingv.remindme.domain.usecase.SignInUseCase
 import kz.flyingv.remindme.domain.usecase.UpdateLastShownUseCase
 import kz.flyingv.remindme.domain.usecase.UpdateSchedulerUseCase
 import org.koin.android.ext.koin.androidContext
@@ -59,6 +60,7 @@ class ReminderApp: Application() {
         factory { UpdateLastShownUseCase() }
 
         factory { GetCurrentUserUseCase() }
+        factory { SignInUseCase() }
 
 
     }

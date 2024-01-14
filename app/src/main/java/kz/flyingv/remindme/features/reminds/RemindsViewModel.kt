@@ -51,6 +51,11 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
             }
         }
 
+        updateProfile()
+
+    }
+
+    private fun updateProfile(){
         viewModelScope.launch(Dispatchers.IO){
             val currentUser = getCurrentUserUseCase()
             pushState(
@@ -60,7 +65,6 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
                 )
             )
         }
-
     }
 
     override fun reduce(action: RemindsAction) {
@@ -112,11 +116,12 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
             RemindsAction.HideReminderTime -> {
                 pushState(currentState().copy(showRemindTime = false))
             }
-            RemindsAction.ShowAuthDialog -> {
+            RemindsAction.ShowProfile -> {
                 pushState(currentState().copy(showAuthDialog = true))
             }
-            RemindsAction.HideAuthDialog -> {
+            RemindsAction.HideProfile -> {
                 pushState(currentState().copy(showAuthDialog = false))
+                updateProfile()
             }
         }
 
