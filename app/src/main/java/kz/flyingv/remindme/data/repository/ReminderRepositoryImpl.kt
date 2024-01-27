@@ -34,6 +34,21 @@ class ReminderRepositoryImpl: ReminderRepository, KoinComponent {
         ) == 1L
     }
 
+    override suspend fun addRemoteReminds(reminders: List<Reminder>): Boolean {
+        return database.reminderDao().insert(
+            reminders.map { reminder ->
+                ReminderDTO(
+                    name = reminder.name,
+                    icon = ReminderIconMapper.mapToInt(reminder.icon),
+                    type = ReminderTypeMapper.mapToString(reminder.type),
+                    action = ReminderActionMapper.mapToString(reminder.action),
+                    lastShow = 0
+                )
+            }
+
+        ).size > 0L
+    }
+
     override fun getAllReminders(): Flow<List<Reminder>> {
         TODO("Not yet implemented")
     }

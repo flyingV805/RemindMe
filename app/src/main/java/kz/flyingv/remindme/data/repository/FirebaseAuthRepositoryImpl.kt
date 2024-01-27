@@ -12,6 +12,11 @@ class FirebaseAuthRepositoryImpl: FirebaseAuthRepository, KoinComponent {
 
     private val firebaseAuth: FirebaseAuth by inject()
 
+    override suspend fun isAuthorized(): Boolean {
+        val currentUser = firebaseAuth.currentUser
+        return currentUser != null
+    }
+
     override suspend fun authorizedUser(): AuthUser? {
         val currentUser = firebaseAuth.currentUser
         currentUser ?: return null

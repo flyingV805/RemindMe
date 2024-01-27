@@ -7,6 +7,7 @@ import kz.flyingv.remindme.domain.entity.Reminder
 
 interface ReminderRepository {
     suspend fun addNewRemind(reminder: Reminder): Boolean
+    suspend fun addRemoteReminds(reminders: List<Reminder>): Boolean
     fun getAllReminders(): Flow<List<Reminder>>
     fun getAllRemindersPaged(): Flow<PagingData<Reminder>>
     fun getWorkerReminders(): List<Reminder>

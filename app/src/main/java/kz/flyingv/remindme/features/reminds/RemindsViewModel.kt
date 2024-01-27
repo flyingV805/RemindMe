@@ -40,9 +40,6 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
     private val getCurrentUserUseCase: GetCurrentUserUseCase by inject()
     private val syncRemindsUseCase: SyncRemindsUseCase by inject()
 
-    //debug
-    private val firebaseStoreRepository: FirebaseStoreRepository by inject()
-
     private val searchFlow = MutableSharedFlow<String>()
 
     val remindersPaged = remindersUseCase().cachedIn(viewModelScope)
@@ -58,10 +55,6 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
                 Log.w("search result", searchFor.plus(": ").plus(searchResult))
                 pushState(currentState().copy(searchReminds = searchResult))
             }
-        }
-
-        viewModelScope.launch(Dispatchers.IO){
-            firebaseStoreRepository.getAllFromFirebaseStore()
         }
 
         updateProfile()

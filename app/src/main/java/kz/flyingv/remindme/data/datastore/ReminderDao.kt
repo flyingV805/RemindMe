@@ -23,6 +23,9 @@ interface ReminderDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(reminder: ReminderDTO): Long
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(reminders: List<ReminderDTO>): List<Long>
+
     @Query("UPDATE ReminderDTO SET lastShow = :lastShowMills WHERE id = :id")
     fun updateLastShow(id: Long, lastShowMills: Long)
 

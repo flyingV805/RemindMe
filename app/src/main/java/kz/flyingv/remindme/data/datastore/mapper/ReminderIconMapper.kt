@@ -11,7 +11,7 @@ class ReminderIconMapper {
         }
 
         fun mapFromInt(ordinal: Int): ReminderIcon {
-            return ReminderIcon.values()[ordinal]
+            return ReminderIcon.entries[ordinal]
         }
 
 

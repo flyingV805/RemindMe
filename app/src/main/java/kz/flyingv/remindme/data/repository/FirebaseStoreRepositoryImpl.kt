@@ -27,6 +27,7 @@ class FirebaseStoreRepositoryImpl: FirebaseStoreRepository, KoinComponent {
             .child("reminds")
             .child(reminder.name)
             .setValue( FirebaseMapper.mapToFirebaseReminder(reminder) )
+            .await()
 
     }
 
@@ -41,6 +42,7 @@ class FirebaseStoreRepositoryImpl: FirebaseStoreRepository, KoinComponent {
             tableReference
                 .child(it.name)
                 .setValue( FirebaseMapper.mapToFirebaseReminder(it) )
+                .await()
         }
 
     }
@@ -51,7 +53,8 @@ class FirebaseStoreRepositoryImpl: FirebaseStoreRepository, KoinComponent {
         val userReminds = firebaseDatabase.getReference("users")
             .child(userIdentity)
             .child("reminds")
-            .get().await()
+            .get()
+            .await()
 
         @Suppress("UNCHECKED_CAST")
         val remindsMapped = try{
@@ -60,14 +63,27 @@ class FirebaseStoreRepositoryImpl: FirebaseStoreRepository, KoinComponent {
             null
         }
 
-        return remindsMapped?.entries?.map {
+        return remindsMapped?.entries?.filter{
+            (it.value["markAsDeleted"] as? Boolean) != true
+        }?.map {
             Log.i("firebase Key", "Mapped ${it.key}")
             Log.i("firebase value", "Mapped ${it.value}")
             Log.i("firebase value", "Mapped ${it.value.javaClass.name}")
-
             FirebaseMapper.mapFromFirebaseReminder(it.value)
         }
 
+    }
+
+    override suspend fun markAsDeleted(reminder: Reminder) {
+        val userIdentity = firebaseAuth.currentUser?.uid ?: "321"
+
+        firebaseDatabase.getReference("users")
+            .child(userIdentity)
+            .child("reminds")
+            .child(reminder.name)
+            .child("markAsDeleted")
+            .setValue( true )
+            .await()
     }
 
 

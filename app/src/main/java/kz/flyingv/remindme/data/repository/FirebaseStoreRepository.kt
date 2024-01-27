@@ -7,5 +7,6 @@ interface FirebaseStoreRepository {
     suspend fun addToFirebaseStore(reminder: Reminder)
     suspend fun addToFirebaseStore(reminders: List<Reminder>)
     suspend fun getAllFromFirebaseStore(): List<Reminder>?
+    suspend fun markAsDeleted(reminder: Reminder)
 
 }

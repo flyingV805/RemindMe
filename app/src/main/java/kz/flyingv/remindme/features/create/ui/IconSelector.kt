@@ -67,9 +67,9 @@ fun SelectableIcon(
         .shadow(4.dp, CircleShape)
         .background(
             if (isSelected) {
-                colorResource(id = R.color.purple_200)
+                MaterialTheme.colorScheme.surfaceTint
             } else {
-                Color.White
+                MaterialTheme.colorScheme.onSurface
             },
             CircleShape
         )

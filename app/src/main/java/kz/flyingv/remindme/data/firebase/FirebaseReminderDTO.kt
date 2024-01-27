@@ -8,5 +8,6 @@ data class FirebaseReminderDTO(
     val icon: Int? = null,
     val type: String? = null,
     val action: String? = null,
-    val lastShow: Long? = null
+    val lastShow: Long? = null,
+    val markAsDeleted: Boolean? = null
 )

@@ -6,6 +6,8 @@ import kz.flyingv.remindme.domain.entity.AuthUser
 
 interface FirebaseAuthRepository {
 
+    suspend fun isAuthorized(): Boolean
+
     suspend fun authorizedUser(): AuthUser?
 
     suspend fun signInWithCredentials(credential: AuthCredential): AuthResult

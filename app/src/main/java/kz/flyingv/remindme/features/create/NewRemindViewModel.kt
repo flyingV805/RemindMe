@@ -111,7 +111,10 @@ class NewRemindViewModel: KoinComponent, UIViewModel<NewRemindState, NewRemindAc
             }
 
             NewRemindAction.Hidden -> {
-                pushState( currentState().copy(done = false) )
+                val currentState = currentState()
+                pushState( NewRemindState(
+                    availableApps = currentState.availableApps
+                ) )
             }
 
         }
