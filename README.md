@@ -1,4 +1,6 @@
 # RemindMe
+![image](https://github.com/flyingV805/RemindMe/blob/master/app/src/main/res/drawable-xhdpi/ic_splash.png)
+
 Regular events reminder app
 
 <a href="https://play.google.com/store/apps/details?id=kz.flyingv.remindme"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="64"></a>
