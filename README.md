@@ -9,7 +9,7 @@ Regular events reminder app
 
 Project takes advantages of MVI (UDF) approach for displaying immutable UI State, wich is can be modified in one place.
 
-Min API level is set to 21, so the presented approach is suitable for over 94% of devices running Android. 
+Min API level is set to 24, so the presented approach is suitable for over 94% of devices running Android. 
 This project takes advantage of many popular libraries and tools of the Android ecosystem. 
 
 -   [Jetpack](https://developer.android.com/jetpack):
