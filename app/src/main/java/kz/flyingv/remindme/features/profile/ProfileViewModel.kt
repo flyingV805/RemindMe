@@ -6,6 +6,7 @@ import kz.flyingv.cleanmvi.UIViewModel
 import kz.flyingv.remindme.domain.entity.AuthResult
 import kz.flyingv.remindme.domain.usecase.GetCurrentUserUseCase
 import kz.flyingv.remindme.domain.usecase.SignInUseCase
+import kz.flyingv.remindme.domain.usecase.SignOutUseCase
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -15,6 +16,7 @@ class ProfileViewModel: KoinComponent, UIViewModel<ProfileState, ProfileAction>(
 
     private val getCurrentUserUseCase: GetCurrentUserUseCase by inject()
     private val signInUseCase: SignInUseCase by inject()
+    private val signOutUseCase: SignOutUseCase by inject()
 
     init {
         viewModelScope.launch {
@@ -50,6 +52,20 @@ class ProfileViewModel: KoinComponent, UIViewModel<ProfileState, ProfileAction>(
             }
             ProfileAction.SignInFailed -> {
 
+            }
+            ProfileAction.SignOut -> {
+                viewModelScope.launch {
+                    when(signOutUseCase.invoke()){
+                        is AuthResult.Fail -> TODO()
+                        AuthResult.Success -> {
+                            pushState(currentState().copy(
+                                authorized = false,
+                                displayName = "",
+                                avatarUrl = ""
+                            ))
+                        }
+                    }
+                }
             }
         }
 

@@ -14,6 +14,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import kz.flyingv.cleanmvi.UIViewModel
+import kz.flyingv.remindme.data.repository.FirebaseStoreRepository
+import kz.flyingv.remindme.domain.entity.Reminder
+import kz.flyingv.remindme.domain.entity.ReminderAction
+import kz.flyingv.remindme.domain.entity.ReminderIcon
+import kz.flyingv.remindme.domain.entity.ReminderType
 import kz.flyingv.remindme.domain.usecase.DeleteReminderUseCase
 import kz.flyingv.remindme.domain.usecase.GetCurrentUserUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
@@ -35,6 +40,9 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
     private val getCurrentUserUseCase: GetCurrentUserUseCase by inject()
     private val syncRemindsUseCase: SyncRemindsUseCase by inject()
 
+    //debug
+    private val firebaseStoreRepository: FirebaseStoreRepository by inject()
+
     private val searchFlow = MutableSharedFlow<String>()
 
     val remindersPaged = remindersUseCase().cachedIn(viewModelScope)
@@ -50,6 +58,10 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
                 Log.w("search result", searchFor.plus(": ").plus(searchResult))
                 pushState(currentState().copy(searchReminds = searchResult))
             }
+        }
+
+        viewModelScope.launch(Dispatchers.IO){
+            firebaseStoreRepository.getAllFromFirebaseStore()
         }
 
         updateProfile()

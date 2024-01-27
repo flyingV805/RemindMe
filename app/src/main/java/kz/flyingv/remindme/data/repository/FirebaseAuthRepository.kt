@@ -10,6 +10,7 @@ interface FirebaseAuthRepository {
 
     suspend fun signInWithCredentials(credential: AuthCredential): AuthResult
 
+    suspend fun signOut(): AuthResult
 
 
 }

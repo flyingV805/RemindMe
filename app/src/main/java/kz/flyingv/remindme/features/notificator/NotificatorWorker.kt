@@ -19,7 +19,6 @@ class NotificatorWorker(
 ) : CoroutineWorker(context, workerParams), KoinComponent {
 
     private val getWorkerRemindersUseCase: GetWorkerRemindersUseCase by inject()
-    private val updateSchedulerUseCase: UpdateSchedulerUseCase by inject()
     private val updateLastShownUseCase: UpdateLastShownUseCase by inject()
 
 
@@ -75,8 +74,6 @@ class NotificatorWorker(
             }
 
         }
-
-        updateSchedulerUseCase()
 
         return Result.success()
     }

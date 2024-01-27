@@ -77,6 +77,7 @@ import kz.flyingv.remindme.features.reminds.dialog.AskPermissionDialog
 import kz.flyingv.remindme.features.reminds.dialog.DeleteRemind
 import kz.flyingv.remindme.features.reminds.uidata.RemindFormatter
 import kz.flyingv.remindme.features.remindtime.RemindTimeDialog
+import kz.flyingv.remindme.ui.DancingScript
 import kz.flyingv.remindme.utils.datetime.DatetimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -142,7 +143,11 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                                 verticalAlignment = Alignment.CenterVertically
                             ){
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Remind Me", style = MaterialTheme.typography.titleLarge)
+                                Text(
+                                    "Remind Me",
+                                    fontFamily = DancingScript,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                )
                                 Spacer(Modifier.weight(1f))
                                 IconButton(
                                     onClick = {

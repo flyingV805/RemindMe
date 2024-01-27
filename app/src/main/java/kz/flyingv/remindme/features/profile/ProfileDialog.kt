@@ -37,6 +37,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kz.flyingv.remindme.BuildConfig
 import kz.flyingv.remindme.features.remindtime.RemindTimeAction
@@ -106,6 +107,14 @@ fun ProfileDialog(
                             )
 
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                viewModel.reduce(ProfileAction.SignOut)
+                            }
+                        ) {
+                            Text("Sign Out")
+                        }
 
                     }
                     false -> Column(
@@ -122,9 +131,9 @@ fun ProfileDialog(
 
                         Button(
                             onClick = {
+                                FirebaseAuth.getInstance().signOut()
                                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                                     .requestIdToken(BuildConfig.FB_AUTH_CLIENT_ID)
-                                    .requestEmail()
                                     .build()
                                 val googleSignInClient = GoogleSignIn.getClient(context, gso)
                                 googleAuthLauncher.launch(googleSignInClient.signInIntent)
@@ -132,6 +141,7 @@ fun ProfileDialog(
                         ) {
                             Text("Sign In with Google")
                         }
+
                     }
                 }
             }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +25,8 @@ class ReminderActivity: ComponentActivity(), KoinComponent {
     private val checkSchedulerUseCase: CheckSchedulerUseCase by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
-
         lifecycleScope.launch(Dispatchers.IO){ checkSchedulerUseCase() }
 
         setContent {

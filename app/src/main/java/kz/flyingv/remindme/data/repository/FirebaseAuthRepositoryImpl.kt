@@ -33,5 +33,14 @@ class FirebaseAuthRepositoryImpl: FirebaseAuthRepository, KoinComponent {
 
     }
 
+    override suspend fun signOut(): AuthResult {
+        return try {
+            firebaseAuth.signOut()
+            AuthResult.Success
+        }catch (e: Exception){
+            AuthResult.Fail(e.message ?: "Unknown error while signing out...")
+        }
+    }
+
 
 }

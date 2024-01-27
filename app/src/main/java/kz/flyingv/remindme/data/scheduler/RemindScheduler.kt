@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException
 class RemindScheduler(private val context: Context) {
 
     fun startIfNotSet(time: ReminderTime){
-        val statuses = WorkManager.getInstance(context).getWorkInfosByTag("RemindSchedulerWork")
+        val statuses = WorkManager.getInstance(context).getWorkInfosByTag(reminderTag)
         var running = false
         try {
             val workInfoList: List<WorkInfo> = statuses.get()
@@ -45,7 +45,7 @@ class RemindScheduler(private val context: Context) {
 
         val timeDiff = dueDate.timeInMillis - currentDate.timeInMillis
 
-        val dailyWorkRequest = OneTimeWorkRequestBuilder<NotificatorWorker>()
+        val dailyWorkRequest = PeriodicWorkRequestBuilder<NotificatorWorker>(1, TimeUnit.DAYS)
             .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
             .addTag(reminderTag)
             .build()

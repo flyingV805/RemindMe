@@ -7,5 +7,6 @@ sealed class ProfileAction: UIAction {
 
     data class SignIn(val credentials: AuthCredential): ProfileAction()
     data object SignInFailed: ProfileAction()
+    data object SignOut: ProfileAction()
 
 }
