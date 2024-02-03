@@ -70,7 +70,7 @@ class FirebaseStoreRepositoryImpl: FirebaseStoreRepository, KoinComponent {
             Log.i("firebase value", "Mapped ${it.value}")
             Log.i("firebase value", "Mapped ${it.value.javaClass.name}")
             FirebaseMapper.mapFromFirebaseReminder(it.value)
-        }
+        }?.filter { it.name.isNotBlank() }
 
     }
 
