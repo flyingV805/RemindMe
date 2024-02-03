@@ -12,14 +12,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
 
-class NotificatorDubg(val context: Context): KoinComponent {
+class NotificatorNew(val context: Context): KoinComponent {
 
     private val getWorkerRemindersUseCase: GetWorkerRemindersUseCase by inject()
-    private val updateSchedulerUseCase: UpdateSchedulerUseCase by inject()
     private val updateLastShownUseCase: UpdateLastShownUseCase by inject()
 
 
-    fun doWork(): ListenableWorker.Result {
+    suspend fun doWork() {
 
         Log.w("NotificatorWorker", "NotificatorWorker is started")
 
@@ -27,6 +26,9 @@ class NotificatorDubg(val context: Context): KoinComponent {
         val currentDate = Calendar.getInstance()
 
         getWorkerRemindersUseCase().forEach { reminder ->
+
+            Log.w("NotificatorWorker", reminder.toString())
+
             when(val type = reminder.type){
                 is ReminderType.Daily -> {
                     updateLastShownUseCase(reminder, System.currentTimeMillis())
@@ -69,9 +71,6 @@ class NotificatorDubg(val context: Context): KoinComponent {
 
         }
 
-        updateSchedulerUseCase()
-
-        return ListenableWorker.Result.success()
     }
 
 

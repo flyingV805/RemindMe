@@ -5,8 +5,9 @@ import android.content.SharedPreferences
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import kz.flyingv.remindme.data.preferences.PreferencesKeys
-import kz.flyingv.remindme.domain.entity.ReminderTime
 import kz.flyingv.remindme.data.scheduler.RemindScheduler
+import kz.flyingv.remindme.domain.entity.ReminderTime
+import kz.flyingv.remindme.data.scheduler.RemindSchedulerImpl
 import kz.flyingv.remindme.features.notificator.NotificatorWorker
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -57,7 +58,7 @@ class SchedulerRepositoryImpl: SchedulerRepository, KoinComponent {
 
         val dailyWorkRequest = OneTimeWorkRequestBuilder<NotificatorWorker>()
             .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
-            .addTag(RemindScheduler.reminderTag)
+            .addTag(RemindSchedulerImpl.reminderTag)
             .build()
 
         WorkManager.getInstance(context).enqueue(dailyWorkRequest)

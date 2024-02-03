@@ -5,18 +5,19 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.room.Room
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import kz.flyingv.remindme.data.datastore.Database
 import kz.flyingv.remindme.data.repository.*
+import kz.flyingv.remindme.data.scheduler.RemindScheduler
 import kz.flyingv.remindme.domain.usecase.AddReminderUseCase
 import kz.flyingv.remindme.domain.usecase.CheckSchedulerUseCase
 import kz.flyingv.remindme.domain.usecase.GetInstalledAppsUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
-import kz.flyingv.remindme.data.scheduler.RemindScheduler
+import kz.flyingv.remindme.data.scheduler.RemindSchedulerImpl
+import kz.flyingv.remindme.data.scheduler.RemindSchedulerImplNew
 import kz.flyingv.remindme.domain.usecase.DeleteReminderUseCase
 import kz.flyingv.remindme.domain.usecase.GetCurrentUserUseCase
 import kz.flyingv.remindme.domain.usecase.GetWorkerRemindersUseCase
@@ -44,7 +45,7 @@ class ReminderApp: Application() {
         single<FirebaseAuth> { Firebase.auth }
         single<FirebaseDatabase>{ FirebaseDatabase.getInstance(BuildConfig.FB_DB_URL) }
 
-        single { RemindScheduler(androidContext()) }
+        single<RemindScheduler> { RemindSchedulerImplNew(androidContext()) }
 
         single<ReminderRepository> { ReminderRepositoryImpl() }
         single<SchedulerRepository> { SchedulerRepositoryImpl() }
