@@ -58,7 +58,7 @@ class RemindSchedulerImplNew(private val context: Context): RemindScheduler {
                 context,
                 reminderTag.hashCode(),
                 intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
             )
         }
     }
