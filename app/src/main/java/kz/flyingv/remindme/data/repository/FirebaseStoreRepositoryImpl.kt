@@ -48,29 +48,30 @@ class FirebaseStoreRepositoryImpl: FirebaseStoreRepository, KoinComponent {
     }
 
     override suspend fun getAllFromFirebaseStore(): List<Reminder>? {
-        val userIdentity = firebaseAuth.currentUser?.uid ?: "321"
 
+        val userIdentity = firebaseAuth.currentUser?.uid ?: "321"
         val userReminds = firebaseDatabase.getReference("users")
             .child(userIdentity)
             .child("reminds")
             .get()
             .await()
 
-        @Suppress("UNCHECKED_CAST")
-        val remindsMapped = try{
-            userReminds.value as? Map<String, HashMap<String, Any>>
+        return try {
+            val remindsMapped = userReminds.value as? Map<String, HashMap<String, Any>>
+
+            remindsMapped?.entries?.filter{
+                (it.value["markAsDeleted"] as? Boolean) != true
+            }?.map {
+                Log.i("firebase Key", "Mapped ${it.key}")
+                Log.i("firebase value", "Mapped ${it.value}")
+                Log.i("firebase value", "Mapped ${it.value.javaClass.name}")
+                FirebaseMapper.mapFromFirebaseReminder(it.value)
+            }?.filter { it.name.isNotBlank() }
+
         }catch (e: Exception){
+            e.printStackTrace()
             null
         }
-
-        return remindsMapped?.entries?.filter{
-            (it.value["markAsDeleted"] as? Boolean) != true
-        }?.map {
-            Log.i("firebase Key", "Mapped ${it.key}")
-            Log.i("firebase value", "Mapped ${it.value}")
-            Log.i("firebase value", "Mapped ${it.value.javaClass.name}")
-            FirebaseMapper.mapFromFirebaseReminder(it.value)
-        }?.filter { it.name.isNotBlank() }
 
     }
 

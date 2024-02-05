@@ -12,14 +12,14 @@ class FirebaseMapper {
 
     companion object {
 
-        fun mapToFirebaseReminder(reminder: Reminder): FirebaseReminderDTO {
-            return FirebaseReminderDTO(
-                name = reminder.name,
-                icon = ReminderIconMapper.mapToInt(reminder.icon),
-                type = ReminderTypeMapper.mapToString(reminder.type),
-                action = ReminderActionMapper.mapToString(reminder.action),
-                lastShow = reminder.lastShow,
-                markAsDeleted = false
+        fun mapToFirebaseReminder(reminder: Reminder): Map<String, Any> {
+            return mapOf<String, Any>(
+                "name" to reminder.name,
+                "icon" to ReminderIconMapper.mapToInt(reminder.icon),
+                "type" to ReminderTypeMapper.mapToString(reminder.type),
+                "action" to ReminderActionMapper.mapToString(reminder.action),
+                "lastShow" to reminder.lastShow,
+                "markAsDeleted" to false
             )
         }
 

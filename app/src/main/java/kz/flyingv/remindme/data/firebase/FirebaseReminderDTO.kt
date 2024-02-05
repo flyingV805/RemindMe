@@ -1,5 +1,6 @@
 package kz.flyingv.remindme.data.firebase
 
+import com.google.android.gms.common.annotation.KeepName
 import com.google.firebase.database.IgnoreExtraProperties
 
 @IgnoreExtraProperties
