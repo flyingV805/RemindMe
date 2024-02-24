@@ -23,12 +23,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun AskPermissionDialog(
     hide: () -> Unit
 ) {
+
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.POST_NOTIFICATIONS,
+            Manifest.permission.SCHEDULE_EXACT_ALARM,
+            Manifest.permission.USE_EXACT_ALARM
+        )
+    )
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->  }
 
@@ -45,13 +54,13 @@ fun AskPermissionDialog(
             ){
 
                 Text(
-                    "This app uses notifications for reminders",
+                    "This app uses notifications and alarms for reminders",
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    "For this to work correctly, you must obtain permission to display notifications on your phone.",
+                    "For this to work correctly, you must obtain permission to display notifications and create alarms on your phone.",
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -59,9 +68,10 @@ fun AskPermissionDialog(
                 Button(
                     onClick = {
                         hide()
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        permissionState.launchMultiplePermissionRequest()
+                        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             requestPermissionLauncher.launch( Manifest.permission.POST_NOTIFICATIONS)
-                        }
+                        }*/
                     }
                 ) {
                     Text("OK, got it")

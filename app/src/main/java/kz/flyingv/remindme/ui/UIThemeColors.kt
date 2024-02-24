@@ -23,7 +23,7 @@ fun lightUI(): ColorScheme {
         onPrimary = Color.Black,
         onSecondary = Color.Black,
         onBackground = Color.Black,
-        onSurface = Color.Black,
+        onSurface = colorResource(id = R.color.purple_200),
         onError = Color.Black
     )
 }
@@ -43,7 +43,7 @@ fun darkUI(): ColorScheme {
         onPrimary = Color.Black,
         onSecondary = Color.Black,
         onBackground = Color.White,
-        onSurface = Color.White,
+        onSurface = colorResource(id = R.color.purple_200),
         onError = Color.Black
     )
 

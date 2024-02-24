@@ -146,7 +146,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
                                 Text(
                                     "Remind Me",
                                     fontFamily = DancingScript,
-                                    style = MaterialTheme.typography.headlineLarge,
+                                    style = MaterialTheme.typography.headlineLarge.copy(Color.White),
                                 )
                                 Spacer(Modifier.weight(1f))
                                 IconButton(
@@ -294,7 +294,7 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
 
     //ask for permissions
-    if (uiState.showPermissionsRequest){
+    if (uiState.askNotificationPermissions){
         AskPermissionDialog(hide = {
             viewModel.reduce(RemindsAction.HidePermissionDialog)
         })

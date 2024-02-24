@@ -14,11 +14,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import kz.flyingv.cleanmvi.UIViewModel
-import kz.flyingv.remindme.data.repository.FirebaseStoreRepository
-import kz.flyingv.remindme.domain.entity.Reminder
-import kz.flyingv.remindme.domain.entity.ReminderAction
-import kz.flyingv.remindme.domain.entity.ReminderIcon
-import kz.flyingv.remindme.domain.entity.ReminderType
 import kz.flyingv.remindme.domain.usecase.DeleteReminderUseCase
 import kz.flyingv.remindme.domain.usecase.GetCurrentUserUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
@@ -87,13 +82,21 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
         when(action){
             RemindsAction.CheckPermissions -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    if(context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
-                        pushState(currentState().copy(showPermissionsRequest = true))
-                    }
+                    val askForNotifications = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                    val askForAlarmSchedule = context.checkSelfPermission(Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED
+                    val askForAlarmUse = context.checkSelfPermission(Manifest.permission.USE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED
+
+                    pushState(currentState().copy(
+                        askNotificationPermissions = askForNotifications,
+                        askAlarmPermissions = askForAlarmUse,
+                        askSchedulePermissions = askForAlarmSchedule
+                    ))
+
                 }
+
             }
             RemindsAction.HidePermissionDialog -> {
-                pushState(currentState().copy(showPermissionsRequest = false))
+                pushState(currentState().copy(askNotificationPermissions = false))
             }
             RemindsAction.StartSearch -> {
                 pushState(currentState().copy(searching = true))

@@ -13,8 +13,8 @@ class RemindSchedulerImplNew(private val context: Context): RemindScheduler {
 
     override fun startIfNotSet(time: ReminderTime) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        Log.w("alarmManager", alarmManager.nextAlarmClock.triggerTime.toString())
-        Log.w("alarmManager", isAlarmSet().toString())
+        //Log.w("alarmManager", alarmManager.nextAlarmClock.triggerTime.toString())
+        //Log.w("alarmManager", isAlarmSet().toString())
         val intent = schedulerIntent()
         alarmManager.cancel(intent)
         start(time.hour, time.minute)
