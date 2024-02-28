@@ -43,7 +43,7 @@ class ReminderApp: Application() {
         single <SharedPreferences> { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
 
         single<FirebaseAuth> { Firebase.auth }
-        single<FirebaseDatabase>{ FirebaseDatabase.getInstance("") }
+        single<FirebaseDatabase>{ FirebaseDatabase.getInstance(BuildConfig.FB_DB_URL) }
 
         single<RemindScheduler> { RemindSchedulerImplNew(androidContext()) }
 

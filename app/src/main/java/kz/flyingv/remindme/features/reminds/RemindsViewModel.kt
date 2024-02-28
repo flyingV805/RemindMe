@@ -85,7 +85,8 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
             RemindsAction.CheckPermissions -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     val askForNotifications = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-                    val askForAlarmSchedule = alarmsPermittedUseCase()
+
+                    val askForAlarmSchedule = !alarmsPermittedUseCase()
 
                     pushState(currentState().copy(
                         askNotificationPermissions = askForNotifications,
@@ -96,7 +97,7 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
 
             }
             RemindsAction.HidePermissionDialog -> {
-                pushState(currentState().copy(askNotificationPermissions = false))
+                pushState(currentState().copy(askNotificationPermissions = false, askAlarmPermissions = false))
             }
             RemindsAction.StartSearch -> {
                 pushState(currentState().copy(searching = true))

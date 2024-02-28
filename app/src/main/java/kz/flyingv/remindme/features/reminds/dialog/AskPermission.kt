@@ -32,11 +32,11 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 private fun getPermissionsList(): List<String>{
     val permissions = ArrayList<String>()
 
-    if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S){
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
         permissions.add(Manifest.permission.SCHEDULE_EXACT_ALARM)
     }
 
-    if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU){
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
         permissions.add(Manifest.permission.POST_NOTIFICATIONS)
         permissions.add(Manifest.permission.USE_EXACT_ALARM)
     }
@@ -59,13 +59,10 @@ fun AskPermissionDialog(
         onPermissionsResult = {
             if( askAlarms && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) ) {
                 context.startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+                hide()
             }
         }
     )
-
-
-
-    val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->  }
 
     BasicAlertDialog(
         onDismissRequest = { hide() },
@@ -93,7 +90,7 @@ fun AskPermissionDialog(
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        hide()
+                        //hide()
                         permissionState.launchMultiplePermissionRequest()
                         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             requestPermissionLauncher.launch( Manifest.permission.POST_NOTIFICATIONS)
