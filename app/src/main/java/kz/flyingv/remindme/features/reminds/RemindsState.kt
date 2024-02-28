@@ -12,7 +12,6 @@ data class RemindsState(
     val showRemindTime: Boolean = false,
     val askNotificationPermissions: Boolean = false,
     val askAlarmPermissions: Boolean = false,
-    val askSchedulePermissions: Boolean = false,
     val searchReminds: List<Reminder> = emptyList(),
     val authorized: Boolean = false,
     val avatarUrl: String = "",

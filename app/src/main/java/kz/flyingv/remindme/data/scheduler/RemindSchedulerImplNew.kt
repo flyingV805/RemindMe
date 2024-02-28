@@ -10,6 +10,13 @@ import java.util.Calendar
 
 class RemindSchedulerImplNew(private val context: Context): RemindScheduler {
 
+    override fun isPermissionsAvailable(): Boolean {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        return if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            alarmManager.canScheduleExactAlarms()
+        else
+            true
+    }
 
     override fun startIfNotSet(time: ReminderTime) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

@@ -20,6 +20,8 @@ class SchedulerRepositoryImpl: SchedulerRepository, KoinComponent {
     private val preferences: SharedPreferences by inject()
     private val scheduler: RemindScheduler by inject()
 
+    override fun isSchedulerPermissionsAvailable(): Boolean = scheduler.isPermissionsAvailable()
+
     override fun currentRemindTime(): ReminderTime {
 
         val selectedHour = preferences.getInt(PreferencesKeys.remindHour, PreferencesKeys.defaultRemindHour)

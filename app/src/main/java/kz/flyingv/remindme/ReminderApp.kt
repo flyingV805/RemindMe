@@ -16,10 +16,10 @@ import kz.flyingv.remindme.domain.usecase.AddReminderUseCase
 import kz.flyingv.remindme.domain.usecase.CheckSchedulerUseCase
 import kz.flyingv.remindme.domain.usecase.GetInstalledAppsUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
-import kz.flyingv.remindme.data.scheduler.RemindSchedulerImpl
 import kz.flyingv.remindme.data.scheduler.RemindSchedulerImplNew
 import kz.flyingv.remindme.domain.usecase.DeleteReminderUseCase
 import kz.flyingv.remindme.domain.usecase.GetCurrentUserUseCase
+import kz.flyingv.remindme.domain.usecase.GetIsAlarmsPermittedUseCase
 import kz.flyingv.remindme.domain.usecase.GetWorkerRemindersUseCase
 import kz.flyingv.remindme.domain.usecase.GetReminderTimeUseCase
 import kz.flyingv.remindme.domain.usecase.RescheduleUseCase
@@ -43,7 +43,7 @@ class ReminderApp: Application() {
         single <SharedPreferences> { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
 
         single<FirebaseAuth> { Firebase.auth }
-        single<FirebaseDatabase>{ FirebaseDatabase.getInstance(BuildConfig.FB_DB_URL) }
+        single<FirebaseDatabase>{ FirebaseDatabase.getInstance("") }
 
         single<RemindScheduler> { RemindSchedulerImplNew(androidContext()) }
 
@@ -53,6 +53,7 @@ class ReminderApp: Application() {
         single<FirebaseAuthRepository> { FirebaseAuthRepositoryImpl() }
         single<FirebaseStoreRepository> { FirebaseStoreRepositoryImpl() }
 
+        factory { GetIsAlarmsPermittedUseCase() }
         factory { AddReminderUseCase() }
         factory { GetRemindersUseCase() }
         factory { SearchRemindersUseCase() }

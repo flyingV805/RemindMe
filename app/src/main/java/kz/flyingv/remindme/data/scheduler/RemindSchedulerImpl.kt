@@ -12,6 +12,8 @@ import java.util.concurrent.ExecutionException
 
 class RemindSchedulerImpl(private val context: Context): RemindScheduler {
 
+    override fun isPermissionsAvailable(): Boolean = true
+
     override fun startIfNotSet(time: ReminderTime){
 
         val statuses = WorkManager.getInstance(context).getWorkInfosByTag(reminderTag)

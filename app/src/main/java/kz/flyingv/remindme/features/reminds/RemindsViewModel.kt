@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kz.flyingv.cleanmvi.UIViewModel
 import kz.flyingv.remindme.domain.usecase.DeleteReminderUseCase
 import kz.flyingv.remindme.domain.usecase.GetCurrentUserUseCase
+import kz.flyingv.remindme.domain.usecase.GetIsAlarmsPermittedUseCase
 import kz.flyingv.remindme.domain.usecase.GetRemindersUseCase
 import kz.flyingv.remindme.domain.usecase.SearchRemindersUseCase
 import kz.flyingv.remindme.domain.usecase.SyncRemindsUseCase
@@ -29,6 +30,7 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
 
     private val context: Context by inject()
 
+    private val alarmsPermittedUseCase: GetIsAlarmsPermittedUseCase by inject()
     private val remindersUseCase: GetRemindersUseCase by inject()
     private val searchRemindersUseCase: SearchRemindersUseCase by inject()
     private val deleteReminderUseCase: DeleteReminderUseCase by inject()
@@ -83,13 +85,11 @@ class RemindsViewModel: KoinComponent, UIViewModel<RemindsState, RemindsAction> 
             RemindsAction.CheckPermissions -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     val askForNotifications = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-                    val askForAlarmSchedule = context.checkSelfPermission(Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED
-                    val askForAlarmUse = context.checkSelfPermission(Manifest.permission.USE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED
+                    val askForAlarmSchedule = alarmsPermittedUseCase()
 
                     pushState(currentState().copy(
                         askNotificationPermissions = askForNotifications,
-                        askAlarmPermissions = askForAlarmUse,
-                        askSchedulePermissions = askForAlarmSchedule
+                        askAlarmPermissions = askForAlarmSchedule
                     ))
 
                 }

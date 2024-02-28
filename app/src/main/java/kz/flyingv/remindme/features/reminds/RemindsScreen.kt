@@ -294,10 +294,14 @@ fun RemindsScreen(viewModel: RemindsViewModel = viewModel()) {
 
 
     //ask for permissions
-    if (uiState.askNotificationPermissions){
-        AskPermissionDialog(hide = {
-            viewModel.reduce(RemindsAction.HidePermissionDialog)
-        })
+    if (uiState.askNotificationPermissions || uiState.askAlarmPermissions ){
+        AskPermissionDialog(
+            askNotifications = uiState.askNotificationPermissions,
+            askAlarms = uiState.askAlarmPermissions,
+            hide = {
+                viewModel.reduce(RemindsAction.HidePermissionDialog)
+            }
+        )
     }
 
     //delete reminder
