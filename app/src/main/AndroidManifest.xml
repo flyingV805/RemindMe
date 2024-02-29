@@ -36,6 +36,16 @@
             </intent-filter>
         </receiver>
 
+
+        <receiver
+            android:name=".data.scheduler.AlarmPermissionReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".ReminderActivity"
             android:exported="true"

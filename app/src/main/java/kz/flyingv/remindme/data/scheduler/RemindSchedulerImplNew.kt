@@ -42,10 +42,7 @@ class RemindSchedulerImplNew(private val context: Context): RemindScheduler {
         if (dueDate.before(currentDate)) {dueDate.add(Calendar.HOUR_OF_DAY, 24)}
 
         try {
-            alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(dueDate.timeInMillis, intent),
-                intent
-            )
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, dueDate.timeInMillis, intent)
         }catch (se: SecurityException){
             se.printStackTrace()
         }
