@@ -8,7 +8,6 @@ import kz.flyingv.remindme.data.preferences.PreferencesKeys
 import kz.flyingv.remindme.data.scheduler.RemindScheduler
 import kz.flyingv.remindme.domain.entity.ReminderTime
 import kz.flyingv.remindme.data.scheduler.RemindSchedulerImpl
-import kz.flyingv.remindme.features.notificator.NotificatorWorker
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar
@@ -58,12 +57,12 @@ class SchedulerRepositoryImpl: SchedulerRepository, KoinComponent {
 
         val timeDiff = dueDate.timeInMillis - currentDate.timeInMillis
 
-        val dailyWorkRequest = OneTimeWorkRequestBuilder<NotificatorWorker>()
+        /*val dailyWorkRequest = OneTimeWorkRequestBuilder<NotificatorWorker>()
             .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
             .addTag(RemindSchedulerImpl.reminderTag)
             .build()
 
-        WorkManager.getInstance(context).enqueue(dailyWorkRequest)
+        WorkManager.getInstance(context).enqueue(dailyWorkRequest)*/
     }
 
 }

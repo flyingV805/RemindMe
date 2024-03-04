@@ -35,25 +35,34 @@ class NotificatorNew(val context: Context): KoinComponent {
                     notificator.showNotification(reminder)
                 }
                 is ReminderType.Weekly -> {
-                    if(DatetimeUtils.dayOfWeekIndex(currentDate) == type.dayOfWeek){
+                    val currentDay = DatetimeUtils.dayOfWeekIndex(currentDate)
+                    if(type.daysOfWeek.contains(currentDay)){
                         updateLastShownUseCase(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
                     }
                 }
                 is ReminderType.Monthly -> {
-                    val reminderDayInMonth = type.dayOfMonth
+                    val reminderDaysInMonth = type.daysOfMonth
                     val currentDayInMonth = currentDate.get(Calendar.DAY_OF_MONTH)
-                    if(currentDayInMonth == reminderDayInMonth){
+
+
+                    if(reminderDaysInMonth.contains(currentDayInMonth)){
                         updateLastShownUseCase(reminder, System.currentTimeMillis())
                         notificator.showNotification(reminder)
                     }
                     //extra case, month don't have much days
                     val currentMonth = DatetimeUtils.currentMonth(currentDate)
                     val daysInCurrentMonth = DatetimeUtils.daysInMonth(currentMonth) //currentDate.get(Calendar.MONTH)
-                    if(reminderDayInMonth > daysInCurrentMonth && currentDayInMonth == daysInCurrentMonth){
-                        updateLastShownUseCase(reminder, System.currentTimeMillis())
-                        notificator.showNotification(reminder)
+
+                    reminderDaysInMonth.forEach {reminderDayInMonth ->
+
+                        if(reminderDayInMonth > daysInCurrentMonth && currentDayInMonth == daysInCurrentMonth){
+                            updateLastShownUseCase(reminder, System.currentTimeMillis())
+                            notificator.showNotification(reminder)
+                        }
+
                     }
+
                 }
                 is ReminderType.Yearly -> {
                     val reminderDayInMonth = type.dayOfMonth

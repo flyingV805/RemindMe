@@ -32,7 +32,7 @@ import kz.flyingv.remindme.R
 fun DayOfMonthSelector(
     modifier: Modifier = Modifier,
     scrollState: LazyListState = rememberLazyListState(),
-    selectDay: Int,
+    selectDays: Set<Int>,
     onSelectionChanged: (dayOfMonth: Int) -> Unit
 ) {
 
@@ -46,7 +46,7 @@ fun DayOfMonthSelector(
                 Spacer(modifier = Modifier.width(4.dp))
                 DayOfMonthItem(
                     name = day.toString(),
-                    isSelected = selectDay == day,
+                    isSelected = selectDays.contains(day),
                     onSelect = {
                         //state.selectDayIndex = it
                         onSelectionChanged(day)
@@ -71,9 +71,9 @@ fun DayOfMonthItem(
         .aspectRatio(1f)
         .background(
             if (isSelected) {
-                colorResource(id = R.color.purple_200)
+                MaterialTheme.colorScheme.surfaceTint
             } else {
-                Color.White
+                MaterialTheme.colorScheme.onSurface
             },
             CircleShape
         )
@@ -97,7 +97,7 @@ fun DayOfMonthSelectorDemo() {
 
                 DayOfMonthSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    selectDay = 0,
+                    selectDays = hashSetOf(0),
                     onSelectionChanged = {}
                 )
             }

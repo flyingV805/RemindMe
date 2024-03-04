@@ -42,8 +42,7 @@ fun DeleteRemind(
                 Text(
                     (reminder.name).plus(" - ").plus(RemindFormatter.formatRemindType(reminder.type)),
                     modifier = Modifier.fillMaxWidth(),
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1
+                    style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(

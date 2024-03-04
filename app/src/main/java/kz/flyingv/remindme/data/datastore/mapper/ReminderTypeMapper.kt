@@ -3,6 +3,7 @@ package kz.flyingv.remindme.data.datastore.mapper
 import kz.flyingv.remindme.domain.entity.DayOfWeek
 import kz.flyingv.remindme.domain.entity.MonthOfYear
 import kz.flyingv.remindme.domain.entity.ReminderType
+import org.json.JSONArray
 import org.json.JSONObject
 
 class ReminderTypeMapper {
@@ -17,8 +18,16 @@ class ReminderTypeMapper {
         fun mapToString(reminderType: ReminderType): String {
             return when(reminderType){
                 is ReminderType.Daily -> { JSONObject().put("type", typeDaily).toString() }
-                is ReminderType.Weekly -> { JSONObject().put("type", typeWeekly).put("argument", reminderType.dayOfWeek.ordinal).toString() }
-                is ReminderType.Monthly -> { JSONObject().put("type", typeMonthly).put("argument", reminderType.dayOfMonth).toString() }
+                is ReminderType.Weekly -> {
+                    val daysOfWeekArray = JSONArray()
+                    reminderType.daysOfWeek.forEach { dayOfWeek -> daysOfWeekArray.put(dayOfWeek.value) }
+                    JSONObject().put("type", typeWeekly).put("argument", daysOfWeekArray).toString()
+                }
+                is ReminderType.Monthly -> {
+                    val daysOfMonthArray = JSONArray()
+                    reminderType.daysOfMonth.forEach { dayOfMonth -> daysOfMonthArray.put(dayOfMonth) }
+                    JSONObject().put("type", typeMonthly).put("argument", daysOfMonthArray).toString()
+                }
                 is ReminderType.Yearly -> { JSONObject().put("type", typeYearly).put("day", reminderType.dayOfMonth).put("month", reminderType.month.ordinal).toString() }
             }
         }
@@ -28,9 +37,25 @@ class ReminderTypeMapper {
                 val jsonObject = JSONObject(json)
                 when(jsonObject.optInt("type", -1)){
                     typeDaily -> ReminderType.Daily
-                    typeWeekly -> ReminderType.Weekly(DayOfWeek.values()[jsonObject.getInt("argument")])
-                    typeMonthly -> ReminderType.Monthly(jsonObject.getInt("argument"))
-                    typeYearly -> ReminderType.Yearly(jsonObject.getInt("day"), MonthOfYear.values()[jsonObject.getInt("month")])
+                    typeWeekly -> {
+                        val daysOfWeek = ArrayList<DayOfWeek>()
+                        val daysOfWeekArray = jsonObject.optJSONArray("argument")
+                        for( i in 0 until (daysOfWeekArray?.length() ?: 0) ){
+                            val dayOfWeek = daysOfWeekArray?.optInt(i) ?: 0
+                            daysOfWeek.add( DayOfWeek.entries.first { it.value == dayOfWeek } )
+                        }
+                        ReminderType.Weekly(daysOfWeek)
+                    }
+                    typeMonthly -> {
+                        val daysOfMonth = ArrayList<Int>()
+                        val daysOfMonthArray = jsonObject.optJSONArray("argument")
+                        for( i in 0 until (daysOfMonthArray?.length() ?: 0) ){
+                            val dayOfMonth = daysOfMonthArray?.optInt(i) ?: 0
+                            daysOfMonth.add(dayOfMonth)
+                        }
+                        ReminderType.Monthly(daysOfMonth)
+                    }
+                    typeYearly -> ReminderType.Yearly(jsonObject.getInt("day"), MonthOfYear.entries[jsonObject.getInt("month")])
                     else -> null
                 }
             }catch (e: Exception){

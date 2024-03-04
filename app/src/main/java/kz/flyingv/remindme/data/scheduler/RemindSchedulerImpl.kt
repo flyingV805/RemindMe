@@ -6,7 +6,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.work.WorkInfo
 import kz.flyingv.remindme.domain.entity.ReminderTime
-import kz.flyingv.remindme.features.notificator.NotificatorWorker
 import java.util.concurrent.ExecutionException
 
 
@@ -47,13 +46,13 @@ class RemindSchedulerImpl(private val context: Context): RemindScheduler {
         if (dueDate.before(currentDate)) {dueDate.add(Calendar.HOUR_OF_DAY, 24)}
 
         val timeDiff = dueDate.timeInMillis - currentDate.timeInMillis
-
+/*
         val dailyWorkRequest = PeriodicWorkRequestBuilder<NotificatorWorker>(1, TimeUnit.DAYS)
             .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
             .addTag(reminderTag)
             .build()
 
-        WorkManager.getInstance(context).enqueue(dailyWorkRequest)
+        WorkManager.getInstance(context).enqueue(dailyWorkRequest)*/
     }
 
     override fun reschedule(time: ReminderTime){

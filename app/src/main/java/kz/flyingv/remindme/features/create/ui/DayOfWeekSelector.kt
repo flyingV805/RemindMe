@@ -21,7 +21,7 @@ import kz.flyingv.remindme.domain.entity.DayOfWeek
 @Composable
 fun DayOfWeekSelector(
     modifier: Modifier = Modifier,
-    selectedDay: DayOfWeek,
+    selectedDays: Set<DayOfWeek>,
     onSelectionChanged: (dayOfWeek: DayOfWeek) -> Unit
 ){
 
@@ -33,7 +33,7 @@ fun DayOfWeekSelector(
             Spacer(modifier = Modifier.width(4.dp))
             DayOfWeekItem(
                 name = dayOfWeekName(day),
-                isSelected = selectedDay == day,
+                isSelected = selectedDays.contains(day),
                 onSelect = {
                     //state.selectDayIndex = index
                     onSelectionChanged(day)
@@ -70,9 +70,9 @@ fun DayOfWeekItem(
         .aspectRatio(1f)
         .background(
             if (isSelected) {
-                colorResource(id = R.color.purple_200)
+                MaterialTheme.colorScheme.surfaceTint
             } else {
-                Color.White
+                MaterialTheme.colorScheme.onSurface
             },
             CircleShape
         )
@@ -95,7 +95,7 @@ fun DayOfWeekItem(
 
                 DayOfWeekSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    selectedDay = DayOfWeek.Mon,
+                    selectedDays = hashSetOf(DayOfWeek.Mon),
                     onSelectionChanged = {}
                 )
             }

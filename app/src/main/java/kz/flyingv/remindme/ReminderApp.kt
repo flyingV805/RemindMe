@@ -39,7 +39,7 @@ class ReminderApp: Application() {
 
         single<Context> { this@ReminderApp }
 
-        single { Room.databaseBuilder(androidContext(), Database::class.java, "Reminder.rdb").build() }
+        single { Room.databaseBuilder(androidContext(), Database::class.java, "ReminderV2.rdb").build() }
         single <SharedPreferences> { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
 
         single<FirebaseAuth> { Firebase.auth }

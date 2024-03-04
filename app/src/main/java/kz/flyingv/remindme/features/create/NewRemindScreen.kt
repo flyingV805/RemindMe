@@ -1,5 +1,6 @@
 package kz.flyingv.remindme.features.create
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
@@ -48,6 +49,8 @@ fun NewRemindScreen(
     val viewState by viewModel.provideState().collectAsStateWithLifecycle()
 
     val dayOfMonthScrollState = rememberLazyListState()
+
+    Log.d("NewRemindScreen", viewState.daysOfWeek.toString())
 
     LaunchedEffect(key1 = viewState.done){
         if(viewState.done){
@@ -131,14 +134,14 @@ fun NewRemindScreen(
                 }
                 RemindType.Weekly -> DayOfWeekSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    selectedDay = viewState.dayOfWeek,
+                    selectedDays = viewState.daysOfWeek,
                     onSelectionChanged = {
                         viewModel.reduce(NewRemindAction.UpdateDayOfWeek(it))
                     }
                 )
                 RemindType.Monthly -> DayOfMonthSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    selectDay = viewState.dayOfMonth,
+                    selectDays = viewState.daysOfMonth,
                     scrollState = dayOfMonthScrollState,
                     onSelectionChanged = {
                         viewModel.reduce(NewRemindAction.UpdateDayOfMonth(it))
@@ -153,6 +156,15 @@ fun NewRemindScreen(
                     }
                 )
             }
+        }
+
+        AnimatedVisibility(visible = viewState.errors.contains(ValidationError.NeedDay)) {
+            Text(
+                text = "You need to select a day for this reminder",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(start = 16.dp)
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

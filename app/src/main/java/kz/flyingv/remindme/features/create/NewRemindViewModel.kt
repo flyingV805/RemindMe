@@ -1,5 +1,6 @@
 package kz.flyingv.remindme.features.create
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -49,10 +50,16 @@ class NewRemindViewModel: KoinComponent, UIViewModel<NewRemindState, NewRemindAc
                 pushState( currentState().copy(type = action.type) )
             }
             is NewRemindAction.UpdateDayOfWeek -> {
-                pushState( currentState().copy(dayOfWeek = action.day) )
+                val currentSet = currentState().daysOfWeek.toHashSet()
+                Log.d("UpdateDayOfWeek", currentSet.toString())
+                if(currentSet.contains(action.day)){ currentSet.remove(action.day) }else{ currentSet.add(action.day) }
+                Log.d("UpdateDayOfWeek", currentSet.toString())
+                pushState( currentState().copy( daysOfWeek = currentSet ) )
             }
             is NewRemindAction.UpdateDayOfMonth -> {
-                pushState( currentState().copy(dayOfMonth = action.day) )
+                val currentSet = currentState().daysOfMonth.toHashSet()
+                if(currentSet.contains(action.day)){ currentSet.remove(action.day) }else{ currentSet.add(action.day) }
+                pushState( currentState().copy( daysOfMonth = currentSet ) )
             }
             is NewRemindAction.UpdateDayOfYear -> {
                 pushState( currentState().copy(dayOfYear = action.day, monthOfYear = action.monthOfYear) )
@@ -66,6 +73,14 @@ class NewRemindViewModel: KoinComponent, UIViewModel<NewRemindState, NewRemindAc
             NewRemindAction.Create -> {
                 val currentState = currentState()
                 val errors = arrayListOf<ValidationError>()
+
+                if(currentState.type == RemindType.Weekly && currentState.daysOfWeek.isEmpty()){
+                    errors.add(ValidationError.NeedDay)
+                }
+
+                if(currentState.type == RemindType.Monthly && currentState.daysOfMonth.isEmpty()){
+                    errors.add(ValidationError.NeedDay)
+                }
 
                 if(currentState.name.isBlank()){ errors.add(ValidationError.NeedName) }
 
@@ -84,8 +99,8 @@ class NewRemindViewModel: KoinComponent, UIViewModel<NewRemindState, NewRemindAc
 
                 val reminderType = when(currentState.type){
                     RemindType.Daily -> ReminderType.Daily
-                    RemindType.Weekly -> ReminderType.Weekly(dayOfWeek = currentState.dayOfWeek)
-                    RemindType.Monthly -> ReminderType.Monthly(dayOfMonth = currentState.dayOfMonth)
+                    RemindType.Weekly -> ReminderType.Weekly(daysOfWeek = currentState.daysOfWeek.toList())
+                    RemindType.Monthly -> ReminderType.Monthly(daysOfMonth = currentState.daysOfMonth.toList())
                     RemindType.Yearly -> ReminderType.Yearly(dayOfMonth = currentState.dayOfYear, month = currentState.monthOfYear)
                 }
 

@@ -18,9 +18,9 @@ data class NewRemindState(
 
     val type: RemindType = RemindType.Daily,
     //daily
-    val dayOfWeek: DayOfWeek = DayOfWeek.Mon,
+    val daysOfWeek: Set<DayOfWeek> = emptySet(),
     //monthly
-    val dayOfMonth: Int = 1,
+    val daysOfMonth: Set<Int> = emptySet(),
     //yearly
     val dayOfYear: Int = 1,
     val monthOfYear: MonthOfYear = MonthOfYear.Jan,

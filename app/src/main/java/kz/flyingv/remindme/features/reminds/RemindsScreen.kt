@@ -58,6 +58,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -402,7 +403,7 @@ fun RemindItem(reminder: Reminder?, deleteReminder: (reminder: Reminder) -> Unit
             Spacer(modifier = Modifier.width(8.dp))
             Column(Modifier.weight(1f)) {
                 Text(text = reminder.name, style = MaterialTheme.typography.titleMedium, maxLines = 1)
-                Text(text = RemindFormatter.formatRemindType(reminder.type), style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                Text(text = RemindFormatter.formatRemindType(reminder.type), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = "Last remind: ${DatetimeUtils.lastTimeDisplayed(reminder.lastShow)}", style = MaterialTheme.typography.bodyMedium, maxLines = 1)
                 Spacer(modifier = Modifier.height(4.dp))
