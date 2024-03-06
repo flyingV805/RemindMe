@@ -99,8 +99,8 @@ class NewRemindViewModel: KoinComponent, UIViewModel<NewRemindState, NewRemindAc
 
                 val reminderType = when(currentState.type){
                     RemindType.Daily -> ReminderType.Daily
-                    RemindType.Weekly -> ReminderType.Weekly(daysOfWeek = currentState.daysOfWeek.toList())
-                    RemindType.Monthly -> ReminderType.Monthly(daysOfMonth = currentState.daysOfMonth.toList())
+                    RemindType.Weekly -> ReminderType.Weekly(daysOfWeek = currentState.daysOfWeek.toList().sortedBy { it.ordinal } )
+                    RemindType.Monthly -> ReminderType.Monthly(daysOfMonth = currentState.daysOfMonth.toList().sorted() )
                     RemindType.Yearly -> ReminderType.Yearly(dayOfMonth = currentState.dayOfYear, month = currentState.monthOfYear)
                 }
 
